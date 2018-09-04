@@ -1,12 +1,16 @@
 package com.hxs.xposedreddevil;
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 
 import com.google.gson.Gson;
@@ -15,12 +19,16 @@ import com.hxs.xposedreddevil.model.DBean;
 import com.hxs.xposedreddevil.model.MsgsBean;
 
 import java.io.File;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Map;
 
 import dalvik.system.PathClassLoader;
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XC_MethodReplacement;
+import de.robv.android.xposed.XposedBridge;
+import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import fr.arnaudguyon.xmltojsonlib.XmlToJson;
 
@@ -102,36 +110,29 @@ public class RedDevil implements IXposedHookLoadPackage {
                 }
             });
 
-            // hook红包界面初始化“开”按钮的方法，在该方法完成后自动点击开按钮领取红包
-//            findAndHookMethod("com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyReceiveUI", lpparam.classLoader, "d", int.class, int.class, String.class, findClass("com.tencent.mm.ab.l", lpparam.classLoader), new XC_MethodHook() {
-//                @Override
-//                protected void afterHookedMethod(MethodHookParam param) throws IllegalAccessException {
-//                    log("com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyReceiveUI: Method d called" + "\n");
-//                    Field buttonField = XposedHelpers.findField(param.thisObject.getClass(), "lgX");
-//                    final Button kaiButton;
-//                    try {
-//                        kaiButton = (Button) buttonField.get(param.thisObject);
-//                        kaiButton.performClick();
-//                    } catch (IllegalAccessException e) {
-//                        System.out.println(e);
-//                    }
-//                    Button button = (Button) findFirstFieldByExactType(param.thisObject.getClass(), Button.class).get(param.thisObject);
-//                    if (button.isShown() && button.isClickable()) {
-//                        button.performClick();
-//                    }
-//                }
-//            });
-
-            findAndHookMethod("com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyReceiveUI",
-                    lpparam.classLoader, "d", int.class, int.class,
-                    String.class, "com.tencent.mm.ab.l", new XC_MethodHook() {
+            XposedHelpers.findAndHookMethod(Application.class, "attach", Context.class, new XC_MethodHook() {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    Button button = (Button) findFirstFieldByExactType(param.thisObject.getClass(), Button.class).get(param.thisObject);
-                    log("进来了----------->2");
-                    if (button.isShown() && button.isClickable()) {
-                        button.performClick();
+                    ClassLoader cl = ((Context) param.args[0]).getClassLoader();
+                    Class<?> hookclass = null;
+                    try {
+                        hookclass = cl.loadClass("com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyReceiveUI");
+                    } catch (Exception e) {
+                        log("寻找com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyReceiveUI报错");
+                        return;
                     }
+                    log("寻找com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyReceiveUI成功");
+                    XposedHelpers.findAndHookMethod(hookclass, "c",int.class, int.class,
+                            String.class, findClass("com.tencent.mm.af.m", lpparam.classLoader),new XC_MethodHook() {
+                        //进行hook操作
+                        @Override
+                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                            log("com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyReceiveUI: Method d called" + "\n");
+                            Field buttonField = XposedHelpers.findField(param.thisObject.getClass(), "lgX");
+                            final Button kaiButton = (Button) buttonField.get(param.thisObject);
+                            kaiButton.performClick();
+                        }
+                    });
                 }
             });
 

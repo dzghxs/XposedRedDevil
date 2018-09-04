@@ -28,15 +28,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mainActivity = this;
-//        String content = XMLFILE.xml;
-//        if (!content.startsWith("<msg")) {
-//            content = content.substring(content.indexOf("<msg"));
-//        }
-
-//        XmlToJson wcpayinfo = new XmlToJson.Builder(content).build();
-//        bean = gson.fromJson(wcpayinfo.toFormattedString(""), MsgsBean.class);
-//        String nativeUrlString = bean.getMsg().getAppmsg().getWcpayinfo().getNativeurl();
-//        System.out.println(nativeUrlString);
     }
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+    }
 }
