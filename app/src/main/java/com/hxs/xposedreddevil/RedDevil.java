@@ -110,20 +110,8 @@ public class RedDevil implements IXposedHookLoadPackage {
                 }
             });
 
-            XposedHelpers.findAndHookMethod(Application.class, "attach", Context.class, new XC_MethodHook() {
-                @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    ClassLoader cl = ((Context) param.args[0]).getClassLoader();
-                    Class<?> hookclass = null;
-                    try {
-                        hookclass = cl.loadClass("com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyReceiveUI");
-                    } catch (Exception e) {
-                        log("寻找com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyReceiveUI报错");
-                        return;
-                    }
-                    log("寻找com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyReceiveUI成功");
-                    XposedHelpers.findAndHookMethod(hookclass, "c",int.class, int.class,
-                            String.class, findClass("com.tencent.mm.af.m", lpparam.classLoader),new XC_MethodHook() {
+            XposedHelpers.findAndHookMethod("com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyReceiveUI", lpparam.classLoader, "c",int.class, int.class,
+                    String.class, findClass("com.tencent.mm.af.m", lpparam.classLoader),new XC_MethodHook() {
                         //进行hook操作
                         @Override
                         protected void afterHookedMethod(MethodHookParam param) throws Throwable {
@@ -133,8 +121,32 @@ public class RedDevil implements IXposedHookLoadPackage {
                             kaiButton.performClick();
                         }
                     });
-                }
-            });
+
+//            XposedHelpers.findAndHookMethod(Application.class, "attach", Context.class, new XC_MethodHook() {
+//                @Override
+//                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+//                    ClassLoader cl = ((Context) param.args[0]).getClassLoader();
+//                    Class<?> hookclass = null;
+//                    try {
+//                        hookclass = cl.loadClass("com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyReceiveUI");
+//                    } catch (Exception e) {
+//                        log("寻找com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyReceiveUI报错");
+//                        return;
+//                    }
+//                    log("寻找com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyReceiveUI成功");
+//                    XposedHelpers.findAndHookMethod(hookclass, "c",int.class, int.class,
+//                            String.class, findClass("com.tencent.mm.af.m", lpparam.classLoader),new XC_MethodHook() {
+//                        //进行hook操作
+//                        @Override
+//                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+//                            log("com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyReceiveUI: Method d called" + "\n");
+//                            Field buttonField = XposedHelpers.findField(param.thisObject.getClass(), "lgX");
+//                            final Button kaiButton = (Button) buttonField.get(param.thisObject);
+//                            kaiButton.performClick();
+//                        }
+//                    });
+//                }
+//            });
 
         }
 
