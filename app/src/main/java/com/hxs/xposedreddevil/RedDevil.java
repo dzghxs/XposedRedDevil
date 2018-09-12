@@ -1,42 +1,35 @@
 package com.hxs.xposedreddevil;
 
 import android.app.Activity;
-import android.app.Application;
+import android.app.AndroidAppHelper;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.TextUtils;
-import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+import com.hxs.xposedreddevil.contentprovider.PropertiesUtils;
 import com.hxs.xposedreddevil.model.DBean;
 import com.hxs.xposedreddevil.model.MsgsBean;
 
-import java.io.File;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.Map;
 
-import dalvik.system.PathClassLoader;
+import cn.droidlover.xsharedpref.XSharedPref;
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XC_MethodReplacement;
-import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import fr.arnaudguyon.xmltojsonlib.XmlToJson;
 
+import static com.hxs.xposedreddevil.ui.MainActivity.RED_FILE;
 import static de.robv.android.xposed.XposedBridge.log;
 import static de.robv.android.xposed.XposedHelpers.callStaticMethod;
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 import static de.robv.android.xposed.XposedHelpers.findClass;
-import static de.robv.android.xposed.XposedHelpers.findFirstFieldByExactType;
 
 public class RedDevil implements IXposedHookLoadPackage {
 
@@ -45,9 +38,11 @@ public class RedDevil implements IXposedHookLoadPackage {
     MsgsBean bean = new MsgsBean();
     DBean dBean = new DBean();
     String nativeUrlString = "";
+    Map<String, Object> stringMap = new HashMap<>();
 
     @Override
     public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
+
 //        invokeHandleHookMethod("com.hxs.xposedreddevil.RedDevil",);
         if (lpparam.packageName.equals("com.tencent.mm")) {
             // hook微信插入数据的方法，监听红包消息
@@ -63,8 +58,10 @@ public class RedDevil implements IXposedHookLoadPackage {
                     for (Map.Entry<String, Object> item : contentValues.valueSet()) {
                         if (item.getValue() != null) {
                             log(item.getKey() + "---------" + item.getValue().toString());
+                            stringMap.put(item.getKey(), item.getValue().toString());
                         } else {
                             log(item.getKey() + "---------" + "null");
+                            stringMap.put(item.getKey(), "null");
                         }
                     }
                     log("------------------------insert over---------------------" + "\n\n");
@@ -80,6 +77,14 @@ public class RedDevil implements IXposedHookLoadPackage {
                         return;
                     }
                     if (type == 436207665 || type == 469762097) {
+                        log("获取状态------------>" + PropertiesUtils.getValue(RED_FILE, "red", "2"));
+                        log("获取map------------>" + stringMap.get("isSend"));
+                        if (PropertiesUtils.getValue(RED_FILE, "red", "2").equals("1")) {
+                            if (!stringMap.get("isSend").equals(1)) {
+                                return;
+                            }
+
+                        }
                         // 处理红包消息
                         handleLuckyMoney(contentValues, lpparam);
                     }
@@ -99,7 +104,6 @@ public class RedDevil implements IXposedHookLoadPackage {
             findAndHookMethod("com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyReceiveUI", lpparam.classLoader, "onCreate", Bundle.class, new XC_MethodHook() {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    log("进来了----------->1");
                     Activity activity = (Activity) param.thisObject;
                     String key_native_url = activity.getIntent().getStringExtra("key_native_url");
                     String key_username = activity.getIntent().getStringExtra("key_username");
@@ -110,8 +114,8 @@ public class RedDevil implements IXposedHookLoadPackage {
                 }
             });
 
-            XposedHelpers.findAndHookMethod("com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyReceiveUI", lpparam.classLoader, "c",int.class, int.class,
-                    String.class, findClass("com.tencent.mm.af.m", lpparam.classLoader),new XC_MethodHook() {
+            XposedHelpers.findAndHookMethod("com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyReceiveUI", lpparam.classLoader, "c", int.class, int.class,
+                    String.class, findClass("com.tencent.mm.af.m", lpparam.classLoader), new XC_MethodHook() {
                         //进行hook操作
                         @Override
                         protected void afterHookedMethod(MethodHookParam param) throws Throwable {
@@ -121,33 +125,6 @@ public class RedDevil implements IXposedHookLoadPackage {
                             kaiButton.performClick();
                         }
                     });
-
-//            XposedHelpers.findAndHookMethod(Application.class, "attach", Context.class, new XC_MethodHook() {
-//                @Override
-//                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-//                    ClassLoader cl = ((Context) param.args[0]).getClassLoader();
-//                    Class<?> hookclass = null;
-//                    try {
-//                        hookclass = cl.loadClass("com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyReceiveUI");
-//                    } catch (Exception e) {
-//                        log("寻找com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyReceiveUI报错");
-//                        return;
-//                    }
-//                    log("寻找com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyReceiveUI成功");
-//                    XposedHelpers.findAndHookMethod(hookclass, "c",int.class, int.class,
-//                            String.class, findClass("com.tencent.mm.af.m", lpparam.classLoader),new XC_MethodHook() {
-//                        //进行hook操作
-//                        @Override
-//                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-//                            log("com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyReceiveUI: Method d called" + "\n");
-//                            Field buttonField = XposedHelpers.findField(param.thisObject.getClass(), "lgX");
-//                            final Button kaiButton = (Button) buttonField.get(param.thisObject);
-//                            kaiButton.performClick();
-//                        }
-//                    });
-//                }
-//            });
-
         }
 
     }
