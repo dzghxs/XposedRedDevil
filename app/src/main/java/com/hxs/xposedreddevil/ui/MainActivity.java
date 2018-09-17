@@ -16,13 +16,11 @@ import android.widget.Toast;
 import com.hjq.permissions.OnPermission;
 import com.hjq.permissions.XXPermissions;
 import com.hxs.xposedreddevil.R;
-import com.hxs.xposedreddevil.base.BaseApplication;
 import com.hxs.xposedreddevil.contentprovider.PropertiesUtils;
 
 import java.io.File;
 import java.io.InputStream;
 import java.util.List;
-import java.util.prefs.BackingStoreException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,6 +30,8 @@ public class MainActivity extends AppCompatActivity {
 
     public static final String RED_FILE = "/storage/emulated/0/xposedreddevil/" + "reddevil_config.pro";
 
+    @BindView(R.id.sw_main)
+    Switch swMain;
     @BindView(R.id.sw_own)
     Switch swOwn;
     @BindView(R.id.tv_pay)
@@ -45,22 +45,42 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         CheckPermissionInit();
+        SwitchClickInit();
+
+    }
+
+    private void SwitchClickInit(){
         try {
-            if(PropertiesUtils.getValue(RED_FILE,"red","2").equals("1")){
+            if (PropertiesUtils.getValue(RED_FILE, "redmain", "2").equals("1")) {
+                swMain.setChecked(true);
+            } else {
+                swMain.setChecked(false);
+            }
+            if (PropertiesUtils.getValue(RED_FILE, "red", "2").equals("1")) {
                 swOwn.setChecked(true);
-            }else{
+            } else {
                 swOwn.setChecked(false);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+        swMain.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    PropertiesUtils.putValue(RED_FILE, "redmain", "1");
+                } else {
+                    PropertiesUtils.putValue(RED_FILE, "redmain", "2");
+                }
+            }
+        });
         swOwn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if(b){
-                    PropertiesUtils.putValue(RED_FILE,"red","1");
-                }else{
-                    PropertiesUtils.putValue(RED_FILE,"red","2");
+                if (b) {
+                    PropertiesUtils.putValue(RED_FILE, "red", "1");
+                } else {
+                    PropertiesUtils.putValue(RED_FILE, "red", "2");
                 }
             }
         });
@@ -99,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick(R.id.tv_pay)
     public void onViewClicked() {
-        new AlertDialog.Builder(this)
+        new AlertDialog.Builder(MainActivity.this)
                 .setTitle("去捐赠")
                 .setNegativeButton("微信", new DialogInterface.OnClickListener() {
                     @Override
