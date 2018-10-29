@@ -65,14 +65,15 @@ public class RedHook {
                 return;
             }
             if (lpparam.packageName.equals("com.tencent.mm")) {
+                log("监听微信");
                 // hook微信插入数据的方法，监听红包消息
                 XposedHelpers.findAndHookMethod("com.tencent.wcdb.database.SQLiteDatabase", lpparam.classLoader, "insertWithOnConflict", String.class, String.class, ContentValues.class, int.class, new XC_MethodHook() {
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                         // 打印插入数据信息
-//                        log("------------------------insert start---------------------" + "\n\n");
-//                        log("param args1:" + param.args[0]);
-//                        log("param args1:" + param.args[1]);
+                        log("------------------------insert start---------------------" + "\n\n");
+                        log("param args1:" + param.args[0]);
+                        log("param args1:" + param.args[1]);
                         ContentValues contentValues = (ContentValues) param.args[2];
 //                        log("param args3 contentValues:");
                         for (Map.Entry<String, Object> item : contentValues.valueSet()) {
@@ -84,7 +85,7 @@ public class RedHook {
                                 stringMap.put(item.getKey(), "null");
                             }
                         }
-//                        log("------------------------insert over---------------------" + "\n\n");
+                        log("------------------------insert over---------------------" + "\n\n");
 
                         // 判断插入的数据是否是发送过来的消息
                         String tableName = (String) param.args[0];
@@ -128,19 +129,19 @@ public class RedHook {
                         String key_native_url = activity.getIntent().getStringExtra("key_native_url");
                         String key_username = activity.getIntent().getStringExtra("key_username");
                         int key_way = activity.getIntent().getIntExtra("key_way", 0);
-//                        log("key_native_url: " + key_native_url + "\n");
-//                        log("key_way: " + key_way + "\n");
-//                        log("key_username: " + key_username + "\n");
+                        log("key_native_url: " + key_native_url + "\n");
+                        log("key_way: " + key_way + "\n");
+                        log("key_username: " + key_username + "\n");
                     }
                 });
 
                 XposedHelpers.findAndHookMethod("com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyReceiveUI", lpparam.classLoader, "c", int.class, int.class,
-                        String.class, findClass("com.tencent.mm.af.m", lpparam.classLoader), new XC_MethodHook() {
+                        String.class, findClass("com.tencent.mm.ah.m", lpparam.classLoader), new XC_MethodHook() {
                             //进行hook操作
                             @Override
                             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-//                                log("com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyReceiveUI: Method d called" + "\n");
-                                Field buttonField = XposedHelpers.findField(param.thisObject.getClass(), "lgX");
+                                log("com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyReceiveUI: Method d called" + "\n");
+                                Field buttonField = XposedHelpers.findField(param.thisObject.getClass(), "lMN");
                                 final Button kaiButton = (Button) buttonField.get(param.thisObject);
                                 kaiButton.performClick();
                             }
@@ -171,18 +172,18 @@ public class RedHook {
             dBean = gson.fromJson(wcpayinfo.toFormattedString(""), DBean.class);
             nativeUrlString = dBean.getMsg().getAppmsg().getWcpayinfo().getNativeurl();
         }
-//        log("nativeurl: " + nativeUrlString + "\n");
+        log("nativeurl: " + nativeUrlString + "\n");
 
         // 启动红包页面
         if (launcherUiActivity != null) {
-//            log("call method com.tencent.mm.bm.d b, start LuckyMoneyReceiveUI" + "\n");
+            log("call method com.tencent.mm.br.d, start LuckyMoneyReceiveUI" + "\n");
             Intent paramau = new Intent();
             paramau.putExtra("key_way", 1);
             paramau.putExtra("key_native_url", nativeUrlString);
             paramau.putExtra("key_username", talker);
-            callStaticMethod(findClass("com.tencent.mm.bm.d", lpparam.classLoader), "b", launcherUiActivity, "luckymoney", ".ui.LuckyMoneyReceiveUI", paramau);
+            callStaticMethod(findClass("com.tencent.mm.br.d", lpparam.classLoader), "b", launcherUiActivity, "luckymoney", ".ui.LuckyMoneyReceiveUI", paramau);
         } else {
-//            log("launcherUiActivity == null" + "\n");
+            log("launcherUiActivity == null" + "\n");
         }
     }
 

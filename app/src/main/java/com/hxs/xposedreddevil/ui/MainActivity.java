@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hjq.permissions.OnPermission;
+import com.hjq.permissions.Permission;
 import com.hjq.permissions.XXPermissions;
 import com.hxs.xposedreddevil.R;
 import com.hxs.xposedreddevil.contentprovider.PropertiesUtils;
@@ -143,6 +144,7 @@ public class MainActivity extends AppCompatActivity {
      */
     public void CheckPermissionInit() {
         XXPermissions.with(this)
+                .permission(Permission.Group.STORAGE)
                 .constantRequest() //可设置被拒绝后继续申请，直到用户授权或者永久拒绝
                 .request(new OnPermission() {
 
@@ -162,4 +164,5 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
     }
+
 }
