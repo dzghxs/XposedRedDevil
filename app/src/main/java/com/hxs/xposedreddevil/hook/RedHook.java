@@ -173,7 +173,9 @@ public class RedHook {
             nativeUrlString = dBean.getMsg().getAppmsg().getWcpayinfo().getNativeurl();
         }
         log("nativeurl: " + nativeUrlString + "\n");
-
+        if(PropertiesUtils.getValue(RED_FILE, "sleep", "2").equals("1")){
+            Thread.sleep(Long.parseLong(PropertiesUtils.getValue(RED_FILE, "sleeptime", "1")));
+        }
         // 启动红包页面
         if (launcherUiActivity != null) {
             log("call method com.tencent.mm.br.d, start LuckyMoneyReceiveUI" + "\n");

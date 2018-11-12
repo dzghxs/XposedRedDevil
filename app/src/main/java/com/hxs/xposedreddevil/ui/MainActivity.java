@@ -8,7 +8,12 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,8 +23,10 @@ import com.hjq.permissions.Permission;
 import com.hjq.permissions.XXPermissions;
 import com.hxs.xposedreddevil.R;
 import com.hxs.xposedreddevil.contentprovider.PropertiesUtils;
+import com.hxs.xposedreddevil.utils.RootUtil;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
@@ -37,8 +44,15 @@ public class MainActivity extends AppCompatActivity {
     Switch swOwn;
     @BindView(R.id.tv_pay)
     TextView tvPay;
+    @BindView(R.id.sw_sleep)
+    Switch swSleep;
+    @BindView(R.id.et_sleep)
+    EditText etSleep;
+    @BindView(R.id.ll_sleep)
+    LinearLayout llSleep;
 
     private final String payCode = "FKX03573LOMYIBUT6ERCF1";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,10 +61,10 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         CheckPermissionInit();
         SwitchClickInit();
-
+//        get_root();
     }
 
-    private void SwitchClickInit(){
+    private void SwitchClickInit() {
         try {
             if (PropertiesUtils.getValue(RED_FILE, "redmain", "2").equals("1")) {
                 swMain.setChecked(true);
@@ -62,6 +76,14 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 swOwn.setChecked(false);
             }
+            if (PropertiesUtils.getValue(RED_FILE, "sleep", "2").equals("1")) {
+                swSleep.setChecked(true);
+                llSleep.setVisibility(View.VISIBLE);
+            } else {
+                swSleep.setChecked(false);
+                llSleep.setVisibility(View.GONE);
+            }
+            etSleep.setText(PropertiesUtils.getValue(RED_FILE, "sleeptime", "1"));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -82,6 +104,38 @@ public class MainActivity extends AppCompatActivity {
                     PropertiesUtils.putValue(RED_FILE, "red", "1");
                 } else {
                     PropertiesUtils.putValue(RED_FILE, "red", "2");
+                }
+            }
+        });
+        swSleep.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    PropertiesUtils.putValue(RED_FILE, "sleep", "1");
+                    llSleep.setVisibility(View.VISIBLE);
+                } else {
+                    PropertiesUtils.putValue(RED_FILE, "sleep", "2");
+                    llSleep.setVisibility(View.GONE);
+                }
+            }
+        });
+        etSleep.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (editable.toString().equals("0")) {
+                    PropertiesUtils.putValue(RED_FILE, "sleeptime", "1");
+                } else {
+                    PropertiesUtils.putValue(RED_FILE, "sleeptime", editable.toString());
                 }
             }
         });
@@ -163,6 +217,42 @@ public class MainActivity extends AppCompatActivity {
                         finish();
                     }
                 });
+    }
+
+    // 获取ROOT权限
+    public void get_root() {
+        if (RootUtil.is_root()) {
+            SolveTaoBaoCollapse();
+        } else {
+            try {
+                Toast.makeText(this, "正在获取ROOT权限...", Toast.LENGTH_LONG).show();
+                Runtime.getRuntime().exec("su");
+            } catch (Exception e) {
+                Toast.makeText(this, "获取ROOT权限时出错!", Toast.LENGTH_LONG).show();
+            }
+        }
+
+    }
+
+    /**
+     * 解决淘宝闪退
+     */
+    private void SolveTaoBaoCollapse() {
+        try {
+            new ProcessBuilder(new String[]{"chmod", "771", Environment.getDataDirectory().getPath()}).start();
+            new ProcessBuilder(new String[]{"chmod", "771", Environment.getDataDirectory().getPath() + "/data"}).start();
+            new ProcessBuilder(new String[]{"chmod", "700", Environment.getDataDirectory().getPath() + "/data/com.taobao.taobao"}).start();
+            new ProcessBuilder(new String[]{"chmod", "771", Environment.getDataDirectory().getPath() + "/data/com.taobao.taobao/files"}).start();
+//            String command = "chmod 500 " + Environment.getDataDirectory().getPath() + "/data/com.taobao.taobao/files/bundleBaseline";
+//            Runtime.getRuntime().exec(command);
+            //通过linux命令修改apk更新文件读写权限
+            String[] command = {"chmod", "500", Environment.getDataDirectory().getPath() + "/data/com.taobao.taobao/files/bundleBaseline"};
+            ProcessBuilder builder = new ProcessBuilder(command);
+            builder.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println(e);
+        }
     }
 
 }
