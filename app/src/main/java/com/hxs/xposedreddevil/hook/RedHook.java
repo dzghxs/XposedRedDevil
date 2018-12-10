@@ -4,15 +4,18 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.res.XmlResourceParser;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.hxs.xposedreddevil.contentprovider.PropertiesUtils;
 import com.hxs.xposedreddevil.model.DBean;
 import com.hxs.xposedreddevil.model.MsgsBean;
+import com.hxs.xposedreddevil.utils.PinYinUtils;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -67,7 +70,9 @@ public class RedHook {
             if (lpparam.packageName.equals("com.tencent.mm")) {
                 log("监听微信");
                 // hook微信插入数据的方法，监听红包消息
-                XposedHelpers.findAndHookMethod("com.tencent.wcdb.database.SQLiteDatabase", lpparam.classLoader, "insertWithOnConflict", String.class, String.class, ContentValues.class, int.class, new XC_MethodHook() {
+                XposedHelpers.findAndHookMethod("com.tencent.wcdb.database.SQLiteDatabase",
+                        lpparam.classLoader, "insertWithOnConflict",
+                        String.class, String.class, ContentValues.class, int.class, new XC_MethodHook() {
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                         // 打印插入数据信息
@@ -79,6 +84,16 @@ public class RedHook {
                         for (Map.Entry<String, Object> item : contentValues.valueSet()) {
                             if (item.getValue() != null) {
                                 log(item.getKey() + "---------" + item.getValue().toString());
+                                if(item.getKey().equals("xml")){
+                                    String data = item.getValue().toString();
+                                    log("红包外挂测试"+data);
+                                    if(PinYinUtils.getPingYin(PinYinUtils.parseXMLWithPull(data)).contains("gua")||
+                                            data.contains("圭")||
+                                            data.contains("G")||
+                                            data.contains("GUA")){
+                                        Thread.sleep(1000);
+                                    }
+                                }
                                 stringMap.put(item.getKey(), item.getValue().toString());
                             } else {
                                 log(item.getKey() + "---------" + "null");

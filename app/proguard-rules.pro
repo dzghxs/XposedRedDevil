@@ -139,6 +139,8 @@
 
 #2.第三方包
 
+-ignorewarnings
+
 #eventBus
 -keepattributes *Annotation*
 -keepclassmembers class ** {
