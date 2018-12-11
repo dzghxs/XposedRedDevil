@@ -1,9 +1,11 @@
 package com.hxs.xposedreddevil.ui;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.didikee.donate.AlipayDonate;
 import android.didikee.donate.WeiXinDonate;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AlertDialog;
@@ -18,15 +20,19 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.hjq.permissions.OnPermission;
 import com.hjq.permissions.Permission;
 import com.hjq.permissions.XXPermissions;
 import com.hxs.xposedreddevil.R;
 import com.hxs.xposedreddevil.contentprovider.PropertiesUtils;
-import com.hxs.xposedreddevil.utils.RootUtil;
+import com.hxs.xposedreddevil.model.VersionBean;
+import com.hxs.xposedreddevil.utils.GetAppVersion;
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.callback.StringCallback;
+import com.lzy.okgo.model.Response;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
@@ -51,6 +57,8 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.ll_sleep)
     LinearLayout llSleep;
 
+    Gson gson = new Gson();
+
     private final String payCode = "FKX03573LOMYIBUT6ERCF1";
 
 
@@ -60,8 +68,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         CheckPermissionInit();
+        GetVersion();
         SwitchClickInit();
-//        get_root();
     }
 
     private void SwitchClickInit() {
@@ -219,39 +227,48 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
-    // 获取ROOT权限
-    public void get_root() {
-        if (RootUtil.is_root()) {
-            SolveTaoBaoCollapse();
-        } else {
-            try {
-                Toast.makeText(this, "正在获取ROOT权限...", Toast.LENGTH_LONG).show();
-                Runtime.getRuntime().exec("su");
-            } catch (Exception e) {
-                Toast.makeText(this, "获取ROOT权限时出错!", Toast.LENGTH_LONG).show();
-            }
-        }
-
+    private void GetVersion(){
+        OkGo.<String>post("http://192.168.1.105:9672/redselectRedCode")
+                .execute(new StringCallback() {
+                    @Override
+                    public void onSuccess(Response<String> response) {
+                        VersionBean versionBean = new VersionBean();
+                        if(response.body().contains("200")){
+                            versionBean = gson.fromJson(response.body(),VersionBean.class);
+                            UpdataInit(versionBean.getData().getVersionCode(),
+                                    versionBean.getData().getUpdateContent(),
+                                    versionBean.getData().getApkurl());
+                        }
+                    }
+                });
     }
 
     /**
-     * 解决淘宝闪退
+     * 更新操作
+     *
+     * @param version
+     * @param updatamsg
      */
-    private void SolveTaoBaoCollapse() {
-        try {
-            new ProcessBuilder(new String[]{"chmod", "771", Environment.getDataDirectory().getPath()}).start();
-            new ProcessBuilder(new String[]{"chmod", "771", Environment.getDataDirectory().getPath() + "/data"}).start();
-            new ProcessBuilder(new String[]{"chmod", "700", Environment.getDataDirectory().getPath() + "/data/com.taobao.taobao"}).start();
-            new ProcessBuilder(new String[]{"chmod", "771", Environment.getDataDirectory().getPath() + "/data/com.taobao.taobao/files"}).start();
-//            String command = "chmod 500 " + Environment.getDataDirectory().getPath() + "/data/com.taobao.taobao/files/bundleBaseline";
-//            Runtime.getRuntime().exec(command);
-            //通过linux命令修改apk更新文件读写权限
-            String[] command = {"chmod", "500", Environment.getDataDirectory().getPath() + "/data/com.taobao.taobao/files/bundleBaseline"};
-            ProcessBuilder builder = new ProcessBuilder(command);
-            builder.start();
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println(e);
+    public void UpdataInit(int version, String updatamsg, final String url) {
+        if (version > Integer.parseInt(GetAppVersion.getVersionCode(MainActivity.this))) {
+            AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
+            dialog.setTitle("发现新版本是否更新？");
+            dialog.setMessage(updatamsg);
+            dialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            dialog.setPositiveButton("更新", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                    startActivity(intent);
+                }
+            });
+            dialog.show();
         }
     }
 
