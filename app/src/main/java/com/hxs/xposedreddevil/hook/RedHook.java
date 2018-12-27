@@ -2,10 +2,14 @@ package com.hxs.xposedreddevil.hook;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AndroidAppHelper;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.XmlResourceParser;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.Toast;
@@ -15,7 +19,12 @@ import com.google.gson.JsonSyntaxException;
 import com.hxs.xposedreddevil.contentprovider.PropertiesUtils;
 import com.hxs.xposedreddevil.model.DBean;
 import com.hxs.xposedreddevil.model.MsgsBean;
+import com.hxs.xposedreddevil.utils.MessageEvent;
 import com.hxs.xposedreddevil.utils.PinYinUtils;
+import com.hxs.xposedreddevil.utils.PlaySoundUtils;
+import com.hxs.xposedreddevil.utils.PushUtils;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -28,6 +37,7 @@ import fr.arnaudguyon.xmltojsonlib.XmlToJson;
 
 import static com.hxs.xposedreddevil.ui.MainActivity.RED_FILE;
 import static de.robv.android.xposed.XposedBridge.log;
+import static de.robv.android.xposed.XposedHelpers.callMethod;
 import static de.robv.android.xposed.XposedHelpers.callStaticMethod;
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 import static de.robv.android.xposed.XposedHelpers.findClass;
@@ -40,6 +50,7 @@ public class RedHook {
     MsgsBean bean = new MsgsBean();
     DBean dBean = new DBean();
     String nativeUrlString = "";
+    String data = "";
     Map<String, Object> stringMap = new HashMap<>();
 
     public RedHook() {
@@ -73,6 +84,7 @@ public class RedHook {
                 XposedHelpers.findAndHookMethod("com.tencent.wcdb.database.SQLiteDatabase",
                         lpparam.classLoader, "insertWithOnConflict",
                         String.class, String.class, ContentValues.class, int.class, new XC_MethodHook() {
+                            @RequiresApi(api = Build.VERSION_CODES.O)
                             @Override
                             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                                 // 打印插入数据信息
@@ -80,21 +92,12 @@ public class RedHook {
                                 log("param args1:" + param.args[0]);
                                 log("param args1:" + param.args[1]);
                                 ContentValues contentValues = (ContentValues) param.args[2];
-//                        log("param args3 contentValues:");
                                 for (Map.Entry<String, Object> item : contentValues.valueSet()) {
                                     if (item.getValue() != null) {
                                         log(item.getKey() + "---------" + item.getValue().toString());
                                         if (item.getKey().equals("xml")) {
-                                            String data = item.getValue().toString();
+                                            data = item.getValue().toString();
                                             log("红包外挂测试" + data);
-                                            if (PinYinUtils.getPingYin(PinYinUtils.parseXMLWithPull(data)).contains("gua") ||
-                                                    data.contains("圭") ||
-                                                    data.contains("G") ||
-                                                    data.contains("GUA") ||
-                                                    data.contains("gua") ||
-                                                    data.contains("g")) {
-                                                return;
-                                            }
                                         }
                                         stringMap.put(item.getKey(), item.getValue().toString());
                                     } else {
@@ -122,6 +125,22 @@ public class RedHook {
                                             return;
                                         }
 
+                                    }
+//                                    Context context = (Context) callMethod(callStaticMethod(findClass("android.app.ActivityThread", null),
+//                                            "currentActivityThread", new Object[0]), "getSystemContext", new Object[0]);
+                                    if (PropertiesUtils.getValue(RED_FILE, "sound", "2").equals("1")) {
+                                        PlaySoundUtils.Play();
+                                    }
+                                    if (PropertiesUtils.getValue(RED_FILE, "push", "2").equals("1")) {
+                                        EventBus.getDefault().post(new MessageEvent("天降红包"));
+                                    }
+                                    if (PinYinUtils.getPingYin(PinYinUtils.parseXMLWithPull(data)).contains("gua") ||
+                                            data.contains("圭") ||
+                                            data.contains("G") ||
+                                            data.contains("GUA") ||
+                                            data.contains("gua") ||
+                                            data.contains("g")) {
+                                        return;
                                     }
                                     // 处理红包消息
                                     handleLuckyMoney(contentValues, lpparam);

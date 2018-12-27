@@ -6,8 +6,11 @@ import android.didikee.donate.AlipayDonate;
 import android.didikee.donate.WeiXinDonate;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.annotation.MainThread;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
@@ -27,10 +30,17 @@ import com.hjq.permissions.XXPermissions;
 import com.hxs.xposedreddevil.R;
 import com.hxs.xposedreddevil.contentprovider.PropertiesUtils;
 import com.hxs.xposedreddevil.model.VersionBean;
+import com.hxs.xposedreddevil.utils.AssetsCopyTOSDcard;
 import com.hxs.xposedreddevil.utils.GetAppVersion;
+import com.hxs.xposedreddevil.utils.MessageEvent;
+import com.hxs.xposedreddevil.utils.PushUtils;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.StringCallback;
 import com.lzy.okgo.model.Response;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.io.InputStream;
@@ -56,23 +66,28 @@ public class MainActivity extends AppCompatActivity {
     EditText etSleep;
     @BindView(R.id.ll_sleep)
     LinearLayout llSleep;
+    @BindView(R.id.sw_sound)
+    Switch swSound;
+    @BindView(R.id.sw_push)
+    Switch swPush;
 
     Gson gson = new Gson();
 
     private final String payCode = "FKX03573LOMYIBUT6ERCF1";
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        EventBus.getDefault().register(this);
         CheckPermissionInit();
         GetVersion();
         SwitchClickInit();
     }
 
     private void SwitchClickInit() {
+        AssetsCopyTOSDcard.Assets2Sd(this,"lucky_sound.mp3",Environment.getExternalStorageDirectory().toString() + "/xposedreddevil/lucky_sound.mp3");
         try {
             if (PropertiesUtils.getValue(RED_FILE, "redmain", "2").equals("1")) {
                 swMain.setChecked(true);
@@ -90,6 +105,16 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 swSleep.setChecked(false);
                 llSleep.setVisibility(View.GONE);
+            }
+            if (PropertiesUtils.getValue(RED_FILE, "sound", "2").equals("1")) {
+                swSound.setChecked(true);
+            } else {
+                swSound.setChecked(false);
+            }
+            if (PropertiesUtils.getValue(RED_FILE, "push", "2").equals("1")) {
+                swPush.setChecked(true);
+            } else {
+                swPush.setChecked(false);
             }
             etSleep.setText(PropertiesUtils.getValue(RED_FILE, "sleeptime", "1"));
         } catch (Exception e) {
@@ -127,6 +152,26 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+        swSound.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    PropertiesUtils.putValue(RED_FILE, "sound", "1");
+                } else {
+                    PropertiesUtils.putValue(RED_FILE, "sound", "2");
+                }
+            }
+        });
+        swPush.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    PropertiesUtils.putValue(RED_FILE, "push", "1");
+                } else {
+                    PropertiesUtils.putValue(RED_FILE, "push", "2");
+                }
+            }
+        });
         etSleep.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -147,6 +192,12 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getMsg(MessageEvent messages){
+        PushUtils.showNotification(this,"private", "25", "微信", "天降红包");
     }
 
     @Override
@@ -227,14 +278,14 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
-    private void GetVersion(){
+    private void GetVersion() {
         OkGo.<String>post("http://192.168.1.105:9672/redselectRedCode")
                 .execute(new StringCallback() {
                     @Override
                     public void onSuccess(Response<String> response) {
                         VersionBean versionBean = new VersionBean();
-                        if(response.body().contains("200")){
-                            versionBean = gson.fromJson(response.body(),VersionBean.class);
+                        if (response.body().contains("200")) {
+                            versionBean = gson.fromJson(response.body(), VersionBean.class);
                             UpdataInit(versionBean.getData().getVersionCode(),
                                     versionBean.getData().getUpdateContent(),
                                     versionBean.getData().getApkurl());

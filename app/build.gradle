@@ -33,6 +33,7 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.4'
     implementation 'com.jakewharton:butterknife:8.8.1'
     implementation 'com.hjq:xxpermissions:5.0'
+    implementation 'org.greenrobot:eventbus:3.1.1'
     implementation 'com.github.didikee:AndroidDonate:0.1.0'
     implementation 'com.tencent.bugly:crashreport_upgrade:latest.release'
     //其中latest.release指代最新版本号，也可以指定明确的版本号，例如1.2.0
