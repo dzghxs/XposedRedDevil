@@ -279,7 +279,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void GetVersion() {
-        OkGo.<String>post("http://192.168.1.105:9672/redselectRedCode")
+        OkGo.<String>post("http://39.105.26.114:9672/redselectRedCode")
                 .execute(new StringCallback() {
                     @Override
                     public void onSuccess(Response<String> response) {

@@ -5,6 +5,7 @@ import java.util.List;
 public class DBean {
 
     /**
+     * msg : {"appmsg":{"des":"我给你发了一个红包，赶紧去拆!","wcpayinfo":{"receivertitle":"恭喜发财，大吉大利","paymsgid":"1000039401201901027010070195834","sendertitle":"恭喜发财，大吉大利","innertype":"0","templateid":"7a2a165d31da7fce6dd77e05c300028a","url":"https://wxapp.tenpay.com/mmpayhb/wxhb_personalreceive?showwxpaytitle=1&msgtype=1&channelid=1&sendid=1000039401201901027010070195834","receiverdes":"领取红包","senderdes":"查看红包","iconurl":"https://wx.gtimg.com/hongbao/1800/hb.png","sceneid":"1002","invalidtime":"1546496535","scenetext":[{"content":"微信红包"},{"content":"微信红包"}],"locallogoicon":"c2c_hongbao_icon_cn","nativeurl":"wxpay://c2cbizmessagehandler/hongbao/receivehongbao?msgtype=1&channelid=1&sendid=1000039401201901027010070195834&sendusername=wxid_bovwmfisc26g41","broaden":""},"appid":"","sdkver":"","type":"2001","title":"微信红包","thumburl":"https://wx.gtimg.com/hongbao/1800/hb.png","url":"https://wxapp.tenpay.com/mmpayhb/wxhb_personalreceive?showwxpaytitle=1&msgtype=1&channelid=1&sendid=1000039401201901027010070195834"},"fromusername":"wxid_bovwmfisc26g41"}
      */
 
     private MsgBean msg;
@@ -19,7 +20,8 @@ public class DBean {
 
     public static class MsgBean {
         /**
-         * fromusername : wxid_mn13yx8bnr9q21
+         * appmsg : {"des":"我给你发了一个红包，赶紧去拆!","wcpayinfo":{"receivertitle":"恭喜发财，大吉大利","paymsgid":"1000039401201901027010070195834","sendertitle":"恭喜发财，大吉大利","innertype":"0","templateid":"7a2a165d31da7fce6dd77e05c300028a","url":"https://wxapp.tenpay.com/mmpayhb/wxhb_personalreceive?showwxpaytitle=1&msgtype=1&channelid=1&sendid=1000039401201901027010070195834","receiverdes":"领取红包","senderdes":"查看红包","iconurl":"https://wx.gtimg.com/hongbao/1800/hb.png","sceneid":"1002","invalidtime":"1546496535","scenetext":[{"content":"微信红包"},{"content":"微信红包"}],"locallogoicon":"c2c_hongbao_icon_cn","nativeurl":"wxpay://c2cbizmessagehandler/hongbao/receivehongbao?msgtype=1&channelid=1&sendid=1000039401201901027010070195834&sendusername=wxid_bovwmfisc26g41","broaden":""},"appid":"","sdkver":"","type":"2001","title":"微信红包","thumburl":"https://wx.gtimg.com/hongbao/1800/hb.png","url":"https://wxapp.tenpay.com/mmpayhb/wxhb_personalreceive?showwxpaytitle=1&msgtype=1&channelid=1&sendid=1000039401201901027010070195834"}
+         * fromusername : wxid_bovwmfisc26g41
          */
 
         private AppmsgBean appmsg;
@@ -44,13 +46,13 @@ public class DBean {
         public static class AppmsgBean {
             /**
              * des : 我给你发了一个红包，赶紧去拆!
-             * wcpayinfo : {"receivertitle":"恭喜发财，大吉大利","paymsgid":"1000039401201808237013301500303","sendertitle":"恭喜发财，大吉大利","innertype":"0","templateid":"7a2a165d31da7fce6dd77e05c300028a","url":"https://wxapp.tenpay.com/mmpayhb/wxhb_personalreceive?showwxpaytitle=1&msgtype=1&channelid=1&sendid=1000039401201808237013301500303&ver=6&sign=c436c473377bea9d6d3a9310e27e816293d3f0e0ecaf4e95615e1ec0b5a321d9f49a74ce4a89a6179171eb42e902bad1f78fd9b8e0286cc13a6518636c8f3b00069b0e5dea594b80bd106dfcff360846","receiverdes":"领取红包","senderdes":"查看红包","iconurl":"https://wx.gtimg.com/hongbao/1800/hb.png","sceneid":"1002","invalidtime":"1535097362","scenetext":[{"content":"微信红包"},{"content":"微信红包"}],"locallogoicon":"c2c_hongbao_icon_cn","nativeurl":"wxpay://c2cbizmessagehandler/hongbao/receivehongbao?msgtype=1&channelid=1&sendid=1000039401201808237013301500303&sendusername=wxid_mn13yx8bnr9q21&ver=6&sign=c436c473377bea9d6d3a9310e27e816293d3f0e0ecaf4e95615e1ec0b5a321d9f49a74ce4a89a6179171eb42e902bad1f78fd9b8e0286cc13a6518636c8f3b00069b0e5dea594b80bd106dfcff360846"}
+             * wcpayinfo : {"receivertitle":"恭喜发财，大吉大利","paymsgid":"1000039401201901027010070195834","sendertitle":"恭喜发财，大吉大利","innertype":"0","templateid":"7a2a165d31da7fce6dd77e05c300028a","url":"https://wxapp.tenpay.com/mmpayhb/wxhb_personalreceive?showwxpaytitle=1&msgtype=1&channelid=1&sendid=1000039401201901027010070195834","receiverdes":"领取红包","senderdes":"查看红包","iconurl":"https://wx.gtimg.com/hongbao/1800/hb.png","sceneid":"1002","invalidtime":"1546496535","scenetext":[{"content":"微信红包"},{"content":"微信红包"}],"locallogoicon":"c2c_hongbao_icon_cn","nativeurl":"wxpay://c2cbizmessagehandler/hongbao/receivehongbao?msgtype=1&channelid=1&sendid=1000039401201901027010070195834&sendusername=wxid_bovwmfisc26g41","broaden":""}
              * appid :
              * sdkver :
              * type : 2001
              * title : 微信红包
              * thumburl : https://wx.gtimg.com/hongbao/1800/hb.png
-             * url : https://wxapp.tenpay.com/mmpayhb/wxhb_personalreceive?showwxpaytitle=1&msgtype=1&channelid=1&sendid=1000039401201808237013301500303&ver=6&sign=c436c473377bea9d6d3a9310e27e816293d3f0e0ecaf4e95615e1ec0b5a321d9f49a74ce4a89a6179171eb42e902bad1f78fd9b8e0286cc13a6518636c8f3b00069b0e5dea594b80bd106dfcff360846
+             * url : https://wxapp.tenpay.com/mmpayhb/wxhb_personalreceive?showwxpaytitle=1&msgtype=1&channelid=1&sendid=1000039401201901027010070195834
              */
 
             private String des;
@@ -129,19 +131,20 @@ public class DBean {
             public static class WcpayinfoBean {
                 /**
                  * receivertitle : 恭喜发财，大吉大利
-                 * paymsgid : 1000039401201808237013301500303
+                 * paymsgid : 1000039401201901027010070195834
                  * sendertitle : 恭喜发财，大吉大利
                  * innertype : 0
                  * templateid : 7a2a165d31da7fce6dd77e05c300028a
-                 * url : https://wxapp.tenpay.com/mmpayhb/wxhb_personalreceive?showwxpaytitle=1&msgtype=1&channelid=1&sendid=1000039401201808237013301500303&ver=6&sign=c436c473377bea9d6d3a9310e27e816293d3f0e0ecaf4e95615e1ec0b5a321d9f49a74ce4a89a6179171eb42e902bad1f78fd9b8e0286cc13a6518636c8f3b00069b0e5dea594b80bd106dfcff360846
+                 * url : https://wxapp.tenpay.com/mmpayhb/wxhb_personalreceive?showwxpaytitle=1&msgtype=1&channelid=1&sendid=1000039401201901027010070195834
                  * receiverdes : 领取红包
                  * senderdes : 查看红包
                  * iconurl : https://wx.gtimg.com/hongbao/1800/hb.png
                  * sceneid : 1002
-                 * invalidtime : 1535097362
+                 * invalidtime : 1546496535
                  * scenetext : [{"content":"微信红包"},{"content":"微信红包"}]
                  * locallogoicon : c2c_hongbao_icon_cn
-                 * nativeurl : wxpay://c2cbizmessagehandler/hongbao/receivehongbao?msgtype=1&channelid=1&sendid=1000039401201808237013301500303&sendusername=wxid_mn13yx8bnr9q21&ver=6&sign=c436c473377bea9d6d3a9310e27e816293d3f0e0ecaf4e95615e1ec0b5a321d9f49a74ce4a89a6179171eb42e902bad1f78fd9b8e0286cc13a6518636c8f3b00069b0e5dea594b80bd106dfcff360846
+                 * nativeurl : wxpay://c2cbizmessagehandler/hongbao/receivehongbao?msgtype=1&channelid=1&sendid=1000039401201901027010070195834&sendusername=wxid_bovwmfisc26g41
+                 * broaden :
                  */
 
                 private String receivertitle;
@@ -157,6 +160,7 @@ public class DBean {
                 private String invalidtime;
                 private String locallogoicon;
                 private String nativeurl;
+                private String broaden;
                 private List<ScenetextBean> scenetext;
 
                 public String getReceivertitle() {
@@ -261,6 +265,14 @@ public class DBean {
 
                 public void setNativeurl(String nativeurl) {
                     this.nativeurl = nativeurl;
+                }
+
+                public String getBroaden() {
+                    return broaden;
+                }
+
+                public void setBroaden(String broaden) {
+                    this.broaden = broaden;
                 }
 
                 public List<ScenetextBean> getScenetext() {

@@ -1,8 +1,8 @@
 package com.hxs.xposedreddevil.model;
 
-public class MsgsBean {
-
+public class RedHookBean {
     /**
+     * msg : {"appmsg":{"des":"我给你发了一个红包，赶紧去拆! 祝：恭喜发财，大吉大利！","wcpayinfo":{"imageid":"","paymsgid":"1000039401201901027015344247045","sendertitle":"恭喜发财，大吉大利","innertype":"0","receiverc2cshowsourcemd5":"","subtype":"0","senderdes":"查看红包","scenetext":"微信红包","locallogoicon":"c2c_hongbao_icon_cn","expressionurl":"","nativeurl":"wxpay://c2cbizmessagehandler/hongbao/receivehongbao?msgtype=1&channelid=1&sendid=1000039401201901027015344247045&sendusername=wxid_bovwmfisc26g41&transid=970c9972d26da84b3a657cfbc194475b6bc4cdba0abb7ebbf6f99d972f85c8da32c87e644e88095b3624618850aeca1e","senderc2cshowsourcemd5":"","broaden":{"typeid":"","iosversion":"","url":"https://wxapp.tenpay.com/mmpayhb/wxhb_personalreceive?showwxpaytitle=1&msgtype=1&channelid=1&sendid=1000039401201901027015344247045","nativeurl":"","androidversion":""},"senderc2cshowsourceurl":"","receivertitle":"恭喜发财，大吉大利","receiverc2cshowsourceurl":"","recshowsourceurl":"","detailshowsourceurl":"","expressiontype":"0","templateid":"7a2a165d31da7fce6dd77e05c300028a","url":"https://wxapp.tenpay.com/mmpayhb/wxhb_personalreceive?showwxpaytitle=1&msgtype=1&channelid=1&sendid=1000039401201901027015344247045","receiverdes":"领取红包","imageaeskey":"","recshowsourcemd5":"","detailshowsourcemd5":"","iconurl":"http://wx.gtimg.com/hongbao/1701/hb.png","sceneid":"1002","invalidtime":"0","corpname":"","imagelength":"0"},"appid":"","sdkver":"","type":"2001","title":"微信红包","thumburl":"http://wx.gtimg.com/hongbao/1701/hb.png","url":"https://wxapp.tenpay.com/mmpayhb/wxhb_personalreceive?showwxpaytitle=1&msgtype=1&channelid=1&sendid=1000039401201901027015344247045"},"fromusername":"wxid_bovwmfisc26g41"}
      */
 
     private MsgBean msg;
@@ -17,6 +17,7 @@ public class MsgsBean {
 
     public static class MsgBean {
         /**
+         * appmsg : {"des":"我给你发了一个红包，赶紧去拆! 祝：恭喜发财，大吉大利！","wcpayinfo":{"imageid":"","paymsgid":"1000039401201901027015344247045","sendertitle":"恭喜发财，大吉大利","innertype":"0","receiverc2cshowsourcemd5":"","subtype":"0","senderdes":"查看红包","scenetext":"微信红包","locallogoicon":"c2c_hongbao_icon_cn","expressionurl":"","nativeurl":"wxpay://c2cbizmessagehandler/hongbao/receivehongbao?msgtype=1&channelid=1&sendid=1000039401201901027015344247045&sendusername=wxid_bovwmfisc26g41&transid=970c9972d26da84b3a657cfbc194475b6bc4cdba0abb7ebbf6f99d972f85c8da32c87e644e88095b3624618850aeca1e","senderc2cshowsourcemd5":"","broaden":{"typeid":"","iosversion":"","url":"https://wxapp.tenpay.com/mmpayhb/wxhb_personalreceive?showwxpaytitle=1&msgtype=1&channelid=1&sendid=1000039401201901027015344247045","nativeurl":"","androidversion":""},"senderc2cshowsourceurl":"","receivertitle":"恭喜发财，大吉大利","receiverc2cshowsourceurl":"","recshowsourceurl":"","detailshowsourceurl":"","expressiontype":"0","templateid":"7a2a165d31da7fce6dd77e05c300028a","url":"https://wxapp.tenpay.com/mmpayhb/wxhb_personalreceive?showwxpaytitle=1&msgtype=1&channelid=1&sendid=1000039401201901027015344247045","receiverdes":"领取红包","imageaeskey":"","recshowsourcemd5":"","detailshowsourcemd5":"","iconurl":"http://wx.gtimg.com/hongbao/1701/hb.png","sceneid":"1002","invalidtime":"0","corpname":"","imagelength":"0"},"appid":"","sdkver":"","type":"2001","title":"微信红包","thumburl":"http://wx.gtimg.com/hongbao/1701/hb.png","url":"https://wxapp.tenpay.com/mmpayhb/wxhb_personalreceive?showwxpaytitle=1&msgtype=1&channelid=1&sendid=1000039401201901027015344247045"}
          * fromusername : wxid_bovwmfisc26g41
          */
 
@@ -42,12 +43,13 @@ public class MsgsBean {
         public static class AppmsgBean {
             /**
              * des : 我给你发了一个红包，赶紧去拆! 祝：恭喜发财，大吉大利！
+             * wcpayinfo : {"imageid":"","paymsgid":"1000039401201901027015344247045","sendertitle":"恭喜发财，大吉大利","innertype":"0","receiverc2cshowsourcemd5":"","subtype":"0","senderdes":"查看红包","scenetext":"微信红包","locallogoicon":"c2c_hongbao_icon_cn","expressionurl":"","nativeurl":"wxpay://c2cbizmessagehandler/hongbao/receivehongbao?msgtype=1&channelid=1&sendid=1000039401201901027015344247045&sendusername=wxid_bovwmfisc26g41&transid=970c9972d26da84b3a657cfbc194475b6bc4cdba0abb7ebbf6f99d972f85c8da32c87e644e88095b3624618850aeca1e","senderc2cshowsourcemd5":"","broaden":{"typeid":"","iosversion":"","url":"https://wxapp.tenpay.com/mmpayhb/wxhb_personalreceive?showwxpaytitle=1&msgtype=1&channelid=1&sendid=1000039401201901027015344247045","nativeurl":"","androidversion":""},"senderc2cshowsourceurl":"","receivertitle":"恭喜发财，大吉大利","receiverc2cshowsourceurl":"","recshowsourceurl":"","detailshowsourceurl":"","expressiontype":"0","templateid":"7a2a165d31da7fce6dd77e05c300028a","url":"https://wxapp.tenpay.com/mmpayhb/wxhb_personalreceive?showwxpaytitle=1&msgtype=1&channelid=1&sendid=1000039401201901027015344247045","receiverdes":"领取红包","imageaeskey":"","recshowsourcemd5":"","detailshowsourcemd5":"","iconurl":"http://wx.gtimg.com/hongbao/1701/hb.png","sceneid":"1002","invalidtime":"0","corpname":"","imagelength":"0"}
              * appid :
              * sdkver :
              * type : 2001
              * title : 微信红包
              * thumburl : http://wx.gtimg.com/hongbao/1701/hb.png
-             * url : https://wxapp.tenpay.com/mmpayhb/wxhb_personalreceive?showwxpaytitle=1&msgtype=1&channelid=1&sendid=1000039401201901027004781291639
+             * url : https://wxapp.tenpay.com/mmpayhb/wxhb_personalreceive?showwxpaytitle=1&msgtype=1&channelid=1&sendid=1000039401201901027015344247045
              */
 
             private String des;
@@ -126,7 +128,7 @@ public class MsgsBean {
             public static class WcpayinfoBean {
                 /**
                  * imageid :
-                 * paymsgid : 1000039401201901027004781291639
+                 * paymsgid : 1000039401201901027015344247045
                  * sendertitle : 恭喜发财，大吉大利
                  * innertype : 0
                  * receiverc2cshowsourcemd5 :
@@ -135,8 +137,9 @@ public class MsgsBean {
                  * scenetext : 微信红包
                  * locallogoicon : c2c_hongbao_icon_cn
                  * expressionurl :
-                 * nativeurl : wxpay://c2cbizmessagehandler/hongbao/receivehongbao?msgtype=1&channelid=1&sendid=1000039401201901027004781291639&sendusername=wxid_bovwmfisc26g41&transid=970c9972d26da84b3a657cfbc194475b372e11dec3edb6d59c7b25ba16ca85b39f1a4fbc486cfbc1565f63a120a0424f
+                 * nativeurl : wxpay://c2cbizmessagehandler/hongbao/receivehongbao?msgtype=1&channelid=1&sendid=1000039401201901027015344247045&sendusername=wxid_bovwmfisc26g41&transid=970c9972d26da84b3a657cfbc194475b6bc4cdba0abb7ebbf6f99d972f85c8da32c87e644e88095b3624618850aeca1e
                  * senderc2cshowsourcemd5 :
+                 * broaden : {"typeid":"","iosversion":"","url":"https://wxapp.tenpay.com/mmpayhb/wxhb_personalreceive?showwxpaytitle=1&msgtype=1&channelid=1&sendid=1000039401201901027015344247045","nativeurl":"","androidversion":""}
                  * senderc2cshowsourceurl :
                  * receivertitle : 恭喜发财，大吉大利
                  * receiverc2cshowsourceurl :
@@ -144,7 +147,7 @@ public class MsgsBean {
                  * detailshowsourceurl :
                  * expressiontype : 0
                  * templateid : 7a2a165d31da7fce6dd77e05c300028a
-                 * url : https://wxapp.tenpay.com/mmpayhb/wxhb_personalreceive?showwxpaytitle=1&msgtype=1&channelid=1&sendid=1000039401201901027004781291639
+                 * url : https://wxapp.tenpay.com/mmpayhb/wxhb_personalreceive?showwxpaytitle=1&msgtype=1&channelid=1&sendid=1000039401201901027015344247045
                  * receiverdes : 领取红包
                  * imageaeskey :
                  * recshowsourcemd5 :
@@ -431,7 +434,7 @@ public class MsgsBean {
                     /**
                      * typeid :
                      * iosversion :
-                     * url : https://wxapp.tenpay.com/mmpayhb/wxhb_personalreceive?showwxpaytitle=1&msgtype=1&channelid=1&sendid=1000039401201901027004781291639
+                     * url : https://wxapp.tenpay.com/mmpayhb/wxhb_personalreceive?showwxpaytitle=1&msgtype=1&channelid=1&sendid=1000039401201901027015344247045
                      * nativeurl :
                      * androidversion :
                      */
