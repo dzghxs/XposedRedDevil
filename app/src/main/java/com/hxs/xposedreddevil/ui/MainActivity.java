@@ -33,6 +33,7 @@ import com.hxs.xposedreddevil.model.VersionBean;
 import com.hxs.xposedreddevil.utils.AssetsCopyTOSDcard;
 import com.hxs.xposedreddevil.utils.GetAppVersion;
 import com.hxs.xposedreddevil.utils.MessageEvent;
+import com.hxs.xposedreddevil.utils.PackageManagerUtil;
 import com.hxs.xposedreddevil.utils.PushUtils;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.StringCallback;
@@ -88,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void SwitchClickInit() {
         AssetsCopyTOSDcard.Assets2Sd(this,"lucky_sound.mp3",Environment.getExternalStorageDirectory().toString() + "/xposedreddevil/lucky_sound.mp3");
+        PropertiesUtils.putValue(RED_FILE, "wechatversion", PackageManagerUtil.getItems(this));
         try {
             if (PropertiesUtils.getValue(RED_FILE, "redmain", "2").equals("1")) {
                 swMain.setChecked(true);
