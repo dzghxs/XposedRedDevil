@@ -73,6 +73,14 @@ public class RedHook {
             if (PropertiesUtils.getValue(RED_FILE, "redmain", "2").equals("2")) {
                 return;
             }
+            Field disableHooksFiled = ClassLoader.getSystemClassLoader()
+                    .loadClass("de.robv.android.xposed.XposedBridge")
+                    .getDeclaredField("disableHooks");
+            disableHooksFiled.setAccessible(true);
+            Object enable = disableHooksFiled.get(null);  // 当前状态
+            log("状态---------->"+enable);
+            disableHooksFiled.set(null, false);            // 设置为开启
+//            disableHooksFiled.set(null, true);            // 设置为开启
             if (lpparam.packageName.equals("com.tencent.mm")) {
                 log("监听微信");
                 // hook微信插入数据的方法，监听红包消息
@@ -88,11 +96,15 @@ public class RedHook {
                                 for (Map.Entry<String, Object> item : contentValues.valueSet()) {
                                     if (item.getValue() != null) {
                                         log(item.getKey() + "---------" + item.getValue().toString());
-                                        if (item.getKey().equals("content")) {
-                                            XmlToJson wcpayinfo = new XmlToJson.Builder(item.getValue().toString()).build();
-//                                            log("json串-----------》" + wcpayinfo.toFormattedString(""));
-                                            redHookBean = gson.fromJson(wcpayinfo.toFormattedString(""), RedHookBean.class);
-                                            title = redHookBean.getMsg().getAppmsg().getWcpayinfo().getReceivertitle();
+                                        try {
+                                            if (item.getKey().equals("content")) {
+                                                XmlToJson wcpayinfo = new XmlToJson.Builder(item.getValue().toString()).build();
+    //                                            log("json串-----------》" + wcpayinfo.toFormattedString(""));
+                                                redHookBean = gson.fromJson(wcpayinfo.toFormattedString(""), RedHookBean.class);
+                                                title = redHookBean.getMsg().getAppmsg().getWcpayinfo().getReceivertitle();
+                                            }
+                                        } catch (JsonSyntaxException e) {
+                                            e.printStackTrace();
                                         }
                                         if (item.getKey().equals("xml")) {
                                             data = item.getValue().toString();
