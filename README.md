@@ -1,6 +1,6 @@
 # XposedRedDevil
 xposed框架抢红包参考https://blog.csdn.net/xiao_nian/article/details/79391417
-免xposed框架抢红包参考https://www.jianshu.com/p/cd1cd53909d7
+<Br/>免xposed框架抢红包参考https://www.jianshu.com/p/cd1cd53909d7
 <Br/>实现xposed框架与免xposed框架抢红包代码，现适配6.7.3，7.0.0。
 <Br/>效果：
 <Br/>测试环境：
