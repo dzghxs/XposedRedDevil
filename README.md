@@ -6,6 +6,7 @@ xposed框架抢红包参考https://blog.csdn.net/xiao_nian/article/details/79391
 <Br/>测试环境：
 <Br/>一加3T，android8.1，微信版本6.7.3和7.0.0（手机太渣，卡顿敬请谅解）
 <Br/>夜神模拟器，android4.4.2，微信版本7.0.0（测试免xposed框架）
+<Br/>
  <img src="https://github.com/dzghxs/XposedRedDevil/blob/master/mmexport1535081879134.jpg" width="375">
  <Br/>
  <span>微信6.7.3</span>
