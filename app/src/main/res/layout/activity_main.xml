@@ -7,6 +7,16 @@
     android:background="#fff"
     tools:context=".ui.MainActivity">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:paddingLeft="16dp"
+        android:text="免root抢红包"
+        android:textColor="#000"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:gravity="center_vertical"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
@@ -18,7 +28,40 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="抢红包总开关"
+            android:text="抢红包开关"
+            android:textColor="#000"
+            android:gravity="center_vertical"/>
+
+        <Switch
+            android:id="@+id/sw_noroot_main"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:paddingLeft="16dp"
+        android:text="root抢红包"
+        android:textColor="#000"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:gravity="center_vertical"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="抢红包开关"
             android:textColor="#000"
             android:gravity="center_vertical"/>
 

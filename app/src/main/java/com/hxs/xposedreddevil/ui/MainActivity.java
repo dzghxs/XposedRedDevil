@@ -9,7 +9,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.annotation.MainThread;
+import android.provider.Settings;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -55,6 +55,8 @@ public class MainActivity extends AppCompatActivity {
 
     public static final String RED_FILE = "/storage/emulated/0/xposedreddevil/" + "reddevil_config.pro";
 
+    @BindView(R.id.sw_noroot_main)
+    Switch swNorootMain;
     @BindView(R.id.sw_main)
     Switch swMain;
     @BindView(R.id.sw_own)
@@ -88,9 +90,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void SwitchClickInit() {
-        AssetsCopyTOSDcard.Assets2Sd(this,"lucky_sound.mp3",Environment.getExternalStorageDirectory().toString() + "/xposedreddevil/lucky_sound.mp3");
+        AssetsCopyTOSDcard.Assets2Sd(this, "lucky_sound.mp3", Environment.getExternalStorageDirectory().toString() + "/xposedreddevil/lucky_sound.mp3");
         PropertiesUtils.putValue(RED_FILE, "wechatversion", PackageManagerUtil.getItems(this));
         try {
+            if (PropertiesUtils.getValue(RED_FILE, "rednorootmain", "2").equals("1")) {
+                if (!PackageManagerUtil.isAccessibilitySettingsOn(this)) {
+                    Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
+                    startActivity(intent);
+                }
+                swNorootMain.setChecked(true);
+            } else {
+                swNorootMain.setChecked(false);
+            }
             if (PropertiesUtils.getValue(RED_FILE, "redmain", "2").equals("1")) {
                 swMain.setChecked(true);
             } else {
@@ -122,6 +133,20 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        swNorootMain.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean b) {
+                if (b) {
+                    if (!PackageManagerUtil.isAccessibilitySettingsOn(MainActivity.this)) {
+                        Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
+                        startActivity(intent);
+                    }
+                    PropertiesUtils.putValue(RED_FILE, "rednorootmain", "1");
+                } else {
+                    PropertiesUtils.putValue(RED_FILE, "rednorootmain", "2");
+                }
+            }
+        });
         swMain.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -198,8 +223,8 @@ public class MainActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void getMsg(MessageEvent messages){
-        PushUtils.showNotification(this,"private", "25", "微信", "天降红包");
+    public void getMsg(MessageEvent messages) {
+        PushUtils.showNotification(this, "private", "25", "微信", "天降红包");
     }
 
     @Override

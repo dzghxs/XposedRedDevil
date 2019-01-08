@@ -1,7 +1,6 @@
 package com.hxs.xposedreddevil;
 
 import com.hxs.xposedreddevil.contentprovider.PropertiesUtils;
-import com.hxs.xposedreddevil.hook.LiveHook;
 import com.hxs.xposedreddevil.hook.RedHook;
 import com.hxs.xposedreddevil.hook.RedHook673;
 
@@ -23,6 +22,5 @@ public class RedDevil implements IXposedHookLoadPackage {
         } else if (PropertiesUtils.getValue(RED_FILE, "wechatversion", "").equals("6.7.3")) {
             RedHook673.getInstance().init(lpparam);
         }
-//        LiveHook.getInstance().init(lpparam);
     }
 }

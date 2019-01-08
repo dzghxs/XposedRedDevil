@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">不就是微信红包么</string>
+    <string name="accessibility_description">免root辅助抢红包</string>
+    <string name="lable_name">不就是微信红包么</string>
 </resources>
