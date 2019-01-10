@@ -19,6 +19,7 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -55,6 +56,10 @@ public class MainActivity extends AppCompatActivity {
 
     public static final String RED_FILE = "/storage/emulated/0/xposedreddevil/" + "reddevil_config.pro";
 
+    @BindView(R.id.ll_version)
+    LinearLayout llVersion;
+    @BindView(R.id.sp_center_version)
+    Spinner spCenterVersion;
     @BindView(R.id.sw_noroot_main)
     Switch swNorootMain;
     @BindView(R.id.sw_main)
@@ -91,7 +96,19 @@ public class MainActivity extends AppCompatActivity {
 
     private void SwitchClickInit() {
         AssetsCopyTOSDcard.Assets2Sd(this, "lucky_sound.mp3", Environment.getExternalStorageDirectory().toString() + "/xposedreddevil/lucky_sound.mp3");
-        PropertiesUtils.putValue(RED_FILE, "wechatversion", PackageManagerUtil.getItems(this));
+        if (spCenterVersion.getSelectedItem().equals("7.0.0")) {
+            PropertiesUtils.putValue(RED_FILE, "wechatversion", "7.0.0");
+        } else if (spCenterVersion.getSelectedItem().equals("6.7.3")) {
+            PropertiesUtils.putValue(RED_FILE, "wechatversion", "6.7.3");
+        }
+        if (!PackageManagerUtil.getItems(MainActivity.this).equals("")) {
+            PropertiesUtils.putValue(RED_FILE, "wechatversion", PackageManagerUtil.getItems(this));
+            llVersion.setVisibility(View.GONE);
+            spCenterVersion.setEnabled(false);
+        } else {
+            Toast.makeText(this, getString(R.string.version_error), Toast.LENGTH_SHORT).show();
+            llVersion.setVisibility(View.VISIBLE);
+        }
         try {
             if (PropertiesUtils.getValue(RED_FILE, "rednorootmain", "2").equals("1")) {
                 if (!PackageManagerUtil.isAccessibilitySettingsOn(this)) {

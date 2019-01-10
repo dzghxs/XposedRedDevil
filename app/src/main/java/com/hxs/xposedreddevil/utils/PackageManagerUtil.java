@@ -21,13 +21,17 @@ public class PackageManagerUtil {
      * @return
      */
     public static String getItems(Context context) {
-        List<PackageInfo> packages = context.getPackageManager()
-                .getInstalledPackages(PackageManager.GET_ACTIVITIES);
         String items = "";
-        for (int i = 0; i < packages.size(); i++) {
-            if(packages.get(i).packageName.equals("com.tencent.mm")){
-                items = packages.get(i).versionName;
+        try {
+            List<PackageInfo> packages = context.getPackageManager()
+                    .getInstalledPackages(PackageManager.GET_ACTIVITIES);
+            for (int i = 0; i < packages.size(); i++) {
+                if(packages.get(i).packageName.equals("com.tencent.mm")){
+                    items = packages.get(i).versionName;
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return items;
     }

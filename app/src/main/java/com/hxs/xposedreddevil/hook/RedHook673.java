@@ -40,7 +40,6 @@ public class RedHook673 {
     MsgsBean bean = new MsgsBean();
     DBean dBean = new DBean();
     String nativeUrlString = "";
-    String title = "";
     Map<String, Object> stringMap = new HashMap<>();
 
     public RedHook673() {
@@ -81,17 +80,19 @@ public class RedHook673 {
 //                                log("param args1:" + param.args[0]);
 //                                log("param args1:" + param.args[1]);
                                 ContentValues contentValues = (ContentValues) param.args[2];
+                                String title = "";
                                 for (Map.Entry<String, Object> item : contentValues.valueSet()) {
                                     if (item.getValue() != null) {
 //                                        log(item.getKey() + "---------" + item.getValue().toString());
                                         if (item.getKey().equals("content")) {
                                             XmlToJson wcpayinfo = new XmlToJson.Builder(item.getValue().toString()).build();
-                                            log("json串-----------》" + wcpayinfo.toFormattedString(""));
-                                            bean = gson.fromJson(wcpayinfo.toFormattedString(""), MsgsBean.class);
+//                                            log("json串-----------》" + wcpayinfo.toFormattedString(""));
                                             try {
-                                                title = bean.getMsg().getAppmsg().getWcpayinfo().getReceivertitle();
+                                                bean = gson.fromJson(wcpayinfo.toFormattedString(""), MsgsBean.class);
+                                                title = bean.getMsg().getAppmsg().getWcpayinfo().getReceivertitle()==null
+                                                        ?"":bean.getMsg().getAppmsg().getWcpayinfo().getReceivertitle();
                                             } catch (Exception e) {
-                                                e.printStackTrace();
+                                                title = "";
                                             }
                                         }
                                         if (item.getKey().equals("xml")) {
@@ -102,6 +103,9 @@ public class RedHook673 {
 //                                        log(item.getKey() + "---------" + "null");
                                         stringMap.put(item.getKey(), "null");
                                     }
+                                }
+                                for (Map.Entry<String,Object> entry:stringMap.entrySet()) {
+                                    log("Key = " + entry.getKey() + ", Value = " + entry.getValue());
                                 }
 //                                log("------------------------insert over---------------------" + "\n\n");
 
@@ -118,8 +122,8 @@ public class RedHook673 {
                                 if (type == 436207665 || type == 469762097) {
 //                                    log("获取状态------------>" + PropertiesUtils.getValue(RED_FILE, "red", "2"));
 //                                    log("获取map------------>" + stringMap.get("isSend"));
-                                    if (PropertiesUtils.getValue(RED_FILE, "red", "2").equals("1")) {
-                                        if (!stringMap.get("isSend").equals(1)) {
+                                    if (!PropertiesUtils.getValue(RED_FILE, "red", "2").equals("1")) {
+                                        if (!stringMap.get("isSend").equals("1")) {
                                             return;
                                         }
                                         if (PropertiesUtils.getValue(RED_FILE, "sound", "2").equals("1")) {
@@ -137,9 +141,9 @@ public class RedHook673 {
                                                 title.contains("g")) {
                                             return;
                                         }
+                                        // 处理红包消息
+                                        handleLuckyMoney(contentValues, lpparam);
                                     }
-                                    // 处理红包消息
-                                    handleLuckyMoney(contentValues, lpparam);
                                 }
                             }
                         });

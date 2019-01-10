@@ -7,6 +7,7 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
 import android.os.PowerManager;
 import android.provider.Settings;
 import android.text.TextUtils;
@@ -14,8 +15,6 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.hxs.xposedreddevil.contentprovider.PropertiesUtils;
-import com.hxs.xposedreddevil.hook.RedHook;
-import com.hxs.xposedreddevil.hook.RedHook673;
 import com.hxs.xposedreddevil.utils.PackageManagerUtil;
 
 import java.util.List;
@@ -54,19 +53,23 @@ public class AcxiliaryRedService extends AccessibilityService {
     private String LAUCHER = "com.tencent.mm.ui.LauncherUI";
     private String LUCKEY_MONEY_DETAIL = "com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyDetailUI";
     private String LUCKEY_MONEY_RECEIVER = "com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyReceiveUI";
+    private String OPEN_ID = "com.tencent.mm:id/cv0";
 
     @Override
     public void onAccessibilityEvent(final AccessibilityEvent event) {
         if (PropertiesUtils.getValue(RED_FILE, "wechatversion", "").equals("")) {
             LUCKEY_MONEY_RECEIVER = "com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyReceiveUI";
+            OPEN_ID = "com.tencent.mm:id/cnu";
         } else if (PropertiesUtils.getValue(RED_FILE, "wechatversion", "").equals("7.0.0")) {
             LUCKEY_MONEY_RECEIVER = "com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyNotHookReceiveUI";
+            OPEN_ID = "com.tencent.mm:id/cv0";
         } else if (PropertiesUtils.getValue(RED_FILE, "wechatversion", "").equals("6.7.3")) {
             LUCKEY_MONEY_RECEIVER = "com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyReceiveUI";
+            OPEN_ID = "com.tencent.mm:id/cnu";
         }
         //接收事件
         int eventType = event.getEventType();
-        if(PropertiesUtils.getValue(RED_FILE, "rednorootmain", "2").equals("2")){
+        if (PropertiesUtils.getValue(RED_FILE, "rednorootmain", "2").equals("2")) {
             return;
         }
         switch (eventType) {
@@ -109,14 +112,40 @@ public class AcxiliaryRedService extends AccessibilityService {
                         findStuff();
                     }
                 }
-
                 if (isOpenRP && LUCKEY_MONEY_RECEIVER.equals(event.getClassName().toString())) {
                     //如果打开了抢红包页面
-                    AccessibilityNodeInfo rootNode1 = getRootInActiveWindow();
+                    final AccessibilityNodeInfo rootNode1 = getRootInActiveWindow();
                     if (findOpenBtn(rootNode1)) {
                         //如果找到按钮
                         isOpenDetail = true;
                     }
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (findOpenBtn(rootNode1)) {
+                                //如果找到按钮
+                                isOpenDetail = true;
+                            }
+                        }
+                    }, 500);
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (findOpenBtn(rootNode1)) {
+                                //如果找到按钮
+                                isOpenDetail = true;
+                            }
+                        }
+                    }, 1000);
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (findOpenBtn(rootNode1)) {
+                                //如果找到按钮
+                                isOpenDetail = true;
+                            }
+                        }
+                    }, 1500);
                     isOpenRP = false;
                 }
 
@@ -134,8 +163,8 @@ public class AcxiliaryRedService extends AccessibilityService {
     }
 
     /**
-     *  在红包详情页面寻找抢到多少钱。
-     *  实际上不关心的童鞋可以不写这个方法了。
+     * 在红包详情页面寻找抢到多少钱。
+     * 实际上不关心的童鞋可以不写这个方法了。
      */
     private boolean findInDatail(AccessibilityNodeInfo rootNode) {
         for (int i = 0; i < rootNode.getChildCount(); i++) {
@@ -154,7 +183,7 @@ public class AcxiliaryRedService extends AccessibilityService {
     }
 
     /**
-     *   遍历找东西
+     * 遍历找东西
      */
     private void findStuff() {
         AccessibilityNodeInfo rootNode = getRootInActiveWindow();
@@ -168,7 +197,7 @@ public class AcxiliaryRedService extends AccessibilityService {
     }
 
     /**
-     *  在聊天页面迭代找红包
+     * 在聊天页面迭代找红包
      */
     private boolean findRP(AccessibilityNodeInfo rootNode) {
         for (int i = 0; i < rootNode.getChildCount(); i++) {
@@ -197,15 +226,24 @@ public class AcxiliaryRedService extends AccessibilityService {
 
     //
     private boolean findOpenBtn(AccessibilityNodeInfo rootNode) {
-        for (int i = 0; i < rootNode.getChildCount(); i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if ("android.widget.Button".equals(nodeInfo.getClassName())) {
-                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                return true;
+        List<AccessibilityNodeInfo> openButtonNodeInfoList = rootNode.findAccessibilityNodeInfosByViewId(OPEN_ID);
+        AccessibilityNodeInfo openNode = null;//拆红包按钮
+        for (AccessibilityNodeInfo nodeInfo : openButtonNodeInfoList) {
+            if ("android.widget.Button".equals(nodeInfo.getClassName().toString())) {
+                if (nodeInfo.isClickable()) {
+                    openNode = nodeInfo;
+                    break;
+                }
             }
-            findOpenBtn(nodeInfo);
         }
-        return false;
+        if (openNode != null) {
+            openNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+            return true;
+        } else {
+//            rootNode.findAccessibilityNodeInfosByViewId("com.tencent.mm:id/cs9").get(0).
+//                    performAction(AccessibilityNodeInfo.ACTION_CLICK);
+            return false;
+        }
     }
 
     //打开微信聊天页面

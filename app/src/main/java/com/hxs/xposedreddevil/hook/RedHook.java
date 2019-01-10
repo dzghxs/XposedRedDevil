@@ -44,7 +44,6 @@ public class RedHook {
     RedHookBean redHookBean = new RedHookBean();
     String nativeUrlString = "";
     String cropname = "";
-    String title = "";
     String data = "";
     Map<String, Object> stringMap = new HashMap<>();
 
@@ -93,6 +92,7 @@ public class RedHook {
                                 // 打印插入数据信息
                                 log("------------------------insert start---------------------" + "\n\n");
                                 ContentValues contentValues = (ContentValues) param.args[2];
+                                String title = "";
                                 for (Map.Entry<String, Object> item : contentValues.valueSet()) {
                                     if (item.getValue() != null) {
                                         log(item.getKey() + "---------" + item.getValue().toString());
@@ -104,7 +104,7 @@ public class RedHook {
                                                 title = redHookBean.getMsg().getAppmsg().getWcpayinfo().getReceivertitle();
                                             }
                                         } catch (JsonSyntaxException e) {
-                                            e.printStackTrace();
+                                            title = "";
                                         }
                                         if (item.getKey().equals("xml")) {
                                             data = item.getValue().toString();
@@ -132,29 +132,28 @@ public class RedHook {
                                 if (type == 436207665 || type == 469762097) {
 //                                    log("获取状态------------>" + PropertiesUtils.getValue(RED_FILE, "red", "2"));
 //                                    log("获取map------------>" + stringMap.get("isSend"));
-                                    if (PropertiesUtils.getValue(RED_FILE, "red", "2").equals("1")) {
-                                        if (!stringMap.get("isSend").equals(1)) {
+                                    if (!PropertiesUtils.getValue(RED_FILE, "red", "2").equals("1")) {
+                                        if (!stringMap.get("isSend").equals("1")) {
                                             return;
                                         }
-
-                                    }
-                                    if (PropertiesUtils.getValue(RED_FILE, "sound", "2").equals("1")) {
-                                        PlaySoundUtils.Play();
-                                    }
-                                    if (PropertiesUtils.getValue(RED_FILE, "push", "2").equals("1")) {
+                                        if (PropertiesUtils.getValue(RED_FILE, "sound", "2").equals("1")) {
+                                            PlaySoundUtils.Play();
+                                        }
+                                        if (PropertiesUtils.getValue(RED_FILE, "push", "2").equals("1")) {
 //                                        EventBus.getDefault().post(new MessageEvent("天降红包"));
+                                        }
+                                        log("接收标题---------->" + title);
+                                        if (PinYinUtils.getPingYin(title).contains("gua") ||
+                                                title.contains("圭") ||
+                                                title.contains("G") ||
+                                                title.contains("GUA") ||
+                                                title.contains("gua") ||
+                                                title.contains("g")) {
+                                            return;
+                                        }
+                                        // 处理红包消息
+                                        handleLuckyMoney(contentValues, lpparam);
                                     }
-                                    log("接收标题---------->" + title);
-                                    if (PinYinUtils.getPingYin(title).contains("gua") ||
-                                            title.contains("圭") ||
-                                            title.contains("G") ||
-                                            title.contains("GUA") ||
-                                            title.contains("gua") ||
-                                            title.contains("g")) {
-                                        return;
-                                    }
-                                    // 处理红包消息
-                                    handleLuckyMoney(contentValues, lpparam);
                                 }
                             }
                         });

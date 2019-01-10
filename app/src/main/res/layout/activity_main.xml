@@ -3,119 +3,148 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="#fff"
+    android:orientation="vertical"
     tools:context=".ui.MainActivity">
+
+    <LinearLayout
+        android:id="@+id/ll_version"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="微信版本:"
+            android:textColor="@color/colorText" />
+
+        <Spinner
+            android:id="@+id/sp_center_version"
+            style="@style/spinner_style"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:layout_weight="3"
+            android:entries="@array/version"
+            android:textColor="@color/colorText" />
+
+    </LinearLayout>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="40dp"
+        android:gravity="center_vertical"
         android:paddingLeft="16dp"
         android:text="免root抢红包"
-        android:textColor="#000"
+        android:textColor="@color/colorText"
         android:textSize="18sp"
-        android:textStyle="bold"
-        android:gravity="center_vertical"/>
+        android:textStyle="bold" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
+        android:orientation="horizontal"
         android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:orientation="horizontal">
+        android:paddingRight="16dp">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:gravity="center_vertical"
             android:text="抢红包开关"
-            android:textColor="#000"
-            android:gravity="center_vertical"/>
+            android:textColor="@color/colorText" />
 
         <Switch
             android:id="@+id/sw_noroot_main"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:checked="false"/>
+            android:checked="false" />
 
     </LinearLayout>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="40dp"
+        android:gravity="center_vertical"
         android:paddingLeft="16dp"
         android:text="root抢红包"
-        android:textColor="#000"
+        android:textColor="@color/colorText"
         android:textSize="18sp"
-        android:textStyle="bold"
-        android:gravity="center_vertical"/>
+        android:textStyle="bold" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
+        android:orientation="horizontal"
         android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:orientation="horizontal">
+        android:paddingRight="16dp">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:gravity="center_vertical"
             android:text="抢红包开关"
-            android:textColor="#000"
-            android:gravity="center_vertical"/>
+            android:textColor="@color/colorText" />
 
         <Switch
             android:id="@+id/sw_main"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:checked="false"/>
+            android:checked="false" />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
+        android:orientation="horizontal"
         android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:orientation="horizontal">
+        android:paddingRight="16dp">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:gravity="center_vertical"
             android:text="自己发的不抢"
-            android:textColor="#000"
-            android:gravity="center_vertical"/>
+            android:textColor="@color/colorText" />
 
         <Switch
             android:id="@+id/sw_own"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:checked="false"/>
+            android:checked="false" />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
+        android:orientation="horizontal"
         android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:orientation="horizontal">
+        android:paddingRight="16dp">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:gravity="center_vertical"
             android:text="延迟拆红包"
-            android:textColor="#000"
-            android:gravity="center_vertical"/>
+            android:textColor="@color/colorText" />
 
         <Switch
             android:id="@+id/sw_sleep"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:checked="false"/>
+            android:checked="false" />
 
     </LinearLayout>
 
@@ -123,9 +152,9 @@
         android:id="@+id/ll_sleep"
         android:layout_width="match_parent"
         android:layout_height="80dp"
+        android:orientation="vertical"
         android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:orientation="vertical">
+        android:paddingRight="16dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -136,79 +165,79 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:gravity="center_vertical"
                 android:text="延迟时间"
-                android:textColor="#000"
-                android:gravity="center_vertical"/>
+                android:textColor="@color/colorText" />
 
             <EditText
                 android:id="@+id/et_sleep"
                 android:layout_width="80dp"
                 android:layout_height="wrap_content"
+                android:background="@drawable/chart_list_shape"
                 android:digits="0123456789"
-                android:paddingLeft="4dp"
-                android:background="@drawable/chart_list_shape"/>
+                android:paddingLeft="4dp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="毫秒"
                 android:layout_marginLeft="4dp"
-                android:textColor="#000"/>
+                android:text="毫秒"
+                android:textColor="@color/colorText" />
 
         </LinearLayout>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:textColor="#ff0000"
-            android:text="建议：延迟时间不最好不要超过2000毫秒，否则容易造成微信假死，影响使用感受"/>
+            android:text="建议：延迟时间不最好不要超过2000毫秒，否则容易造成微信假死，影响使用感受"
+            android:textColor="#ff0000" />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
+        android:orientation="horizontal"
         android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:orientation="horizontal">
+        android:paddingRight="16dp">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:gravity="center_vertical"
             android:text="红包提示音"
-            android:textColor="#000"
-            android:gravity="center_vertical"/>
+            android:textColor="@color/colorText" />
 
         <Switch
             android:id="@+id/sw_sound"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:checked="false"/>
+            android:checked="false" />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
+        android:orientation="horizontal"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
-        android:visibility="gone"
-        android:orientation="horizontal">
+        android:visibility="gone">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:gravity="center_vertical"
             android:text="红包推送消息"
-            android:textColor="#000"
-            android:gravity="center_vertical"/>
+            android:textColor="@color/colorText" />
 
         <Switch
             android:id="@+id/sw_push"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:checked="false"/>
+            android:checked="false" />
 
     </LinearLayout>
 
@@ -217,8 +246,8 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_margin="16dp"
-        android:textColor="#71c3de"
         android:gravity="center_vertical"
-        android:text="支持红包\n(您的支持才是我的动力)"/>
+        android:text="支持红包\n(您的支持才是我的动力)"
+        android:textColor="#71c3de" />
 
 </LinearLayout>
