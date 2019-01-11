@@ -1,1 +1,1 @@
-include ':app','xmltojsonlib'
+include ':app', ':skin','xmltojsonlib'

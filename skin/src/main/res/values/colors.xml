@@ -3,6 +3,6 @@
     <color name="colorPrimary">#D50000</color>
     <color name="colorPrimaryDark">#D50000</color>
     <color name="colorAccent">#D50000</color>
-    <color name="colorText">#000000</color>
-    <color name="bg">#ffffff</color>
+    <color name="colorText">#ffffff</color>
+    <color name="bg">#999999</color>
 </resources>

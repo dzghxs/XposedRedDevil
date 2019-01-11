@@ -11,10 +11,12 @@ import android.os.Handler;
 import android.os.PowerManager;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.hxs.xposedreddevil.contentprovider.PropertiesUtils;
+import com.hxs.xposedreddevil.utils.AccessibilityUtils;
 import com.hxs.xposedreddevil.utils.PackageManagerUtil;
 
 import java.util.List;
@@ -73,7 +75,7 @@ public class AcxiliaryRedService extends AccessibilityService {
             return;
         }
         switch (eventType) {
-            case AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED: {
+            case AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED:
                 //通知栏事件
                 List<CharSequence> texts = event.getText();
                 if (texts.isEmpty())
@@ -97,152 +99,105 @@ public class AcxiliaryRedService extends AccessibilityService {
                             //打开微信的页面
                             openWeichaPage(event);
                         }
+                        isOpenRP = false;
                     }
                 }
                 break;
-            }
-            case AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED: {
+            case AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED:
                 //监测到窗口变化。
-                if (isOpenPage) {
-                    //如果是本程序打开了微信页面，那就执行去找红包
-                    isOpenPage = false;
-                    String className = event.getClassName().toString();
-                    //是否微信聊天页面的类
-                    if (className.equals(LAUCHER)) {
-                        findStuff();
-                    }
-                }
-                if (isOpenRP && LUCKEY_MONEY_RECEIVER.equals(event.getClassName().toString())) {
-                    //如果打开了抢红包页面
-                    final AccessibilityNodeInfo rootNode1 = getRootInActiveWindow();
-                    if (findOpenBtn(rootNode1)) {
-                        //如果找到按钮
-                        isOpenDetail = true;
-                    }
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (findOpenBtn(rootNode1)) {
-                                //如果找到按钮
-                                isOpenDetail = true;
-                            }
-                        }
-                    }, 500);
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (findOpenBtn(rootNode1)) {
-                                //如果找到按钮
-                                isOpenDetail = true;
-                            }
-                        }
-                    }, 1000);
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (findOpenBtn(rootNode1)) {
-                                //如果找到按钮
-                                isOpenDetail = true;
-                            }
-                        }
-                    }, 1500);
-                    isOpenRP = false;
+                String className = event.getClassName().toString();
+
+                //判断是否是微信聊天界面
+                if (LAUCHER.equals(className)) {
+                    //获取当前聊天页面的根布局
+                    AccessibilityNodeInfo rootNode = getRootInActiveWindow();
+                    //开始找红包
+                    findStuff(rootNode);
                 }
 
-                if (isOpenDetail && LUCKEY_MONEY_DETAIL.equals(event.getClassName().toString())) {
-                    //打开了红包详情页面，看下抢了多少钱
-                    findInDatail(getRootInActiveWindow());
+                //判断是否是显示‘开’的那个红包界面
+                if (LUCKEY_MONEY_RECEIVER.equals(className)) {
+                    AccessibilityNodeInfo rootNode = getRootInActiveWindow();
+                    //开始抢红包
+                    findOpenBtn(rootNode);
+                }
+
+                //判断是否是红包领取后的详情界面
+                if (isOpenDetail && LUCKEY_MONEY_DETAIL.equals(className)) {
 
                     isOpenDetail = false;
+                    //返回桌面
+                    back2Home();
                 }
                 break;
-            }
+
         }
         //释放一下资源。
         releese();
     }
 
     /**
-     * 在红包详情页面寻找抢到多少钱。
-     * 实际上不关心的童鞋可以不写这个方法了。
-     */
-    private boolean findInDatail(AccessibilityNodeInfo rootNode) {
-        for (int i = 0; i < rootNode.getChildCount(); i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if ("android.widget.TextView".equals(nodeInfo.getClassName().toString())) {
-                if ("元".equals(nodeInfo.getText().toString())) {
-                    final float momeny = Float.parseFloat(rootNode.getChild(i - 1).getText().toString());
-                    return true;
-                }
-            }
-            if (findInDatail(nodeInfo)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
      * 遍历找东西
      */
-    private void findStuff() {
-        AccessibilityNodeInfo rootNode = getRootInActiveWindow();
-
-        if (findRP(rootNode)) {
-            isOpenRP = true;
-        }
-        if (rpNode != null) {
-            rpNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-        }
-    }
-
-    /**
-     * 在聊天页面迭代找红包
-     */
-    private boolean findRP(AccessibilityNodeInfo rootNode) {
-        for (int i = 0; i < rootNode.getChildCount(); i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-//                Log.d("mylog", "--------nodeinfo == null");
-                continue;
-            }
-            if ("android.widget.TextView".equals(nodeInfo.getClassName())) {
-                if ("微信红包".equals(nodeInfo.getText().toString())) {
-                    isOpenRP = true;
-                    nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                    return true;
+    private void findStuff(AccessibilityNodeInfo rootNode) {
+        if (rootNode != null) {
+            //从最后一行开始找起
+            for (int i = rootNode.getChildCount() - 1; i >= 0; i--) {
+                AccessibilityNodeInfo node = rootNode.getChild(i);
+                //如果node为空则跳过该节点
+                if (node == null) {
+                    continue;
                 }
-            }
+                CharSequence text = node.getText();
+                if (text != null && text.toString().equals("微信红包")) {
+                    AccessibilityNodeInfo parent = node.getParent();
+                    //while循环,遍历"领取红包"的各个父布局，直至找到可点击的为止
+                    while (parent != null) {
+                        if (parent.isClickable()) {
+                            //模拟点击
+                            parent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                            //isOpenRP用于判断该红包是否点击过
+                            isOpenRP = true;
 
-            if (findRP(nodeInfo)) {
-                if ("android.widget.LinearLayout".equals(nodeInfo.getClassName())) {
-                    rpNode = nodeInfo;
-                    return true;
+                            break;
+                        }
+                        parent = parent.getParent();
+                    }
                 }
+                //判断是否已经打开过那个最新的红包了，是的话就跳出for循环，不是的话继续遍历
+                if (isOpenRP) {
+
+
+                    break;
+                } else {
+                    findStuff(node);
+                }
+
             }
         }
-        return false;
     }
 
     //
-    private boolean findOpenBtn(AccessibilityNodeInfo rootNode) {
-        List<AccessibilityNodeInfo> openButtonNodeInfoList = rootNode.findAccessibilityNodeInfosByViewId(OPEN_ID);
-        AccessibilityNodeInfo openNode = null;//拆红包按钮
-        for (AccessibilityNodeInfo nodeInfo : openButtonNodeInfoList) {
-            if ("android.widget.Button".equals(nodeInfo.getClassName().toString())) {
-                if (nodeInfo.isClickable()) {
-                    openNode = nodeInfo;
-                    break;
+    private void findOpenBtn(AccessibilityNodeInfo rootNode) {
+        AccessibilityNodeInfo button_open = AccessibilityUtils.findNodeInfosById(rootNode, OPEN_ID);
+        if (button_open != null) {
+            final AccessibilityNodeInfo n = button_open;
+
+            AccessibilityUtils.performClick(n);
+
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    AccessibilityUtils.performClick(n);
                 }
-            }
-        }
-        if (openNode != null) {
-            openNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-            return true;
+            }, 1500);
+
         } else {
-//            rootNode.findAccessibilityNodeInfosByViewId("com.tencent.mm:id/cs9").get(0).
-//                    performAction(AccessibilityNodeInfo.ACTION_CLICK);
-            return false;
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                }
+            }, 1500);
         }
     }
 
@@ -294,6 +249,16 @@ public class AcxiliaryRedService extends AccessibilityService {
 
         //解锁
         kl.disableKeyguard();
+    }
+
+    /**
+     * 返回桌面
+     */
+    private void back2Home() {
+        Intent home = new Intent(Intent.ACTION_MAIN);
+        home.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        home.addCategory(Intent.CATEGORY_HOME);
+        startActivity(home);
     }
 
     /**

@@ -76,7 +76,7 @@ public class RedHook673 {
                             @Override
                             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                                 // 打印插入数据信息
-//                                log("------------------------insert start---------------------" + "\n\n");
+                                log("------------------------insert start---------------------" + "\n\n");
 //                                log("param args1:" + param.args[0]);
 //                                log("param args1:" + param.args[1]);
                                 ContentValues contentValues = (ContentValues) param.args[2];
@@ -84,30 +84,32 @@ public class RedHook673 {
                                 for (Map.Entry<String, Object> item : contentValues.valueSet()) {
                                     if (item.getValue() != null) {
 //                                        log(item.getKey() + "---------" + item.getValue().toString());
-                                        if (item.getKey().equals("content")) {
-                                            XmlToJson wcpayinfo = new XmlToJson.Builder(item.getValue().toString()).build();
-//                                            log("json串-----------》" + wcpayinfo.toFormattedString(""));
-                                            try {
-                                                bean = gson.fromJson(wcpayinfo.toFormattedString(""), MsgsBean.class);
-                                                title = bean.getMsg().getAppmsg().getWcpayinfo().getReceivertitle()==null
-                                                        ?"":bean.getMsg().getAppmsg().getWcpayinfo().getReceivertitle();
-                                            } catch (Exception e) {
-                                                title = "";
+                                        //自己发送的红包与接收到的红包返回的数据不一样，通过issend字段来对比
+                                        if (item.getKey().equals("isSend")) {
+                                            if(item.getValue().toString().equals("1")){
+                                                if (item.getKey().equals("xml")) {
+                                                    String data = item.getValue().toString();
+//                                                    log("接收数据---------->" + data);
+                                                    title = data.split("<receivertitle>")[1].split("</receivertitle>")[0];
+//                                                    log("title1---------->" + title);
+                                                }
+                                            }else{
+                                                if (item.getKey().equals("content")) {
+                                                    String data = item.getValue().toString();
+//                                                    log("接收数据---------->" + data);
+                                                    title = data.split("<receivertitle>")[1].split("</receivertitle>")[0];
+//                                                    log("title1---------->" + title);
+                                                }
                                             }
-                                        }
-                                        if (item.getKey().equals("xml")) {
-                                            String data = item.getValue().toString();
                                         }
                                         stringMap.put(item.getKey(), item.getValue().toString());
                                     } else {
 //                                        log(item.getKey() + "---------" + "null");
+                                        title = "";
                                         stringMap.put(item.getKey(), "null");
                                     }
                                 }
-                                for (Map.Entry<String,Object> entry:stringMap.entrySet()) {
-                                    log("Key = " + entry.getKey() + ", Value = " + entry.getValue());
-                                }
-//                                log("------------------------insert over---------------------" + "\n\n");
+                                log("------------------------insert over---------------------" + "\n\n");
 
                                 // 判断插入的数据是否是发送过来的消息
                                 String tableName = (String) param.args[0];
@@ -122,28 +124,28 @@ public class RedHook673 {
                                 if (type == 436207665 || type == 469762097) {
 //                                    log("获取状态------------>" + PropertiesUtils.getValue(RED_FILE, "red", "2"));
 //                                    log("获取map------------>" + stringMap.get("isSend"));
-                                    if (!PropertiesUtils.getValue(RED_FILE, "red", "2").equals("1")) {
-                                        if (!stringMap.get("isSend").equals("1")) {
+                                    if (PropertiesUtils.getValue(RED_FILE, "red", "2").equals("1")) {
+                                        if (stringMap.get("isSend").equals("1")) {
                                             return;
                                         }
-                                        if (PropertiesUtils.getValue(RED_FILE, "sound", "2").equals("1")) {
-                                            PlaySoundUtils.Play();
-                                        }
-                                        if (PropertiesUtils.getValue(RED_FILE, "push", "2").equals("1")) {
-//                                        EventBus.getDefault().post(new MessageEvent("天降红包"));
-                                        }
-                                        log("接收标题---------->" + title);
-                                        if (PinYinUtils.getPingYin(title).contains("gua") ||
-                                                title.contains("圭") ||
-                                                title.contains("G") ||
-                                                title.contains("GUA") ||
-                                                title.contains("gua") ||
-                                                title.contains("g")) {
-                                            return;
-                                        }
-                                        // 处理红包消息
-                                        handleLuckyMoney(contentValues, lpparam);
                                     }
+                                    if (PropertiesUtils.getValue(RED_FILE, "sound", "2").equals("1")) {
+                                        PlaySoundUtils.Play();
+                                    }
+                                    if (PropertiesUtils.getValue(RED_FILE, "push", "2").equals("1")) {
+//                                        EventBus.getDefault().post(new MessageEvent("天降红包"));
+                                    }
+//                                    log("接收标题---------->" + title);
+                                    if (PinYinUtils.getPingYin(title).contains("gua") ||
+                                            title.contains("圭") ||
+                                            title.contains("G") ||
+                                            title.contains("GUA") ||
+                                            title.contains("gua") ||
+                                            title.contains("g")) {
+                                        return;
+                                    }
+                                    // 处理红包消息
+                                    handleLuckyMoney(contentValues, lpparam);
                                 }
                             }
                         });

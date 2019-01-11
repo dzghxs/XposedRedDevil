@@ -34,6 +34,8 @@ dependencies {
     implementation 'com.jakewharton:butterknife:8.8.1'
     implementation 'com.hjq:xxpermissions:5.0'
     implementation 'org.greenrobot:eventbus:3.1.1'
+    implementation 'skin.support:skin-support:3.1.1'                   // skin-support 基础控件支持
+    implementation 'skin.support:skin-support-design:3.1.1'            // skin-support-design material design 控件支持[可选]
     implementation 'com.github.didikee:AndroidDonate:0.1.0'
     implementation 'com.tencent.bugly:crashreport_upgrade:latest.release'
     //其中latest.release指代最新版本号，也可以指定明确的版本号，例如1.2.0

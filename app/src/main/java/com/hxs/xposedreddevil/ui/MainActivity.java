@@ -15,10 +15,12 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -51,6 +53,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import skin.support.SkinCompatManager;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -78,10 +81,24 @@ public class MainActivity extends AppCompatActivity {
     Switch swSound;
     @BindView(R.id.sw_push)
     Switch swPush;
+    @BindView(R.id.tv_star)
+    TextView tvStar;
+    @BindView(R.id.tv_skin)
+    TextView tvSkin;
+    @BindView(R.id.ll_skin)
+    LinearLayout llSkin;
 
     Gson gson = new Gson();
 
     private final String payCode = "FKX03573LOMYIBUT6ERCF1";
+
+    private LinearLayout llLight;
+    private RadioButton rbLight;
+    private View vLight;
+    private LinearLayout llNight;
+    private RadioButton rbNight;
+    private View vNight;
+    private TextView tvDismiss;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void SwitchClickInit() {
         AssetsCopyTOSDcard.Assets2Sd(this, "lucky_sound.mp3", Environment.getExternalStorageDirectory().toString() + "/xposedreddevil/lucky_sound.mp3");
+        tvSkin.setText(PropertiesUtils.getValue(RED_FILE, "redskin", "亮色"));
         if (spCenterVersion.getSelectedItem().equals("7.0.0")) {
             PropertiesUtils.putValue(RED_FILE, "wechatversion", "7.0.0");
         } else if (spCenterVersion.getSelectedItem().equals("6.7.3")) {
@@ -275,27 +293,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @OnClick(R.id.tv_pay)
-    public void onViewClicked() {
-        new AlertDialog.Builder(MainActivity.this)
-                .setTitle("去捐赠")
-                .setNegativeButton("微信", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        donateWeixin();
-                        dialog.dismiss();
-                    }
-                })
-                .setPositiveButton("支付宝", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        donateAlipay(payCode);
-                        dialog.dismiss();
-                    }
-                })
-                .create().show();
-    }
-
     /**
      * 验证权限
      */
@@ -366,4 +363,107 @@ public class MainActivity extends AppCompatActivity {
             dialog.show();
         }
     }
+
+    /**
+     * 选择主题
+     */
+    private void SelectSkinInit() {
+        View v = LayoutInflater.from(this).inflate(R.layout.dialog_skin_layout, null);
+        initView(v);
+        AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
+        dialog.setView(v);
+        final AlertDialog d = dialog.create();
+        llLight.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 恢复应用默认皮肤
+                SkinCompatManager.getInstance().restoreDefaultTheme();
+                PropertiesUtils.putValue(RED_FILE, "redskin", "亮色");
+                rbLight.setChecked(true);
+                rbNight.setChecked(false);
+                tvSkin.setText("亮色");
+                d.dismiss();
+            }
+        });
+        vLight.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            }
+        });
+        llNight.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SkinCompatManager.getInstance().loadSkin("night.skin", SkinCompatManager.SKIN_LOADER_STRATEGY_ASSETS);
+                PropertiesUtils.putValue(RED_FILE, "redskin", "暗色");
+                rbLight.setChecked(false);
+                rbNight.setChecked(true);
+                tvSkin.setText("暗色");
+                d.dismiss();
+            }
+        });
+        vNight.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            }
+        });
+        tvDismiss.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                d.dismiss();
+            }
+        });
+        d.show();
+    }
+
+    private void initView(View v) {
+        llLight = v.findViewById(R.id.ll_light);
+        rbLight = v.findViewById(R.id.rb_light);
+        vLight = v.findViewById(R.id.v_light);
+        llNight = v.findViewById(R.id.ll_night);
+        rbNight = v.findViewById(R.id.rb_night);
+        vNight = v.findViewById(R.id.v_night);
+        tvDismiss = v.findViewById(R.id.tv_dismiss);
+        rbLight.setFocusable(false);
+        rbNight.setFocusable(false);
+        if (PropertiesUtils.getValue(RED_FILE, "redskin", "亮色").equals("亮色")) {
+            rbLight.setChecked(true);
+            rbNight.setChecked(false);
+        } else {
+            rbLight.setChecked(false);
+            rbNight.setChecked(true);
+        }
+    }
+
+    @OnClick({R.id.tv_pay, R.id.tv_star, R.id.ll_skin})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.tv_pay:
+                new AlertDialog.Builder(MainActivity.this)
+                        .setTitle("去捐赠")
+                        .setNegativeButton("微信", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                donateWeixin();
+                                dialog.dismiss();
+                            }
+                        })
+                        .setPositiveButton("支付宝", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                donateAlipay(payCode);
+                                dialog.dismiss();
+                            }
+                        })
+                        .create().show();
+                break;
+            case R.id.tv_star:
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/dzghxs/XposedRedDevil"));
+                startActivity(intent);
+                break;
+            case R.id.ll_skin:
+                SelectSkinInit();
+                break;
+        }
+    }
+
 }
