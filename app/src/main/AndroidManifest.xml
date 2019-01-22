@@ -30,6 +30,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
+
         <meta-data
             android:name="xposedmodule"
             android:value="true" />
@@ -50,22 +51,26 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
-        <service android:name=".service.AcxiliaryRedService"
+        <service
+            android:name=".service.AcxiliaryRedService"
             android:label="@string/lable_name"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService" />
             </intent-filter>
+
             <meta-data
                 android:name="android.accessibilityservice"
                 android:resource="@xml/red_server_config" />
         </service>
+        <service
+            android:name=".service.GroupChatService"
+            android:exported="false" />
 
         <activity
             android:name="com.tencent.bugly.beta.ui.BetaActivity"
             android:configChanges="keyboardHidden|orientation|screenSize|locale"
             android:theme="@android:style/Theme.Translucent" />
-
         <activity
             android:name=".ui.MainActivity"
             android:configChanges="keyboardHidden|screenSize|orientation"
@@ -78,7 +83,9 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="ActionConversation" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data
                     android:host="com.hxs.xposedreddevil"
                     android:pathPrefix="/conversation"
@@ -86,6 +93,9 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".ui.SelectFilterActivity"
+            android:theme="@style/FilterTheme" />
     </application>
 
 </manifest>

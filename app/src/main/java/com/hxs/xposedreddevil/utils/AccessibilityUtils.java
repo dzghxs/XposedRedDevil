@@ -16,17 +16,22 @@ public class AccessibilityUtils {
 
     @SuppressLint("ObsoleteSdkInt")
     public static AccessibilityNodeInfo findNodeInfosById(AccessibilityNodeInfo nodeInfo, String resId) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            List<AccessibilityNodeInfo> list = nodeInfo.findAccessibilityNodeInfosByViewId(resId);
-            if (list != null && !list.isEmpty()) {
-                return list.get(0);
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                List<AccessibilityNodeInfo> list = nodeInfo.findAccessibilityNodeInfosByViewId(resId);
+                if (list != null && !list.isEmpty()) {
+                    return list.get(0);
+                }
+            } else {
+                AccessibilityNodeInfoCompat compat = new AccessibilityNodeInfoCompat(nodeInfo);
+                List<AccessibilityNodeInfoCompat> list = compat.findAccessibilityNodeInfosByViewId(resId);
+                if (list != null && !list.isEmpty()) {
+                    return (AccessibilityNodeInfo) list.get(0).getInfo();
+                }
             }
-        } else {
-            AccessibilityNodeInfoCompat compat = new AccessibilityNodeInfoCompat(nodeInfo);
-            List<AccessibilityNodeInfoCompat> list = compat.findAccessibilityNodeInfosByViewId(resId);
-            if (list != null && !list.isEmpty()) {
-                return (AccessibilityNodeInfo) list.get(0).getInfo();
-            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
         return null;
     }

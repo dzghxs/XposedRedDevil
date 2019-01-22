@@ -1,7 +1,10 @@
 package com.hxs.xposedreddevil.ui;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.didikee.donate.AlipayDonate;
 import android.didikee.donate.WeiXinDonate;
 import android.graphics.BitmapFactory;
@@ -87,6 +90,8 @@ public class MainActivity extends AppCompatActivity {
     TextView tvSkin;
     @BindView(R.id.ll_skin)
     LinearLayout llSkin;
+    @BindView(R.id.ll_add_no)
+    LinearLayout llAddNo;
 
     Gson gson = new Gson();
 
@@ -299,6 +304,7 @@ public class MainActivity extends AppCompatActivity {
     public void CheckPermissionInit() {
         XXPermissions.with(this)
                 .permission(Permission.Group.STORAGE)
+                .permission(Permission.READ_PHONE_STATE)
                 .constantRequest() //可设置被拒绝后继续申请，直到用户授权或者永久拒绝
                 .request(new OnPermission() {
 
@@ -434,7 +440,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @OnClick({R.id.tv_pay, R.id.tv_star, R.id.ll_skin})
+    //判断系统是否设置了默认浏览器
+    public boolean hasPreferredApplication(Context context, Intent intent) {
+        PackageManager pm = context.getPackageManager();
+        ResolveInfo info = pm.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
+        return !"android".equals(info.activityInfo.packageName);
+    }
+
+    @OnClick({R.id.tv_pay, R.id.tv_star, R.id.ll_skin, R.id.ll_add_no})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.tv_pay:
@@ -457,11 +470,24 @@ public class MainActivity extends AppCompatActivity {
                         .create().show();
                 break;
             case R.id.tv_star:
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/dzghxs/XposedRedDevil"));
-                startActivity(intent);
+                try {
+                    Intent intent = new Intent();
+                    intent.setAction("android.intent.action.VIEW");
+                    Uri content_url = Uri.parse("https://github.com/dzghxs/XposedRedDevil");//splitflowurl为分流地址
+                    intent.setData(content_url);
+                    if (!hasPreferredApplication(MainActivity.this, intent)) {
+                        intent.setClassName("com.android.browser", "com.android.browser.BrowserActivity");
+                    }
+                    startActivity(intent);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 break;
             case R.id.ll_skin:
                 SelectSkinInit();
+                break;
+            case R.id.ll_add_no:
+                startActivity(new Intent(this,SelectFilterActivity.class));
                 break;
         }
     }

@@ -11,16 +11,22 @@ import android.text.TextUtils;
 import android.widget.Button;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.hxs.xposedreddevil.contentprovider.PropertiesUtils;
 import com.hxs.xposedreddevil.model.DBean;
+import com.hxs.xposedreddevil.model.FilterSaveBean;
 import com.hxs.xposedreddevil.model.MsgsBean;
 import com.hxs.xposedreddevil.model.RedHookBean;
 import com.hxs.xposedreddevil.utils.PinYinUtils;
 import com.hxs.xposedreddevil.utils.PlaySoundUtils;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import de.robv.android.xposed.XC_MethodHook;
@@ -46,6 +52,8 @@ public class RedHook {
     String cropname = "";
     String data = "";
     Map<String, Object> stringMap = new HashMap<>();
+    JsonParser parser = new JsonParser();
+    FilterSaveBean filterSaveBean;
 
     public RedHook() {
     }
@@ -77,8 +85,8 @@ public class RedHook {
                     .getDeclaredField("disableHooks");
             disableHooksFiled.setAccessible(true);
             Object enable = disableHooksFiled.get(null);  // 当前状态
-            log("状态---------->"+enable);
-            disableHooksFiled.set(null, false);            // 设置为开启
+//            log("状态---------->"+enable);
+            disableHooksFiled.set(null, false);            // 设置为关闭
 //            disableHooksFiled.set(null, true);            // 设置为开启
             if (lpparam.packageName.equals("com.tencent.mm")) {
                 log("监听微信");
@@ -90,12 +98,31 @@ public class RedHook {
                             @Override
                             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                                 // 打印插入数据信息
-                                log("------------------------insert start---------------------" + "\n\n");
+//                                log("------------------------insert start---------------------" + "\n\n");
                                 ContentValues contentValues = (ContentValues) param.args[2];
                                 String title = "";
                                 for (Map.Entry<String, Object> item : contentValues.valueSet()) {
                                     if (item.getValue() != null) {
 //                                        log(item.getKey() + "---------" + item.getValue().toString());
+                                        //过滤选择不抢的群组
+                                        if(item.getKey().equals("talker")){
+                                            if(!PropertiesUtils.getValue(RED_FILE,"selectfilter","").equals("")) {
+                                                List<FilterSaveBean> list = new ArrayList<>();
+                                                JsonArray jsonArray = parser.parse(PropertiesUtils
+                                                        .getValue(RED_FILE, "selectfilter", "")).getAsJsonArray();
+                                                for (JsonElement user : jsonArray) {
+                                                    filterSaveBean = new FilterSaveBean();
+                                                    //使用GSON，直接转成Bean对象
+                                                    filterSaveBean = gson.fromJson(user, FilterSaveBean.class);
+                                                    list.add(filterSaveBean);
+                                                }
+                                                for (int i = 0; i < list.size(); i++) {
+                                                    if(list.get(i).getName().equals(item.getValue().toString())){
+                                                        return;
+                                                    }
+                                                }
+                                            }
+                                        }
                                         //自己发送的红包与接收到的红包返回的数据不一样，通过issend字段来对比
                                         if (item.getKey().equals("isSend")) {
                                             if(item.getValue().toString().equals("1")){
@@ -120,7 +147,7 @@ public class RedHook {
                                         stringMap.put(item.getKey(), "null");
                                     }
                                 }
-                                log("------------------------insert over---------------------" + "\n\n");
+//                                log("------------------------insert over---------------------" + "\n\n");
 
                                 // 判断插入的数据是否是发送过来的消息
                                 String tableName = (String) param.args[0];

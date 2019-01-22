@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<litepal>
+    <dbname value="WeChatRecord" />
+
+    <version value="2" />
+
+    <list>
+        <mapping class="com.hxs.xposedreddevil.entry.ChatRoom" />
+    </list>
+</litepal>
