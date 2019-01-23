@@ -296,6 +296,7 @@ public class AcxiliaryRedService extends AccessibilityService {
     public boolean onUnbind(Intent intent) {
         if (!PackageManagerUtil.isAccessibilitySettingsOn(this)) {
             intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         }
         return super.onUnbind(intent);

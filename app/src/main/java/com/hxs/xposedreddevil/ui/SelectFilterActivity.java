@@ -1,10 +1,14 @@
 package com.hxs.xposedreddevil.ui;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -37,7 +41,8 @@ import butterknife.OnClick;
 
 import static com.hxs.xposedreddevil.ui.MainActivity.RED_FILE;
 
-public class SelectFilterActivity extends AppCompatActivity implements FilterAdapter.onItemClickListener {
+public class SelectFilterActivity extends AppCompatActivity
+        implements FilterAdapter.onItemClickListener {
 
     @BindView(R.id.iv_class_back)
     ImageView ivClassBack;
@@ -47,6 +52,8 @@ public class SelectFilterActivity extends AppCompatActivity implements FilterAda
     TextView tvClassAdd;
     @BindView(R.id.rl_select)
     RecyclerView rlSelect;
+    @BindView(R.id.fab_refresh)
+    FloatingActionButton fabRefresh;
 
     LoadingDialog loadingDialog;
 
@@ -66,16 +73,43 @@ public class SelectFilterActivity extends AppCompatActivity implements FilterAda
         DataInit();
     }
 
+    @SuppressLint("RestrictedApi")
     private void DataInit() {
         EventBus.getDefault().register(this);
         loadingDialog = new LoadingDialog(this);
         tvClassName.setText("选择过滤的群聊");
-        startService(new Intent(this, GroupChatService.class));
         loadingDialog.show();
         rlSelect.setLayoutManager(new LinearLayoutManager(this));
+        rlSelect.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (dy < 0) {
+                    fabRefresh.setVisibility(View.VISIBLE);
+                } else if (dy == 0) {
+                    fabRefresh.setVisibility(View.VISIBLE);
+                } else {
+                    fabRefresh.setVisibility(View.GONE);
+                }
+            }
+        });
         adapter = new FilterAdapter(beanList, this);
         rlSelect.setAdapter(adapter);
         adapter.setOnItemClickListener(this);
+        if (!PropertiesUtils.getValue(RED_FILE, "filter", "").equals("")) {
+            filterBean = new FilterBean();
+            JsonArray jsonArray = parser.parse(PropertiesUtils
+                    .getValue(RED_FILE, "filter", "")).getAsJsonArray();
+            for (JsonElement user : jsonArray) {
+                filterBean = new FilterBean();
+                filterBean = gson.fromJson(user, FilterBean.class);
+                beanList.add(filterBean);
+            }
+            adapter.notifyDataSetChanged();
+            loadingDialog.dismiss();
+        } else {
+            startService(new Intent(this, GroupChatService.class));
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -88,10 +122,11 @@ public class SelectFilterActivity extends AppCompatActivity implements FilterAda
             filterBean.setCheck(false);
             beanList.add(filterBean);
         }
-        if(!PropertiesUtils.getValue(RED_FILE,"selectfilter","").equals("")){
+        PropertiesUtils.putValue(RED_FILE, "filter", gson.toJson(beanList));
+        if (!PropertiesUtils.getValue(RED_FILE, "selectfilter", "").equals("")) {
             List<FilterSaveBean> list = new ArrayList<>();
             JsonArray jsonArray = parser.parse(PropertiesUtils
-                    .getValue(RED_FILE,"selectfilter","")).getAsJsonArray();
+                    .getValue(RED_FILE, "selectfilter", "")).getAsJsonArray();
             for (JsonElement user : jsonArray) {
                 bean = new FilterSaveBean();
                 //使用GSON，直接转成Bean对象
@@ -100,26 +135,27 @@ public class SelectFilterActivity extends AppCompatActivity implements FilterAda
             }
             for (int i = 0; i < beanList.size(); i++) {
                 for (int j = 0; j < list.size(); j++) {
-                    if(beanList.get(i).getName().equals(list.get(j).getName())){
+                    if (beanList.get(i).getName().equals(list.get(j).getName())) {
                         beanList.get(i).setCheck(true);
                     }
                 }
             }
         }
         adapter.notifyDataSetChanged();
+        stopService(new Intent(this, GroupChatService.class));
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getError(MessageEvent msg) {
         if (msg.getMessage().equals("error")) {
             loadingDialog.dismiss();
+            stopService(new Intent(this, GroupChatService.class));
         }
     }
 
     @Override
     protected void onDestroy() {
         EventBus.getDefault().unregister(this);
-        stopService(new Intent(this, GroupChatService.class));
         if (loadingDialog != null) {
             loadingDialog.dismiss();
         }
@@ -136,7 +172,7 @@ public class SelectFilterActivity extends AppCompatActivity implements FilterAda
         adapter.notifyDataSetChanged();
     }
 
-    @OnClick({R.id.iv_class_back, R.id.tv_class_add})
+    @OnClick({R.id.iv_class_back, R.id.tv_class_add, R.id.fab_refresh})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_class_back:
@@ -145,7 +181,7 @@ public class SelectFilterActivity extends AppCompatActivity implements FilterAda
             case R.id.tv_class_add:
                 List<FilterSaveBean> list = new ArrayList<>();
                 for (int i = 0; i < beanList.size(); i++) {
-                    if(beanList.get(i).isCheck()){
+                    if (beanList.get(i).isCheck()) {
                         bean = new FilterSaveBean();
                         bean.setName(beanList.get(i).getName());
                         bean.setDisplayname(beanList.get(i).getDisplayname());
@@ -156,6 +192,12 @@ public class SelectFilterActivity extends AppCompatActivity implements FilterAda
                 Toast.makeText(this, "添加完成", Toast.LENGTH_SHORT).show();
                 finish();
                 break;
+            case R.id.fab_refresh:
+                beanList.clear();
+                startService(new Intent(this, GroupChatService.class));
+                loadingDialog.show();
+                break;
         }
     }
+
 }
