@@ -105,6 +105,24 @@ public class SelectFilterActivity extends AppCompatActivity
                 filterBean = gson.fromJson(user, FilterBean.class);
                 beanList.add(filterBean);
             }
+            if (!PropertiesUtils.getValue(RED_FILE, "selectfilter", "").equals("")) {
+                List<FilterSaveBean> list = new ArrayList<>();
+                jsonArray = parser.parse(PropertiesUtils
+                        .getValue(RED_FILE, "selectfilter", "")).getAsJsonArray();
+                for (JsonElement user : jsonArray) {
+                    bean = new FilterSaveBean();
+                    //使用GSON，直接转成Bean对象
+                    bean = gson.fromJson(user, FilterSaveBean.class);
+                    list.add(bean);
+                }
+                for (int i = 0; i < beanList.size(); i++) {
+                    for (int j = 0; j < list.size(); j++) {
+                        if (beanList.get(i).getName().equals(list.get(j).getName())) {
+                            beanList.get(i).setCheck(true);
+                        }
+                    }
+                }
+            }
             adapter.notifyDataSetChanged();
             loadingDialog.dismiss();
         } else {

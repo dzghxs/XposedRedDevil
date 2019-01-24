@@ -1,5 +1,6 @@
 package com.hxs.xposedreddevil.utils;
 
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -9,6 +10,7 @@ import android.util.Log;
 
 import com.hxs.xposedreddevil.service.AcxiliaryRedService;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
 public class PackageManagerUtil {
@@ -17,6 +19,7 @@ public class PackageManagerUtil {
 
     /**
      * 获取微信版本号等信息
+     *
      * @param context
      * @return
      */
@@ -26,7 +29,7 @@ public class PackageManagerUtil {
             List<PackageInfo> packages = context.getPackageManager()
                     .getInstalledPackages(PackageManager.GET_ACTIVITIES);
             for (int i = 0; i < packages.size(); i++) {
-                if(packages.get(i).packageName.equals("com.tencent.mm")){
+                if (packages.get(i).packageName.equals("com.tencent.mm")) {
                     items = packages.get(i).versionName;
                 }
             }
@@ -43,6 +46,7 @@ public class PackageManagerUtil {
      * 创建时间：2016-6-22 下午2:29:24 <br>
      * 修 改 人： <br>
      * 修改日期： <br>
+     *
      * @param mContext
      * @return boolean
      */
@@ -82,5 +86,29 @@ public class PackageManagerUtil {
             Log.v(TAG, "***ACCESSIBILITY IS DISABLED***");
         }
         return false;
+    }
+
+    public static String getLollipopRecentTask(Context context) {
+        final int PROCESS_STATE_TOP = 2;
+        try {
+            //通过反射获取私有成员变量processState，稍后需要判断该变量的值  
+            Field processStateField = ActivityManager.RunningAppProcessInfo.class.getDeclaredField("processState");
+            List<ActivityManager.RunningAppProcessInfo> processes = ((ActivityManager) context.getSystemService(
+                    Context.ACTIVITY_SERVICE)).getRunningAppProcesses();
+            for (ActivityManager.RunningAppProcessInfo process : processes) {
+                //判断进程是否为前台进程  
+                if (process.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
+                    int state = processStateField.getInt(process);
+                    //processState值为2  
+                    if (state == PROCESS_STATE_TOP) {
+                        String[] bpackname = process.pkgList;
+                        return bpackname[0];
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 }

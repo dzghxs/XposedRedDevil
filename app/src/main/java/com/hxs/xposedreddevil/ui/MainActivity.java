@@ -60,7 +60,7 @@ import skin.support.SkinCompatManager;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static final String RED_FILE = "/storage/emulated/0/xposedreddevil/" + "reddevil_config.pro";
+    public static final String RED_FILE = Environment.getExternalStorageDirectory()+"/xposedreddevil/reddevil_config.pro";
 
     @BindView(R.id.ll_version)
     LinearLayout llVersion;
@@ -126,11 +126,8 @@ public class MainActivity extends AppCompatActivity {
         }
         if (!PackageManagerUtil.getItems(MainActivity.this).equals("")) {
             PropertiesUtils.putValue(RED_FILE, "wechatversion", PackageManagerUtil.getItems(this));
-            llVersion.setVisibility(View.GONE);
-            spCenterVersion.setEnabled(false);
         } else {
-            Toast.makeText(this, getString(R.string.version_error), Toast.LENGTH_SHORT).show();
-            llVersion.setVisibility(View.VISIBLE);
+            WriteVersion();
         }
         try {
             if (PropertiesUtils.getValue(RED_FILE, "rednorootmain", "2").equals("1")) {
@@ -325,6 +322,16 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
+    private void WriteVersion(){
+        new AlertDialog.Builder(this).setTitle("获取微信版本失败，请手动选择微信版本")
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+    }
+
     private void GetVersion() {
         OkGo.<String>post("http://39.105.26.114:9672/redselectRedCode")
                 .execute(new StringCallback() {
@@ -333,8 +340,9 @@ public class MainActivity extends AppCompatActivity {
                         VersionBean versionBean = new VersionBean();
                         if (response.body().contains("200")) {
                             versionBean = gson.fromJson(response.body(), VersionBean.class);
+                            String s = versionBean.getData().getUpdateContent();
                             UpdataInit(versionBean.getData().getVersionCode(),
-                                    versionBean.getData().getUpdateContent(),
+                                    s,
                                     versionBean.getData().getApkurl());
                         }
                     }
@@ -351,7 +359,7 @@ public class MainActivity extends AppCompatActivity {
         if (version > Integer.parseInt(GetAppVersion.getVersionCode(MainActivity.this))) {
             AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
             dialog.setTitle("发现新版本是否更新？");
-            dialog.setMessage(updatamsg);
+            dialog.setMessage(updatamsg.replace("m","\n"));
             dialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
