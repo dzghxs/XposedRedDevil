@@ -1,5 +1,7 @@
 package com.hxs.xposedreddevil.utils;
 
+import android.os.Environment;
+
 /**
  * @author ChayChan
  * @description: 定义常量
@@ -7,6 +9,7 @@ package com.hxs.xposedreddevil.utils;
  */
 
 public class Constant {
+    public static final String RED_FILE = Environment.getExternalStorageDirectory()+"/xposedreddevil/reddevil_config.pro";
     public static final String TARGET_ID = "targetId";
     public static final String CONVERSATION_TYPE = "conversationType";
     public static final String TITLE = "title";

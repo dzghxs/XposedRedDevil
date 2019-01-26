@@ -17,7 +17,6 @@ import com.hxs.xposedreddevil.contentprovider.PropertiesUtils;
 import com.hxs.xposedreddevil.model.DBean;
 import com.hxs.xposedreddevil.model.FilterSaveBean;
 import com.hxs.xposedreddevil.model.MsgsBean;
-import com.hxs.xposedreddevil.model.RedHookBean;
 import com.hxs.xposedreddevil.utils.PinYinUtils;
 import com.hxs.xposedreddevil.utils.PlaySoundUtils;
 
@@ -32,7 +31,7 @@ import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import fr.arnaudguyon.xmltojsonlib.XmlToJson;
 
-import static com.hxs.xposedreddevil.ui.MainActivity.RED_FILE;
+import static com.hxs.xposedreddevil.utils.Constant.RED_FILE;
 import static de.robv.android.xposed.XposedBridge.log;
 import static de.robv.android.xposed.XposedHelpers.callStaticMethod;
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
@@ -72,9 +71,6 @@ public class RedHook673 {
     private void hook(final XC_LoadPackage.LoadPackageParam lpparam) {
 
         try {
-            if (PropertiesUtils.getValue(RED_FILE, "redmain", "2").equals("2")) {
-                return;
-            }
             if (lpparam.packageName.equals("com.tencent.mm")) {
                 log("监听微信");
                 // hook微信插入数据的方法，监听红包消息
@@ -91,10 +87,10 @@ public class RedHook673 {
                                 String title = "";
                                 for (Map.Entry<String, Object> item : contentValues.valueSet()) {
                                     if (item.getValue() != null) {
-                                        log(item.getKey() + "---------" + item.getValue().toString());
+//                                        log(item.getKey() + "---------" + item.getValue().toString());
                                         //过滤选择不抢的群组
-                                        if(item.getKey().equals("talker")){
-                                            if(!PropertiesUtils.getValue(RED_FILE,"selectfilter","").equals("")) {
+                                        if (item.getKey().equals("talker")) {
+                                            if (!PropertiesUtils.getValue(RED_FILE, "selectfilter", "").equals("")) {
                                                 List<FilterSaveBean> list = new ArrayList<>();
                                                 JsonArray jsonArray = parser.parse(PropertiesUtils
                                                         .getValue(RED_FILE, "selectfilter", "")).getAsJsonArray();
@@ -105,30 +101,31 @@ public class RedHook673 {
                                                     list.add(filterSaveBean);
                                                 }
                                                 for (int i = 0; i < list.size(); i++) {
-                                                    if(list.get(i).getName().equals(item.getValue().toString())){
+                                                    if (list.get(i).getName().equals(item.getValue().toString())) {
                                                         return;
                                                     }
                                                 }
                                             }
                                         }
-                                        //自己发送的红包与接收到的红包返回的数据不一样，通过issend字段来对比
-                                        if (item.getKey().equals("isSend")) {
-                                            if(item.getValue().toString().equals("1")){
-                                                if (item.getKey().equals("xml")) {
-                                                    String data = item.getValue().toString();
-//                                                    log("接收数据---------->" + data);
-                                                    title = data.split("<receivertitle>")[1].split("</receivertitle>")[0];
-//                                                    log("title1---------->" + title);
-                                                }
-                                            }else{
-                                                if (item.getKey().equals("content")) {
-                                                    String data = item.getValue().toString();
-//                                                    log("接收数据---------->" + data);
-                                                    title = data.split("<receivertitle>")[1].split("</receivertitle>")[0];
-//                                                    log("title1---------->" + title);
-                                                }
-                                            }
+                                        if (item.getKey().equals("content")) {
+                                            String data = item.getValue().toString();
+                                            log("接收数据---------->" + data);
+                                            title = data.split("<receivertitle>")[1].split("</receivertitle>")[0];
+                                            log("title1---------->" + title);
                                         }
+//                                        //自己发送的红包与接收到的红包返回的数据不一样，通过issend字段来对比
+//                                        if (item.getKey().equals("isSend")) {
+//                                            log("issend----->" + item.getValue().toString());
+//                                            if (item.getValue().toString().equals("1")) {
+//                                            } else {
+//                                                if (item.getKey().equals("content")) {
+//                                                    String data = item.getValue().toString();
+//                                                    log("接收数据---------->" + data);
+//                                                    title = data.split("<receivertitle>")[1].split("</receivertitle>")[0];
+//                                                    log("title2---------->" + title);
+//                                                }
+//                                            }
+//                                        }
                                         stringMap.put(item.getKey(), item.getValue().toString());
                                     } else {
 //                                        log(item.getKey() + "---------" + "null");
@@ -136,7 +133,7 @@ public class RedHook673 {
                                         stringMap.put(item.getKey(), "null");
                                     }
                                 }
-                                log("------------------------insert over---------------------" + "\n\n");
+//                                log("------------------------insert over---------------------" + "\n\n");
 
                                 // 判断插入的数据是否是发送过来的消息
                                 String tableName = (String) param.args[0];
@@ -162,7 +159,7 @@ public class RedHook673 {
                                     if (PropertiesUtils.getValue(RED_FILE, "push", "2").equals("1")) {
 //                                        EventBus.getDefault().post(new MessageEvent("天降红包"));
                                     }
-//                                    log("接收标题---------->" + title);
+                                    log("接收标题---------->" + title);
                                     if (PinYinUtils.getPingYin(title).contains("gua") ||
                                             title.contains("圭") ||
                                             title.contains("G") ||

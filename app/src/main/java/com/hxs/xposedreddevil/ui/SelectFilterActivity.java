@@ -39,7 +39,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.hxs.xposedreddevil.ui.MainActivity.RED_FILE;
+import static com.hxs.xposedreddevil.utils.Constant.RED_FILE;
 
 public class SelectFilterActivity extends AppCompatActivity
         implements FilterAdapter.onItemClickListener {

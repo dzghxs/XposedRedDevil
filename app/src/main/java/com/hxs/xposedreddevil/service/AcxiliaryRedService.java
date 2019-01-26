@@ -2,32 +2,26 @@ package com.hxs.xposedreddevil.service;
 
 import android.accessibilityservice.AccessibilityService;
 import android.annotation.SuppressLint;
-import android.app.ActivityManager;
 import android.app.KeyguardManager;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Handler;
 import android.os.PowerManager;
 import android.provider.Settings;
 import android.text.TextUtils;
-import android.util.Log;
-import android.util.SparseBooleanArray;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.hxs.xposedreddevil.contentprovider.PropertiesUtils;
 import com.hxs.xposedreddevil.utils.AccessibilityUtils;
 import com.hxs.xposedreddevil.utils.PackageManagerUtil;
+import com.hxs.xposedreddevil.utils.PinYinUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import static android.view.accessibility.AccessibilityEvent.TYPE_ANNOUNCEMENT;
-import static com.hxs.xposedreddevil.ui.MainActivity.RED_FILE;
-import static com.hxs.xposedreddevil.utils.PackageManagerUtil.getLollipopRecentTask;
+import static com.hxs.xposedreddevil.utils.Constant.RED_FILE;
 
 public class AcxiliaryRedService extends AccessibilityService {
     /**
@@ -60,6 +54,8 @@ public class AcxiliaryRedService extends AccessibilityService {
     private String chatid = "";
     private String redcircle = "";      //消息小红点ID
     private String chatnameid = "";     //聊天对象ID
+    private String msgredid = "";       //聊天页面红包ID
+    private String msgredcontent = "";  //聊天页面红包内容ID(恭喜发财，大吉大利)
 
     /**
      * 微信几个页面的包名+地址。用于判断在哪个页面
@@ -81,6 +77,8 @@ public class AcxiliaryRedService extends AccessibilityService {
             chatid = "com.tencent.mm:id/azj";
             redcircle = "com.tencent.mm:id/lu";
             chatnameid = "com.tencent.mm:id/azl";
+            msgredid = "com.tencent.mm:id/aku";
+            msgredcontent = "com.tencent.mm:id/alv";
         } else if (wechatversion.equals("7.0.0")) {
             LUCKEY_MONEY_RECEIVER = "com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyNotHookReceiveUI";
             OPEN_ID = "com.tencent.mm:id/cv0";
@@ -89,6 +87,8 @@ public class AcxiliaryRedService extends AccessibilityService {
             chatid = "com.tencent.mm:id/b4m";
             redcircle = "com.tencent.mm:id/mm";
             chatnameid = "com.tencent.mm:id/b4o";
+            msgredid = "com.tencent.mm:id/ao4";
+            msgredcontent = "com.tencent.mm:id/apd";
         } else if (wechatversion.equals("6.7.3")) {
             LUCKEY_MONEY_RECEIVER = "com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyReceiveUI";
             OPEN_ID = "com.tencent.mm:id/cnu";
@@ -97,6 +97,8 @@ public class AcxiliaryRedService extends AccessibilityService {
             chatid = "com.tencent.mm:id/azj";
             redcircle = "com.tencent.mm:id/lu";
             chatnameid = "com.tencent.mm:id/azl";
+            msgredid = "com.tencent.mm:id/aku";
+            msgredcontent = "com.tencent.mm:id/alv";
         }
         //接收事件
         int eventType = event.getEventType();
@@ -137,12 +139,12 @@ public class AcxiliaryRedService extends AccessibilityService {
                 String className = event.getClassName().toString();
 
                 //判断是否是微信聊天界面
-                if (LAUCHER.equals(className)) {
-                    //获取当前聊天页面的根布局
-                    AccessibilityNodeInfo rootNode = getRootInActiveWindow();
-                    //开始找红包
-                    findStuff(rootNode);
-                }
+//                if (LAUCHER.equals(className)) {
+//                    //获取当前聊天页面的根布局
+//                    AccessibilityNodeInfo rootNode = getRootInActiveWindow();
+//                    //开始找红包
+//                    findStuff(rootNode);
+//                }
 
                 //判断是否是显示‘开’的那个红包界面
                 if (LUCKEY_MONEY_RECEIVER.equals(className)) {
@@ -164,17 +166,25 @@ public class AcxiliaryRedService extends AccessibilityService {
                     try {
                         List<AccessibilityNodeInfo> itemNodes = getRootInActiveWindow().findAccessibilityNodeInfosByViewId(chatid);
                         if (itemNodes != null && itemNodes.size() != 0) {
-                            for (AccessibilityNodeInfo is : itemNodes) {
-                                AccessibilityNodeInfo chatContentNode = is.findAccessibilityNodeInfosByViewId(chatredid).get(0);
+                            for (int i = 0; i < itemNodes.size(); i++) {
+                                AccessibilityNodeInfo chatContentNode = itemNodes.get(i).findAccessibilityNodeInfosByViewId(chatredid).get(0);
                                 if (chatContentNode != null && chatContentNode.getText() != null) {
                                     if (chatContentNode.getText().toString().contains("微信红包")) {
-                                        AccessibilityNodeInfo chatNode = is.findAccessibilityNodeInfosByViewId(chatnameid).get(0);
+                                        AccessibilityNodeInfo chatNode;
+                                        if (itemNodes.get(i).findAccessibilityNodeInfosByViewId(chatnameid).size() == 0) {
+                                            continue;
+                                        } else {
+                                            chatNode = itemNodes.get(i).findAccessibilityNodeInfosByViewId(chatnameid).get(0);
+                                        }
                                         if (chatNode != null && chatNode.getText() != null) {
-                                            AccessibilityNodeInfo circlenode = is.findAccessibilityNodeInfosByViewId(redcircle).get(0);
+                                            AccessibilityNodeInfo circlenode = itemNodes.get(i).
+                                                    findAccessibilityNodeInfosByViewId(redcircle).get(0);
                                             if (circlenode != null && circlenode.getText() != null) {
-                                                itemNodes.get(0).performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                                                itemNodes.get(i).performAction(AccessibilityNodeInfo.ACTION_CLICK);
                                             }
                                         }
+                                    } else if (chatContentNode.getText().toString().isEmpty()) {
+                                        continue;
                                     }
                                 }
                             }
@@ -206,6 +216,16 @@ public class AcxiliaryRedService extends AccessibilityService {
                 CharSequence text = node.getText();
                 if (text != null && text.toString().equals("微信红包")) {
                     AccessibilityNodeInfo parent = node.getParent();
+                    String redcontent = "";     //红包内容
+                    redcontent = parent.findAccessibilityNodeInfosByViewId(msgredcontent).get(0).getText().toString();
+                    if (PinYinUtils.getPingYin(redcontent).contains("gua") ||
+                            redcontent.contains("圭") ||
+                            redcontent.contains("G") ||
+                            redcontent.contains("GUA") ||
+                            redcontent.contains("gua") ||
+                            redcontent.contains("g")) {
+                        return;
+                    }
                     //while循环,遍历"领取红包"的各个父布局，直至找到可点击的为止
                     while (parent != null) {
                         if (parent.isClickable()) {
@@ -238,20 +258,26 @@ public class AcxiliaryRedService extends AccessibilityService {
         }
         // 找到领取红包的点击事件
         List<AccessibilityNodeInfo> list = null;
-        list = nodeInfo.findAccessibilityNodeInfosByText("恭喜发财，大吉大利");
-        if (wechatversion.equals("")) {
-
-        } else if (wechatversion.equals("7.0.0")) {
-
-        } else if (wechatversion.equals("6.7.3")) {
-
-        }
+        list = nodeInfo.findAccessibilityNodeInfosByViewId(msgredid);
         // 最新的红包领起
         for (int i = list.size() - 1; i >= 0; i--) {
             // 通过调试可知[领取红包]是text，本身不可被点击，用getParent()获取可被点击的对象
+            if (list.get(i) == null) {
+                continue;
+            }
             AccessibilityNodeInfo parent = list.get(i).getParent();
             // 谷歌重写了toString()方法，不能用它获取ClassName@hashCode串
             while (parent != null) {
+                String redcontent = "";     //红包内容
+                redcontent = list.get(i).getParent().findAccessibilityNodeInfosByViewId(msgredcontent).get(0).getText().toString();
+                if (PinYinUtils.getPingYin(redcontent).contains("gua") ||
+                        redcontent.contains("圭") ||
+                        redcontent.contains("G") ||
+                        redcontent.contains("GUA") ||
+                        redcontent.contains("gua") ||
+                        redcontent.contains("g")) {
+                    return;
+                }
                 AccessibilityNodeInfo redstatus = null;
                 try {
                     if (list.get(i).getParent().findAccessibilityNodeInfosByViewId(strredstatus) == null
@@ -264,9 +290,9 @@ public class AcxiliaryRedService extends AccessibilityService {
                     redstatus = null;
                 }
                 if (redstatus == null) {
-                    if (parent.isClickable()) {
+                    if (list.get(i).isClickable()) {
                         //模拟点击
-                        parent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                        list.get(i).performAction(AccessibilityNodeInfo.ACTION_CLICK);
                         //isOpenRP用于判断该红包是否点击过
                         isOpenRP = true;
                     }

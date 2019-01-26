@@ -58,9 +58,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import skin.support.SkinCompatManager;
 
-public class MainActivity extends AppCompatActivity {
+import static com.hxs.xposedreddevil.utils.Constant.RED_FILE;
 
-    public static final String RED_FILE = Environment.getExternalStorageDirectory()+"/xposedreddevil/reddevil_config.pro";
+public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.ll_version)
     LinearLayout llVersion;

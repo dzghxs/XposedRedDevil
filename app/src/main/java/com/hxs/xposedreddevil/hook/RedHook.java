@@ -34,7 +34,7 @@ import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import fr.arnaudguyon.xmltojsonlib.XmlToJson;
 
-import static com.hxs.xposedreddevil.ui.MainActivity.RED_FILE;
+import static com.hxs.xposedreddevil.utils.Constant.RED_FILE;
 import static de.robv.android.xposed.XposedBridge.log;
 import static de.robv.android.xposed.XposedHelpers.callStaticMethod;
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
@@ -77,14 +77,11 @@ public class RedHook {
     private void hook(final XC_LoadPackage.LoadPackageParam lpparam) {
 
         try {
-            if (PropertiesUtils.getValue(RED_FILE, "redmain", "2").equals("2")) {
-                return;
-            }
             Field disableHooksFiled = ClassLoader.getSystemClassLoader()
                     .loadClass("de.robv.android.xposed.XposedBridge")
                     .getDeclaredField("disableHooks");
             disableHooksFiled.setAccessible(true);
-            Object enable = disableHooksFiled.get(null);  // 当前状态
+//            Object enable = disableHooksFiled.get(null);  // 当前状态
 //            log("状态---------->"+enable);
             disableHooksFiled.set(null, false);            // 设置为关闭
 //            disableHooksFiled.set(null, true);            // 设置为开启
@@ -123,23 +120,9 @@ public class RedHook {
                                                 }
                                             }
                                         }
-                                        //自己发送的红包与接收到的红包返回的数据不一样，通过issend字段来对比
-                                        if (item.getKey().equals("isSend")) {
-                                            if(item.getValue().toString().equals("1")){
-                                                if (item.getKey().equals("xml")) {
-                                                    String data = item.getValue().toString();
-//                                                    log("接收数据---------->" + data);
-                                                    title = data.split("<receivertitle>")[1].split("</receivertitle>")[0];
-//                                                    log("title1---------->" + title);
-                                                }
-                                            }else{
-                                                if (item.getKey().equals("content")) {
-                                                    String data = item.getValue().toString();
-//                                                    log("接收数据---------->" + data);
-                                                    title = data.split("<receivertitle>")[1].split("</receivertitle>")[0];
-//                                                    log("title1---------->" + title);
-                                                }
-                                            }
+                                        if (item.getKey().equals("content")) {
+                                            String data = item.getValue().toString();
+                                            title = data.split("<receivertitle>")[1].split("</receivertitle>")[0];
                                         }
                                         stringMap.put(item.getKey(), item.getValue().toString());
                                     } else {
