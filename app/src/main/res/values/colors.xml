@@ -3,6 +3,10 @@
     <color name="colorPrimary">#D50000</color>
     <color name="colorPrimaryDark">#D50000</color>
     <color name="colorAccent">#D50000</color>
+    <color name="bg_lightgray">#D50000</color>
+    <color name="bg_lightblue">#D50000</color>
+    <color name="card_bg">#ddbd84</color>
+    <color name="card_title">#f53937</color>
     <color name="colorText">#000000</color>
     <color name="bg">#ffffff</color>
 </resources>

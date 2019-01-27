@@ -30,6 +30,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".ui.NotRootActivity"></activity>
+        <activity android:name=".ui.SettingActivity" />
 
         <meta-data
             android:name="xposedmodule"
@@ -72,27 +74,19 @@
             android:configChanges="keyboardHidden|orientation|screenSize|locale"
             android:theme="@android:style/Theme.Translucent" />
         <activity
-            android:name=".ui.MainActivity"
-            android:configChanges="keyboardHidden|screenSize|orientation"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait">
+            android:name=".ui.HomeActivity"
+            android:theme="@style/FilterTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <intent-filter>
-                <action android:name="ActionConversation" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-
-                <data
-                    android:host="com.hxs.xposedreddevil"
-                    android:pathPrefix="/conversation"
-                    android:scheme="wechat" />
-            </intent-filter>
         </activity>
-
+        <activity
+            android:name=".ui.MainActivity"
+            android:configChanges="keyboardHidden|screenSize|orientation"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.SelectFilterActivity"
             android:theme="@style/FilterTheme" />

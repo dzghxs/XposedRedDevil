@@ -217,14 +217,18 @@ public class AcxiliaryRedService extends AccessibilityService {
                 if (text != null && text.toString().equals("微信红包")) {
                     AccessibilityNodeInfo parent = node.getParent();
                     String redcontent = "";     //红包内容
-                    redcontent = parent.findAccessibilityNodeInfosByViewId(msgredcontent).get(0).getText().toString();
-                    if (PinYinUtils.getPingYin(redcontent).contains("gua") ||
-                            redcontent.contains("圭") ||
-                            redcontent.contains("G") ||
-                            redcontent.contains("GUA") ||
-                            redcontent.contains("gua") ||
-                            redcontent.contains("g")) {
-                        return;
+                    try {
+                        redcontent = parent.findAccessibilityNodeInfosByViewId(msgredcontent).get(0).getText().toString();
+                        if (PinYinUtils.getPingYin(redcontent).contains("gua") ||
+                                redcontent.contains("圭") ||
+                                redcontent.contains("G") ||
+                                redcontent.contains("GUA") ||
+                                redcontent.contains("gua") ||
+                                redcontent.contains("g")) {
+                            return;
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                     //while循环,遍历"领取红包"的各个父布局，直至找到可点击的为止
                     while (parent != null) {
@@ -269,14 +273,18 @@ public class AcxiliaryRedService extends AccessibilityService {
             // 谷歌重写了toString()方法，不能用它获取ClassName@hashCode串
             while (parent != null) {
                 String redcontent = "";     //红包内容
-                redcontent = list.get(i).getParent().findAccessibilityNodeInfosByViewId(msgredcontent).get(0).getText().toString();
-                if (PinYinUtils.getPingYin(redcontent).contains("gua") ||
-                        redcontent.contains("圭") ||
-                        redcontent.contains("G") ||
-                        redcontent.contains("GUA") ||
-                        redcontent.contains("gua") ||
-                        redcontent.contains("g")) {
-                    return;
+                try {
+                    redcontent = list.get(i).getParent().findAccessibilityNodeInfosByViewId(msgredcontent).get(0).getText().toString();
+                    if (PinYinUtils.getPingYin(redcontent).contains("gua") ||
+                            redcontent.contains("圭") ||
+                            redcontent.contains("G") ||
+                            redcontent.contains("GUA") ||
+                            redcontent.contains("gua") ||
+                            redcontent.contains("g")) {
+                        return;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
                 AccessibilityNodeInfo redstatus = null;
                 try {

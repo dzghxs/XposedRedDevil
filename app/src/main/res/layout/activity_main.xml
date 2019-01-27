@@ -18,80 +18,9 @@
             android:orientation="vertical">
 
             <LinearLayout
-                android:id="@+id/ll_version"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:orientation="horizontal"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:text="微信版本:"
-                    android:textColor="@color/colorText" />
-
-                <Spinner
-                    android:id="@+id/sp_center_version"
-                    style="@style/spinner_style"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginBottom="4dp"
-                    android:layout_weight="3"
-                    android:entries="@array/version"
-                    android:textColor="@color/colorText" />
-
-            </LinearLayout>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:gravity="center_vertical"
-                android:paddingLeft="16dp"
-                android:text="免root抢红包"
-                android:textColor="@color/colorText"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:orientation="horizontal"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:text="抢红包开关"
-                    android:textColor="@color/colorText" />
-
-                <Switch
-                    android:id="@+id/sw_noroot_main"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checked="false" />
-
-            </LinearLayout>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:gravity="center_vertical"
-                android:paddingLeft="16dp"
-                android:text="root抢红包"
-                android:textColor="@color/colorText"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_marginTop="8dp"
                 android:orientation="horizontal"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp">
@@ -269,59 +198,6 @@
                     android:checked="false" />
 
             </LinearLayout>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:gravity="center_vertical"
-                android:paddingLeft="16dp"
-                android:text="其它"
-                android:textColor="@color/colorText"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <LinearLayout
-                android:id="@+id/ll_skin"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:orientation="horizontal"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:text="修改主题"
-                    android:textColor="@color/colorText" />
-
-                <TextView
-                    android:id="@+id/tv_skin"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/colorText"
-                    android:text="亮色"/>
-
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/tv_pay"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_margin="16dp"
-                android:gravity="center_vertical"
-                android:text="支持红包\n(您的支持才是我的动力)"
-                android:textColor="#71c3de" />
-
-            <TextView
-                android:id="@+id/tv_star"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:textColor="#71c3de"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
-                android:text="去star"/>
 
         </LinearLayout>
 

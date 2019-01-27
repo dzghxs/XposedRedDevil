@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bg"
+    tools:context=".ui.SettingActivity">
+
+    <LinearLayout
+        android:id="@+id/ll_skin"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:layout_marginTop="16dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="修改主题"
+            android:textColor="@color/colorText" />
+
+        <TextView
+            android:id="@+id/tv_skin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorText"
+            android:text="亮色"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_update"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:textColor="@color/colorText"
+        android:paddingLeft="16dp"
+        android:gravity="center_vertical"
+        android:paddingRight="16dp"
+        android:text="检查更新"/>
+
+    <TextView
+        android:id="@+id/tv_pay"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_margin="16dp"
+        android:gravity="center_vertical"
+        android:text="支持红包\n(您的支持才是我的动力)"
+        android:textColor="#71c3de" />
+
+    <TextView
+        android:id="@+id/tv_star"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:textColor="#71c3de"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:text="去star"/>
+
+</LinearLayout>
