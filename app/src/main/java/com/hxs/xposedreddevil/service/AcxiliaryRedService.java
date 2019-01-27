@@ -51,11 +51,12 @@ public class AcxiliaryRedService extends AccessibilityService {
 
     private String strredstatus = "";   //红包状态
     private String chatredid = "";      //聊天列表红包消息ID
-    private String chatid = "";
+    private String chatid = "";         //聊天item ID
     private String redcircle = "";      //消息小红点ID
     private String chatnameid = "";     //聊天对象ID
     private String msgredid = "";       //聊天页面红包ID
     private String msgredcontent = "";  //聊天页面红包内容ID(恭喜发财，大吉大利)
+    private String msgisredid = "";     //微信红包下方微信红包四个字
 
     /**
      * 微信几个页面的包名+地址。用于判断在哪个页面
@@ -79,6 +80,7 @@ public class AcxiliaryRedService extends AccessibilityService {
             chatnameid = "com.tencent.mm:id/azl";
             msgredid = "com.tencent.mm:id/aku";
             msgredcontent = "com.tencent.mm:id/alv";
+            msgisredid = "com.tencent.mm:id/alx";
         } else if (wechatversion.equals("7.0.0")) {
             LUCKEY_MONEY_RECEIVER = "com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyNotHookReceiveUI";
             OPEN_ID = "com.tencent.mm:id/cv0";
@@ -89,6 +91,7 @@ public class AcxiliaryRedService extends AccessibilityService {
             chatnameid = "com.tencent.mm:id/b4o";
             msgredid = "com.tencent.mm:id/ao4";
             msgredcontent = "com.tencent.mm:id/apd";
+            msgisredid = "com.tencent.mm:id/apf";
         } else if (wechatversion.equals("6.7.3")) {
             LUCKEY_MONEY_RECEIVER = "com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyReceiveUI";
             OPEN_ID = "com.tencent.mm:id/cnu";
@@ -99,6 +102,7 @@ public class AcxiliaryRedService extends AccessibilityService {
             chatnameid = "com.tencent.mm:id/azl";
             msgredid = "com.tencent.mm:id/aku";
             msgredcontent = "com.tencent.mm:id/alv";
+            msgisredid = "com.tencent.mm:id/alx";
         }
         //接收事件
         int eventType = event.getEventType();
@@ -201,61 +205,6 @@ public class AcxiliaryRedService extends AccessibilityService {
         releese();
     }
 
-    /**
-     * 遍历找东西
-     */
-    private void findStuff(AccessibilityNodeInfo rootNode) {
-        if (rootNode != null) {
-            //从最后一行开始找起
-            for (int i = rootNode.getChildCount() - 1; i >= 0; i--) {
-                AccessibilityNodeInfo node = rootNode.getChild(i);
-                //如果node为空则跳过该节点
-                if (node == null) {
-                    continue;
-                }
-                CharSequence text = node.getText();
-                if (text != null && text.toString().equals("微信红包")) {
-                    AccessibilityNodeInfo parent = node.getParent();
-                    String redcontent = "";     //红包内容
-                    try {
-                        redcontent = parent.findAccessibilityNodeInfosByViewId(msgredcontent).get(0).getText().toString();
-                        if (PinYinUtils.getPingYin(redcontent).contains("gua") ||
-                                redcontent.contains("圭") ||
-                                redcontent.contains("G") ||
-                                redcontent.contains("GUA") ||
-                                redcontent.contains("gua") ||
-                                redcontent.contains("g")) {
-                            return;
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    //while循环,遍历"领取红包"的各个父布局，直至找到可点击的为止
-                    while (parent != null) {
-                        if (parent.isClickable()) {
-                            //模拟点击
-                            parent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                            //isOpenRP用于判断该红包是否点击过
-                            isOpenRP = true;
-
-                            break;
-                        }
-                        parent = parent.getParent();
-                    }
-                }
-                //判断是否已经打开过那个最新的红包了，是的话就跳出for循环，不是的话继续遍历
-                if (isOpenRP) {
-
-
-                    break;
-                } else {
-                    findStuff(node);
-                }
-
-            }
-        }
-    }
-
     private void WindowRed(AccessibilityNodeInfo nodeInfo) {
         if (nodeInfo == null) {
             return;
@@ -298,6 +247,9 @@ public class AcxiliaryRedService extends AccessibilityService {
                     redstatus = null;
                 }
                 if (redstatus == null) {
+                    if(list.get(i).findAccessibilityNodeInfosByViewId(msgisredid).size()==0){
+                        return;
+                    }
                     if (list.get(i).isClickable()) {
                         //模拟点击
                         list.get(i).performAction(AccessibilityNodeInfo.ACTION_CLICK);
