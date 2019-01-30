@@ -40,22 +40,20 @@ import static de.robv.android.xposed.XposedHelpers.callStaticMethod;
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 import static de.robv.android.xposed.XposedHelpers.findClass;
 
-public class RedHook {
+public class RedHook703 {
 
     private XC_LoadPackage.LoadPackageParam classLoader;
     private static Activity launcherUiActivity = null;
     Gson gson = new Gson();
     MsgsBean bean = new MsgsBean();
     DBean dBean = new DBean();
-    RedHookBean redHookBean = new RedHookBean();
     String nativeUrlString = "";
     String cropname = "";
-    String data = "";
     Map<String, Object> stringMap = new HashMap<>();
     JsonParser parser = new JsonParser();
     FilterSaveBean filterSaveBean;
 
-    public RedHook() {
+    public RedHook703() {
     }
 
     public void init(XC_LoadPackage.LoadPackageParam classLoader) {
@@ -65,13 +63,13 @@ public class RedHook {
         }
     }
 
-    public static RedHook getInstance() {
+    public static RedHook703 getInstance() {
         return RedHookHolder.instance;
     }
 
     private static class RedHookHolder {
         @SuppressLint("StaticFieldLeak")
-        private static final RedHook instance = new RedHook();
+        private static final RedHook703 instance = new RedHook703();
     }
 
     private void hook(final XC_LoadPackage.LoadPackageParam lpparam) {
@@ -95,12 +93,12 @@ public class RedHook {
                             @Override
                             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                                 // 打印插入数据信息
-//                                log("------------------------insert start---------------------" + "\n\n");
+                                log("------------------------insert start---------------------" + "\n\n");
                                 ContentValues contentValues = (ContentValues) param.args[2];
                                 String title = "";
                                 for (Map.Entry<String, Object> item : contentValues.valueSet()) {
                                     if (item.getValue() != null) {
-//                                        log(item.getKey() + "---------" + item.getValue().toString());
+                                        log(item.getKey() + "---------" + item.getValue().toString());
                                         //过滤选择不抢的群组
                                         if(item.getKey().equals("talker")){
                                             if(!PropertiesUtils.getValue(RED_FILE,"selectfilter","").equals("")) {
@@ -130,7 +128,7 @@ public class RedHook {
                                         stringMap.put(item.getKey(), "null");
                                     }
                                 }
-//                                log("------------------------insert over---------------------" + "\n\n");
+                                log("------------------------insert over---------------------" + "\n\n");
 
                                 // 判断插入的数据是否是发送过来的消息
                                 String tableName = (String) param.args[0];
@@ -205,7 +203,7 @@ public class RedHook {
                             @Override
                             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
 //                                log("com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyReceiveUI: Method d called" + "\n");
-                                Field buttonField = XposedHelpers.findField(param.thisObject.getClass(), "nai");
+                                Field buttonField = XposedHelpers.findField(param.thisObject.getClass(), "nqy");
                                 final Button kaiButton = (Button) buttonField.get(param.thisObject);
                                 kaiButton.performClick();
                             }

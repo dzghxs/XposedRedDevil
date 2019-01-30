@@ -72,16 +72,18 @@ public class HomeActivity extends AppCompatActivity {
         tvHomeRoot.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/font.ttf"));
         AssetsCopyTOSDcard.Assets2Sd(this, "lucky_sound.mp3", Environment.getExternalStorageDirectory().toString() + "/xposedreddevil/lucky_sound.mp3");
         if (PropertiesUtils.getValue(RED_FILE, "wechatversion", "").equals("7.0.0")) {
-            spCenterVersion.setSelection(0);
-        } else if (PropertiesUtils.getValue(RED_FILE, "wechatversion", "").equals("6.7.3")) {
             spCenterVersion.setSelection(1);
-        } else {
+        } else if (PropertiesUtils.getValue(RED_FILE, "wechatversion", "").equals("6.7.3")) {
+            spCenterVersion.setSelection(2);
+        } else if (PropertiesUtils.getValue(RED_FILE, "wechatversion", "").equals("7.0.3")) {
             spCenterVersion.setSelection(0);
         }
         if (spCenterVersion.getSelectedItem().equals("7.0.0")) {
             PropertiesUtils.putValue(RED_FILE, "wechatversion", "7.0.0");
         } else if (spCenterVersion.getSelectedItem().equals("6.7.3")) {
             PropertiesUtils.putValue(RED_FILE, "wechatversion", "6.7.3");
+        }else if (spCenterVersion.getSelectedItem().equals("7.0.3")) {
+            PropertiesUtils.putValue(RED_FILE, "wechatversion", "7.0.3");
         }
         if (!PackageManagerUtil.getItems(this).equals("")) {
             PropertiesUtils.putValue(RED_FILE, "wechatversion", PackageManagerUtil.getItems(this));

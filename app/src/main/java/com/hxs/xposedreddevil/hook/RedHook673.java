@@ -146,6 +146,9 @@ public class RedHook673 {
                                     return;
                                 }
                                 if (type == 436207665 || type == 469762097) {
+                                    if (PropertiesUtils.getValue(RED_FILE, "redmain", "2").equals("2")) {
+                                        return;
+                                    }
 //                                    log("获取状态------------>" + PropertiesUtils.getValue(RED_FILE, "red", "2"));
 //                                    log("获取map------------>" + stringMap.get("isSend"));
                                     if (PropertiesUtils.getValue(RED_FILE, "red", "2").equals("1")) {

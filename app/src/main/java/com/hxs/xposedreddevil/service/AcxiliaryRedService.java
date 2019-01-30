@@ -16,11 +16,24 @@ import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.hxs.xposedreddevil.contentprovider.PropertiesUtils;
 import com.hxs.xposedreddevil.utils.AccessibilityUtils;
+import com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues;
 import com.hxs.xposedreddevil.utils.PackageManagerUtil;
 import com.hxs.xposedreddevil.utils.PinYinUtils;
 
 import java.util.List;
 
+import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.LUCKEY_MONEY_DETAIL;
+import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.LUCKEY_MONEY_RECEIVER;
+import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.OPEN_ID;
+import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.chatid;
+import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.chatnameid;
+import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.chatredid;
+import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.msgisredid;
+import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.msgredcontent;
+import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.msgredid;
+import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.redcircle;
+import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.redunmsgcircle;
+import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.strredstatus;
 import static com.hxs.xposedreddevil.utils.Constant.RED_FILE;
 
 public class AcxiliaryRedService extends AccessibilityService {
@@ -49,61 +62,9 @@ public class AcxiliaryRedService extends AccessibilityService {
      */
     private AccessibilityNodeInfo rpNode;
 
-    private String strredstatus = "";   //红包状态
-    private String chatredid = "";      //聊天列表红包消息ID
-    private String chatid = "";         //聊天item ID
-    private String redcircle = "";      //消息小红点ID
-    private String chatnameid = "";     //聊天对象ID
-    private String msgredid = "";       //聊天页面红包ID
-    private String msgredcontent = "";  //聊天页面红包内容ID(恭喜发财，大吉大利)
-    private String msgisredid = "";     //微信红包下方微信红包四个字
-
-    /**
-     * 微信几个页面的包名+地址。用于判断在哪个页面
-     */
-    private String LAUCHER = "com.tencent.mm.ui.LauncherUI";
-    private String LUCKEY_MONEY_DETAIL = "com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyDetailUI";
-    private String LUCKEY_MONEY_RECEIVER = "com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyReceiveUI";
-    private String OPEN_ID = "com.tencent.mm:id/cv0";
-
-    private String wechatversion = PropertiesUtils.getValue(RED_FILE, "wechatversion", "");
-
     @Override
     public void onAccessibilityEvent(final AccessibilityEvent event) {
-        if (wechatversion.equals("")) {
-            LUCKEY_MONEY_RECEIVER = "com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyReceiveUI";
-            OPEN_ID = "com.tencent.mm:id/cnu";
-            strredstatus = "com.tencent.mm:id/alw";
-            chatredid = "com.tencent.mm:id/azn";
-            chatid = "com.tencent.mm:id/azj";
-            redcircle = "com.tencent.mm:id/lu";
-            chatnameid = "com.tencent.mm:id/azl";
-            msgredid = "com.tencent.mm:id/aku";
-            msgredcontent = "com.tencent.mm:id/alv";
-            msgisredid = "com.tencent.mm:id/alx";
-        } else if (wechatversion.equals("7.0.0")) {
-            LUCKEY_MONEY_RECEIVER = "com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyNotHookReceiveUI";
-            OPEN_ID = "com.tencent.mm:id/cv0";
-            strredstatus = "com.tencent.mm:id/ape";
-            chatredid = "com.tencent.mm:id/b4q";
-            chatid = "com.tencent.mm:id/b4m";
-            redcircle = "com.tencent.mm:id/mm";
-            chatnameid = "com.tencent.mm:id/b4o";
-            msgredid = "com.tencent.mm:id/ao4";
-            msgredcontent = "com.tencent.mm:id/apd";
-            msgisredid = "com.tencent.mm:id/apf";
-        } else if (wechatversion.equals("6.7.3")) {
-            LUCKEY_MONEY_RECEIVER = "com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyReceiveUI";
-            OPEN_ID = "com.tencent.mm:id/cnu";
-            strredstatus = "com.tencent.mm:id/alw";
-            chatredid = "com.tencent.mm:id/azn";
-            chatid = "com.tencent.mm:id/azj";
-            redcircle = "com.tencent.mm:id/lu";
-            chatnameid = "com.tencent.mm:id/azl";
-            msgredid = "com.tencent.mm:id/aku";
-            msgredcontent = "com.tencent.mm:id/alv";
-            msgisredid = "com.tencent.mm:id/alx";
-        }
+        AcxiliaryServiceStaticValues.SetValues();
         //接收事件
         int eventType = event.getEventType();
         if (PropertiesUtils.getValue(RED_FILE, "rednorootmain", "2").equals("2")) {
@@ -181,10 +142,20 @@ public class AcxiliaryRedService extends AccessibilityService {
                                             chatNode = itemNodes.get(i).findAccessibilityNodeInfosByViewId(chatnameid).get(0);
                                         }
                                         if (chatNode != null && chatNode.getText() != null) {
-                                            AccessibilityNodeInfo circlenode = itemNodes.get(i).
-                                                    findAccessibilityNodeInfosByViewId(redcircle).get(0);
-                                            if (circlenode != null && circlenode.getText() != null) {
-                                                itemNodes.get(i).performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                                            if(itemNodes.get(i).
+                                                    findAccessibilityNodeInfosByViewId(redcircle).size()>0){
+                                                AccessibilityNodeInfo circlenode = itemNodes.get(i).
+                                                        findAccessibilityNodeInfosByViewId(redcircle).get(0);
+                                                if (circlenode != null && circlenode.getText() != null) {
+                                                    itemNodes.get(i).performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                                                }
+                                            }else if(itemNodes.get(i).
+                                                    findAccessibilityNodeInfosByViewId(redunmsgcircle).size()>0){
+                                                AccessibilityNodeInfo circlenode = itemNodes.get(i).
+                                                        findAccessibilityNodeInfosByViewId(redunmsgcircle).get(0);
+                                                if (circlenode != null) {
+                                                    itemNodes.get(i).performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                                                }
                                             }
                                         }
                                     } else if (chatContentNode.getText().toString().isEmpty()) {
