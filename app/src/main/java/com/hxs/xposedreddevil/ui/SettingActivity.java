@@ -228,8 +228,18 @@ public class SettingActivity extends AppCompatActivity {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                    startActivity(intent);
+                    try {
+                        Intent intent = new Intent();
+                        intent.setAction("android.intent.action.VIEW");
+                        Uri content_url = Uri.parse(url);//splitflowurl为分流地址
+                        intent.setData(content_url);
+                        if (!hasPreferredApplication(SettingActivity.this, intent)) {
+                            intent.setClassName("com.android.browser", "com.android.browser.BrowserActivity");
+                        }
+                        startActivity(intent);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             });
             dialog.show();

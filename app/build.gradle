@@ -6,8 +6,8 @@ android {
         applicationId "com.hxs.xposedreddevil"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 24
-        versionName "2.0.4"
+        versionCode 25
+        versionName "2.0.5"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         ndk {
             //设置支持的SO库架构
@@ -42,6 +42,7 @@ dependencies {
     // Jsoup HTML解析器
     implementation 'org.jsoup:jsoup:1.11.2'
     implementation 'org.litepal.android:core:1.6.0'
+    implementation 'me.jessyan:autosize:1.1.2'
     implementation 'net.zetetic:android-database-sqlcipher:3.5.9@aar'
     implementation 'com.tencent.bugly:crashreport_upgrade:latest.release'
     //其中latest.release指代最新版本号，也可以指定明确的版本号，例如1.2.0

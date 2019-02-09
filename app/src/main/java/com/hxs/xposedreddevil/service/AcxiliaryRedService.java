@@ -166,7 +166,11 @@ public class AcxiliaryRedService extends AccessibilityService {
                             WindowRed(getRootInActiveWindow());
                         }
                     } catch (Exception e) {
-                        WindowRed(getRootInActiveWindow());
+                        try {
+                            WindowRed(getRootInActiveWindow());
+                        } catch (Exception e1) {
+                            e1.printStackTrace();
+                        }
                     }
                 }
                 break;

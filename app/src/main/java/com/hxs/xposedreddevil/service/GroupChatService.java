@@ -129,17 +129,19 @@ public class GroupChatService extends IntentService {
             EventBus.getDefault().post(new MessageEvent("error"));
             Toast.makeText(this, "获取群聊列表失败", Toast.LENGTH_SHORT).show();
         }
-        db.close();
+        if (db != null) {
+            db.close();
+        }
     }
 
-    private Map<String,String> openChatRoomTable(SQLiteDatabase db) {
-        Map<String,String> map = new HashMap<>();
+    private Map<String, String> openChatRoomTable(SQLiteDatabase db) {
+        Map<String, String> map = new HashMap<>();
         Cursor cursor = db.rawQuery("select * from chatroom ", null);
         if (cursor.getCount() > 0) {
             while (cursor.moveToNext()) {
                 String name = cursor.getString(cursor.getColumnIndex("chatroomname"));
                 String displayname = cursor.getString(cursor.getColumnIndex("displayname"));
-                map.put(name,displayname);
+                map.put(name, displayname);
             }
         }
         cursor.close();
