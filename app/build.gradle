@@ -6,8 +6,8 @@ android {
         applicationId "com.hxs.xposedreddevil"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 25
-        versionName "2.0.5"
+        versionCode 26
+        versionName "2.0.6"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         ndk {
             //设置支持的SO库架构

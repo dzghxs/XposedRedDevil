@@ -7,9 +7,11 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Handler;
 import android.os.PowerManager;
 import android.provider.Settings;
+import android.support.annotation.RequiresApi;
 import android.text.TextUtils;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
@@ -63,6 +65,7 @@ public class AcxiliaryRedService extends AccessibilityService {
      */
     private AccessibilityNodeInfo rpNode;
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onAccessibilityEvent(final AccessibilityEvent event) {
         AcxiliaryServiceStaticValues.SetValues();
@@ -115,6 +118,9 @@ public class AcxiliaryRedService extends AccessibilityService {
                     AccessibilityNodeInfo rootNode = getRootInActiveWindow();
                     //开始抢红包
                     findOpenBtn(rootNode);
+//                    for (int i = 0; i < getWindows().size(); i++) {
+//                        findOpenBtn(getWindows().get(i).getRoot());
+//                    }
                 }
 
                 //判断是否是红包领取后的详情界面
@@ -261,6 +267,7 @@ public class AcxiliaryRedService extends AccessibilityService {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
+                    findOpenBtn(getRootInActiveWindow());
                 }
             }, 1500);
         }
