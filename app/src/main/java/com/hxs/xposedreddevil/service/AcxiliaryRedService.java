@@ -158,6 +158,9 @@ public class AcxiliaryRedService extends AccessibilityService {
                                                     findAccessibilityNodeInfosByViewId(redunmsgcircle).size()>0){
                                                 AccessibilityNodeInfo circlenode = itemNodes.get(i).
                                                         findAccessibilityNodeInfosByViewId(redunmsgcircle).get(0);
+                                                if (PropertiesUtils.getValue(RED_FILE, "nottootdisturb", "2").equals("2")) {
+                                                    return;
+                                                }
                                                 if (circlenode != null) {
                                                     itemNodes.get(i).performAction(AccessibilityNodeInfo.ACTION_CLICK);
                                                 }

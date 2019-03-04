@@ -20,6 +20,8 @@ public class NotRootActivity extends AppCompatActivity {
 
     @BindView(R.id.sw_noroot_main)
     Switch swNorootMain;
+    @BindView(R.id.sw_noroot_disturb)
+    Switch swNorootDisturb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +31,7 @@ public class NotRootActivity extends AppCompatActivity {
         DataInit();
     }
 
-    private void DataInit(){
+    private void DataInit() {
         try {
             if (PropertiesUtils.getValue(RED_FILE, "rednorootmain", "2").equals("1")) {
                 if (!PackageManagerUtil.isAccessibilitySettingsOn(this)) {
@@ -39,6 +41,11 @@ public class NotRootActivity extends AppCompatActivity {
                 swNorootMain.setChecked(true);
             } else {
                 swNorootMain.setChecked(false);
+            }
+            if(PropertiesUtils.getValue(RED_FILE,"nottootdisturb","2").equals("1")){
+                swNorootDisturb.setChecked(true);
+            }else{
+                swNorootDisturb.setChecked(false);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -54,6 +61,16 @@ public class NotRootActivity extends AppCompatActivity {
                     PropertiesUtils.putValue(RED_FILE, "rednorootmain", "1");
                 } else {
                     PropertiesUtils.putValue(RED_FILE, "rednorootmain", "2");
+                }
+            }
+        });
+        swNorootDisturb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean b) {
+                if (b) {
+                    PropertiesUtils.putValue(RED_FILE, "nottootdisturb", "1");
+                } else {
+                    PropertiesUtils.putValue(RED_FILE, "nottootdisturb", "2");
                 }
             }
         });
