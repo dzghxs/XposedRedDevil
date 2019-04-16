@@ -1,7 +1,7 @@
 # XposedRedDevil
 xposed框架抢红包参考https://blog.csdn.net/xiao_nian/article/details/79391417
 <Br/>免xposed框架抢红包参考https://www.jianshu.com/p/cd1cd53909d7
-<Br/>实现xposed框架与免xposed框架抢红包代码，现适配6.7.3，7.0.0，7.0.3。
+<Br/>实现xposed框架与免xposed框架抢红包代码，现适配6.7.3，7.0.0，7.0.3，7.0.4。
 <Br/>效果：
 <Br/>测试环境：
 <Br/>一加3T，android8.1，微信版本6.7.3和7.0.0（手机太渣，卡顿敬请谅解）
