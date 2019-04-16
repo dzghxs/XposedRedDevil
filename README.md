@@ -17,7 +17,6 @@ xposed框架抢红包参考https://blog.csdn.net/xiao_nian/article/details/79391
   <img src="https://raw.githubusercontent.com/dzghxs/XposedRedDevil/master/app/imgs/2019-01-08-15-29-55.gif" width="375" align="top">
 <Br/>
 <Br/>
-<Br/>微信7.0.3已适配
 <Br/>android 9.0可能没有效果，作者现在手里没有9.0的手机，等换个9.0的手机再适配9.0，笔芯
 <Br/>点个star是极好的
 <Br/>吹水扯牛QQ群：221061642
