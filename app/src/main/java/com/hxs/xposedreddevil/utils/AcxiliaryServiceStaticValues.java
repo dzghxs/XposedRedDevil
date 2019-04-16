@@ -40,6 +40,18 @@ public class AcxiliaryServiceStaticValues {
             msgredcontent = "com.tencent.mm:id/alv";
             msgisredid = "com.tencent.mm:id/alx";
             redunmsgcircle = "com.tencent.mm:id/azk";
+        } else if (wechatversion.equals("7.0.4")) {
+            LUCKEY_MONEY_RECEIVER = "com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyNotHookReceiveUI";
+            OPEN_ID = "com.tencent.mm:id/d02";
+            strredstatus = "com.tencent.mm:id/aqk";
+            chatredid = "com.tencent.mm:id/b6g";
+            chatid = "com.tencent.mm:id/b6c";
+            redcircle = "com.tencent.mm:id/nf";
+            chatnameid = "com.tencent.mm:id/b6e";
+            msgredid = "com.tencent.mm:id/ap9";
+            msgredcontent = "com.tencent.mm:id/aqj";
+            msgisredid = "com.tencent.mm:id/aql";
+            redunmsgcircle = "com.tencent.mm:id/b6d";
         } else if (wechatversion.equals("7.0.3")) {
             LUCKEY_MONEY_RECEIVER = "com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyNotHookReceiveUI";
             OPEN_ID = "com.tencent.mm:id/cyf";

@@ -5,6 +5,10 @@ import com.hxs.xposedreddevil.hook.LivePalyerHook;
 import com.hxs.xposedreddevil.hook.RedHook;
 import com.hxs.xposedreddevil.hook.RedHook673;
 import com.hxs.xposedreddevil.hook.RedHook703;
+import com.hxs.xposedreddevil.hook.RedHook704;
+import com.hxs.xposedreddevil.hook.SoulHook;
+import com.hxs.xposedreddevil.hook.YoutubeHook;
+import com.hxs.xposedreddevil.hook.demohook;
 
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
@@ -16,10 +20,11 @@ public class RedDevil implements IXposedHookLoadPackage {
 
     @Override
     public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
-//        LivePalyerHook.getInstance().init(lpparam);
         log("微信版本:" + PropertiesUtils.getValue(RED_FILE, "wechatversion", ""));
         if (PropertiesUtils.getValue(RED_FILE, "wechatversion", "").equals("")) {
             RedHook673.getInstance().init(lpparam);
+        } else if (PropertiesUtils.getValue(RED_FILE, "wechatversion", "").equals("7.0.4")) {
+            RedHook704.getInstance().init(lpparam);
         } else if (PropertiesUtils.getValue(RED_FILE, "wechatversion", "").equals("7.0.3")) {
             RedHook703.getInstance().init(lpparam);
         } else if (PropertiesUtils.getValue(RED_FILE, "wechatversion", "").equals("7.0.0")) {
