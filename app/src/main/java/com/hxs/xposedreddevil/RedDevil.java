@@ -1,14 +1,10 @@
 package com.hxs.xposedreddevil;
 
 import com.hxs.xposedreddevil.contentprovider.PropertiesUtils;
-import com.hxs.xposedreddevil.hook.LivePalyerHook;
 import com.hxs.xposedreddevil.hook.RedHook;
 import com.hxs.xposedreddevil.hook.RedHook673;
 import com.hxs.xposedreddevil.hook.RedHook703;
 import com.hxs.xposedreddevil.hook.RedHook704;
-import com.hxs.xposedreddevil.hook.SoulHook;
-import com.hxs.xposedreddevil.hook.YoutubeHook;
-import com.hxs.xposedreddevil.hook.demohook;
 
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
