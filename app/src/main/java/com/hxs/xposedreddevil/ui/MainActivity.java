@@ -44,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
     LinearLayout llSleep;
     @BindView(R.id.sw_sound)
     Switch swSound;
+    @BindView(R.id.sw_withdraw)
+    Switch swWithdraw;
     @BindView(R.id.sw_push)
     Switch swPush;
 
@@ -84,6 +86,11 @@ public class MainActivity extends AppCompatActivity {
                 swPush.setChecked(true);
             } else {
                 swPush.setChecked(false);
+            }
+            if (PropertiesUtils.getValue(RED_FILE, "withdraw", "2").equals("1")) {
+                swWithdraw.setChecked(true);
+            } else {
+                swWithdraw.setChecked(false);
             }
             etSleep.setText(PropertiesUtils.getValue(RED_FILE, "sleeptime", "1"));
         } catch (Exception e) {
@@ -138,6 +145,16 @@ public class MainActivity extends AppCompatActivity {
                     PropertiesUtils.putValue(RED_FILE, "push", "1");
                 } else {
                     PropertiesUtils.putValue(RED_FILE, "push", "2");
+                }
+            }
+        });
+        swWithdraw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean b) {
+                if(b){
+                    PropertiesUtils.putValue(RED_FILE, "withdraw", "1");
+                }else{
+                    PropertiesUtils.putValue(RED_FILE, "withdraw", "2");
                 }
             }
         });

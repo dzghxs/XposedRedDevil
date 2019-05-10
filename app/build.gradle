@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'org.greenrobot.greendao' // apply plugin
 
 android {
     compileSdkVersion 28
@@ -6,8 +7,8 @@ android {
         applicationId "com.hxs.xposedreddevil"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 29
-        versionName "2.0.9"
+        versionCode 30
+        versionName "2.1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         ndk {
             //设置支持的SO库架构
@@ -20,6 +21,14 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    greendao {
+        //数据库的schema版本，也可以理解为数据库版本号 如果entity字段有增加更改字段 则会更新数据库
+        schemaVersion 1
+        //设置DaoMaster、DaoSession、Dao包名，也就是要放置这些类的包的全路径。
+        daoPackage 'com.hxs.xposedreddevil.greendao'
+        //设置DaoMaster、DaoSession、Dao目录
+        targetGenDir 'src/main/java'
+    }
 }
 
 dependencies {
@@ -31,8 +40,11 @@ dependencies {
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     implementation 'com.lzy.net:okgo:3.0.4'
     implementation 'com.google.code.gson:gson:2.8.4'
+    implementation 'com.alibaba:fastjson:1.2.47'
     implementation 'com.jakewharton:butterknife:8.8.1'
-    implementation 'com.hjq:xxpermissions:5.0'
+    implementation 'com.hjq:xxpermissions:5.2'
+    implementation 'org.greenrobot:greendao:3.2.2'
+    implementation 'org.greenrobot:greendao-generator:3.2.2'
     implementation 'com.github.bumptech.glide:glide:4.8.0'
     implementation 'org.greenrobot:eventbus:3.1.1'
     implementation 'skin.support:skin-support:3.1.1'                   // skin-support 基础控件支持

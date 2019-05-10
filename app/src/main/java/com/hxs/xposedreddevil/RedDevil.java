@@ -1,10 +1,14 @@
 package com.hxs.xposedreddevil;
 
 import com.hxs.xposedreddevil.contentprovider.PropertiesUtils;
+import com.hxs.xposedreddevil.hook.LivePalyerHook;
 import com.hxs.xposedreddevil.hook.RedHook;
 import com.hxs.xposedreddevil.hook.RedHook673;
 import com.hxs.xposedreddevil.hook.RedHook703;
 import com.hxs.xposedreddevil.hook.RedHook704;
+import com.hxs.xposedreddevil.hook.RedWithdrawHook;
+import com.hxs.xposedreddevil.hook.SoulHook;
+import com.hxs.xposedreddevil.hook.demohook;
 
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
@@ -27,6 +31,9 @@ public class RedDevil implements IXposedHookLoadPackage {
             RedHook.getInstance().init(lpparam);
         } else if (PropertiesUtils.getValue(RED_FILE, "wechatversion", "").equals("6.7.3")) {
             RedHook673.getInstance().init(lpparam);
+        }
+        if(PropertiesUtils.getValue(RED_FILE, "withdraw", "2").equals("1")){
+            RedWithdrawHook.getInstance().init(lpparam);
         }
     }
 }
