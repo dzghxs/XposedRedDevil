@@ -20,6 +20,7 @@ import com.hxs.xposedreddevil.model.DBean;
 import com.hxs.xposedreddevil.model.FilterSaveBean;
 import com.hxs.xposedreddevil.model.MsgsBean;
 import com.hxs.xposedreddevil.model.RedHookBean;
+import com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues;
 import com.hxs.xposedreddevil.utils.PinYinUtils;
 import com.hxs.xposedreddevil.utils.PlaySoundUtils;
 
@@ -34,6 +35,7 @@ import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import fr.arnaudguyon.xmltojsonlib.XmlToJson;
 
+import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.SetValues;
 import static com.hxs.xposedreddevil.utils.Constant.RED_FILE;
 import static de.robv.android.xposed.XposedBridge.log;
 import static de.robv.android.xposed.XposedHelpers.callStaticMethod;
@@ -47,7 +49,6 @@ public class RedHook {
     Gson gson = new Gson();
     MsgsBean bean = new MsgsBean();
     DBean dBean = new DBean();
-    RedHookBean redHookBean = new RedHookBean();
     String nativeUrlString = "";
     String cropname = "";
     String data = "";
@@ -77,16 +78,9 @@ public class RedHook {
     private void hook(final XC_LoadPackage.LoadPackageParam lpparam) {
 
         try {
-            Field disableHooksFiled = ClassLoader.getSystemClassLoader()
-                    .loadClass("de.robv.android.xposed.XposedBridge")
-                    .getDeclaredField("disableHooks");
-            disableHooksFiled.setAccessible(true);
-//            Object enable = disableHooksFiled.get(null);  // 当前状态
-//            log("状态---------->"+enable);
-            disableHooksFiled.set(null, false);            // 设置为关闭
-//            disableHooksFiled.set(null, true);            // 设置为开启
             if (lpparam.packageName.equals("com.tencent.mm")) {
                 log("监听微信");
+                SetValues();
                 // hook微信插入数据的方法，监听红包消息
                 XposedHelpers.findAndHookMethod("com.tencent.wcdb.database.SQLiteDatabase",
                         lpparam.classLoader, "insertWithOnConflict",
@@ -102,8 +96,8 @@ public class RedHook {
                                     if (item.getValue() != null) {
 //                                        log(item.getKey() + "---------" + item.getValue().toString());
                                         //过滤选择不抢的群组
-                                        if(item.getKey().equals("talker")){
-                                            if(!PropertiesUtils.getValue(RED_FILE,"selectfilter","").equals("")) {
+                                        if (item.getKey().equals("talker")) {
+                                            if (!PropertiesUtils.getValue(RED_FILE, "selectfilter", "").equals("")) {
                                                 List<FilterSaveBean> list = new ArrayList<>();
                                                 JsonArray jsonArray = parser.parse(PropertiesUtils
                                                         .getValue(RED_FILE, "selectfilter", "")).getAsJsonArray();
@@ -114,7 +108,7 @@ public class RedHook {
                                                     list.add(filterSaveBean);
                                                 }
                                                 for (int i = 0; i < list.size(); i++) {
-                                                    if(list.get(i).getName().equals(item.getValue().toString())){
+                                                    if (list.get(i).getName().equals(item.getValue().toString())) {
                                                         return;
                                                     }
                                                 }
@@ -126,12 +120,9 @@ public class RedHook {
                                         }
                                         stringMap.put(item.getKey(), item.getValue().toString());
                                     } else {
-//                                        log(item.getKey() + "---------" + "null");
                                         stringMap.put(item.getKey(), "null");
                                     }
                                 }
-//                                log("------------------------insert over---------------------" + "\n\n");
-
                                 // 判断插入的数据是否是发送过来的消息
                                 String tableName = (String) param.args[0];
                                 log("tableName:" + tableName);
@@ -148,8 +139,6 @@ public class RedHook {
                                     if (PropertiesUtils.getValue(RED_FILE, "redmain", "2").equals("2")) {
                                         return;
                                     }
-//                                    log("获取状态------------>" + PropertiesUtils.getValue(RED_FILE, "red", "2"));
-//                                    log("获取map------------>" + stringMap.get("isSend"));
                                     if (PropertiesUtils.getValue(RED_FILE, "red", "2").equals("1")) {
                                         if (stringMap.get("isSend").equals("1")) {
                                             return;
@@ -180,7 +169,6 @@ public class RedHook {
                 findAndHookMethod("com.tencent.mm.ui.LauncherUI", lpparam.classLoader, "onCreate", Bundle.class, new XC_MethodHook() {
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-//                        log("com.tencent.mm.ui.LauncherUI onCreated" + "\n");
                         launcherUiActivity = (Activity) param.thisObject;
                     }
                 });
@@ -189,23 +177,16 @@ public class RedHook {
                 findAndHookMethod("com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyNotHookReceiveUI", lpparam.classLoader, "onCreate", Bundle.class, new XC_MethodHook() {
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-//                        Activity activity = (Activity) param.thisObject;
-//                        String key_native_url = activity.getIntent().getStringExtra("key_native_url");
-//                        String key_username = activity.getIntent().getStringExtra("key_username");
-//                        int key_way = activity.getIntent().getIntExtra("key_way", 0);
-//                        log("key_native_url: " + key_native_url + "\n");
-//                        log("key_way: " + key_way + "\n");
-//                        log("key_username: " + key_username + "\n");
                     }
                 });
 
-                XposedHelpers.findAndHookMethod("com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyNotHookReceiveUI", lpparam.classLoader, "c", int.class, int.class,
-                        String.class, findClass("com.tencent.mm.ah.m", lpparam.classLoader), new XC_MethodHook() {
+                XposedHelpers.findAndHookMethod(AcxiliaryServiceStaticValues.LuckyMoneyNotHookReceiveUI, lpparam.classLoader, AcxiliaryServiceStaticValues.LuckyMoneyNotHookReceiveUIMethod, int.class, int.class,
+                        String.class, findClass(AcxiliaryServiceStaticValues.LuckyMoneyNotHookReceiveUIMethodParameter, lpparam.classLoader), new XC_MethodHook() {
                             //进行hook操作
                             @Override
                             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
 //                                log("com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyReceiveUI: Method d called" + "\n");
-                                Field buttonField = XposedHelpers.findField(param.thisObject.getClass(), "nai");
+                                Field buttonField = XposedHelpers.findField(param.thisObject.getClass(), AcxiliaryServiceStaticValues.LuckyMoneyNotHookReceiveUIButton);
                                 final Button kaiButton = (Button) buttonField.get(param.thisObject);
                                 kaiButton.performClick();
                             }
@@ -249,9 +230,8 @@ public class RedHook {
             paramau.putExtra("key_native_url", nativeUrlString);
             paramau.putExtra("key_username", talker);
             paramau.putExtra("key_cropname", cropname);       //7.0新增
-//            callStaticMethod(findClass("com.tencent.mm.br.d", lpparam.classLoader), "b", launcherUiActivity, "luckymoney", ".ui.LuckyMoneyReceiveUI", paramau);
-            callStaticMethod(findClass("com.tencent.mm.br.d", lpparam.classLoader), "b",
-                    launcherUiActivity, "luckymoney", ".ui.LuckyMoneyNotHookReceiveUI", paramau);
+            callStaticMethod(findClass(AcxiliaryServiceStaticValues.handleLuckyMoney, lpparam.classLoader), AcxiliaryServiceStaticValues.handleLuckyMoneyMethod,
+                    launcherUiActivity, "luckymoney", AcxiliaryServiceStaticValues.handleLuckyMoneyClass, paramau);
         } else {
             log("launcherUiActivity == null" + "\n");
         }
