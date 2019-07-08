@@ -79,8 +79,8 @@ public class RedHook {
 
         try {
             if (lpparam.packageName.equals("com.tencent.mm")) {
-                log("监听微信");
                 SetValues();
+                log("监听微信");
                 // hook微信插入数据的方法，监听红包消息
                 XposedHelpers.findAndHookMethod("com.tencent.wcdb.database.SQLiteDatabase",
                         lpparam.classLoader, "insertWithOnConflict",
@@ -89,12 +89,12 @@ public class RedHook {
                             @Override
                             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                                 // 打印插入数据信息
-//                                log("------------------------insert start---------------------" + "\n\n");
+                                log("------------------------insert start---------------------" + "\n\n");
                                 ContentValues contentValues = (ContentValues) param.args[2];
                                 String title = "";
                                 for (Map.Entry<String, Object> item : contentValues.valueSet()) {
                                     if (item.getValue() != null) {
-//                                        log(item.getKey() + "---------" + item.getValue().toString());
+                                        log(item.getKey() + "---------" + item.getValue().toString());
                                         //过滤选择不抢的群组
                                         if (item.getKey().equals("talker")) {
                                             if (!PropertiesUtils.getValue(RED_FILE, "selectfilter", "").equals("")) {
@@ -123,7 +123,7 @@ public class RedHook {
                                         stringMap.put(item.getKey(), "null");
                                     }
                                 }
-//                                log("------------------------insert end---------------------" + "\n\n");
+                                log("------------------------insert end---------------------" + "\n\n");
                                 // 判断插入的数据是否是发送过来的消息
                                 String tableName = (String) param.args[0];
                                 log("tableName:" + tableName);

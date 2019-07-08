@@ -21,6 +21,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    lintOptions {
+        abortOnError false
+    }
     greendao {
         //数据库的schema版本，也可以理解为数据库版本号 如果entity字段有增加更改字段 则会更新数据库
         schemaVersion 1
@@ -54,7 +57,7 @@ dependencies {
     implementation 'org.jsoup:jsoup:1.11.2'
     implementation 'org.litepal.android:core:1.6.0'
     implementation 'me.jessyan:autosize:1.1.2'
-    implementation 'net.zetetic:android-database-sqlcipher:4.2.0@aar'
+    implementation 'net.zetetic:android-database-sqlcipher:3.5.9@aar'
     implementation 'com.tencent.bugly:crashreport_upgrade:latest.release'
     //其中latest.release指代最新版本号，也可以指定明确的版本号，例如1.2.0
     testImplementation 'junit:junit:4.12'

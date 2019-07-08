@@ -10,7 +10,6 @@ import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
 import static com.hxs.xposedreddevil.utils.Constant.RED_FILE;
-import static de.robv.android.xposed.XposedBridge.log;
 
 public class RedDevil implements IXposedHookLoadPackage {
 
@@ -18,8 +17,8 @@ public class RedDevil implements IXposedHookLoadPackage {
     public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
         LivePalyerHook.getInstance().init(lpparam);
         demohook.getInstance().init(lpparam);
-        log("微信版本:" + PropertiesUtils.getValue(RED_FILE, "wechatversion", ""));
         RedHook.getInstance().init(lpparam);
         RedWithdrawHook.getInstance().init(lpparam);
+        System.out.println("微信版本:" + PropertiesUtils.getValue(RED_FILE, "wechatversion", ""));
     }
 }
