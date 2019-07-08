@@ -8,6 +8,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -31,6 +32,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -39,7 +41,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.hxs.xposedreddevil.utils.Constant.COPY_WX_DATA_DB;
 import static com.hxs.xposedreddevil.utils.Constant.RED_FILE;
+import static com.hxs.xposedreddevil.utils.Constant.currApkPath;
 
 public class SelectFilterActivity extends AppCompatActivity
         implements FilterAdapter.onItemClickListener {
@@ -190,6 +194,29 @@ public class SelectFilterActivity extends AppCompatActivity
         adapter.notifyDataSetChanged();
     }
 
+    /**
+     * 删除单个文件
+     *
+     * @param filePath$Name 要删除的文件的文件名
+     * @return 单个文件删除成功返回true，否则返回false
+     */
+    private boolean deleteSingleFile(String filePath$Name) {
+        File file = new File(filePath$Name);
+        // 如果文件路径所对应的文件存在，并且是一个文件，则直接删除
+        if (file.exists() && file.isFile()) {
+            if (file.delete()) {
+                Log.e("--Method--", "Copy_Delete.deleteSingleFile: 删除单个文件" + filePath$Name + "成功！");
+                return true;
+            } else {
+                Toast.makeText(getApplicationContext(), "删除单个文件" + filePath$Name + "失败！", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        } else {
+            Toast.makeText(getApplicationContext(), "删除单个文件失败：" + filePath$Name + "不存在！", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+    }
+
     @OnClick({R.id.iv_class_back, R.id.tv_class_add, R.id.fab_refresh})
     public void onViewClicked(View view) {
         switch (view.getId()) {
@@ -212,6 +239,7 @@ public class SelectFilterActivity extends AppCompatActivity
                 break;
             case R.id.fab_refresh:
                 beanList.clear();
+//                deleteSingleFile(currApkPath + COPY_WX_DATA_DB);
                 startService(new Intent(this, GroupChatService.class));
                 loadingDialog.show();
                 break;

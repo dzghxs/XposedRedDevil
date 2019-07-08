@@ -123,6 +123,7 @@ public class RedHook {
                                         stringMap.put(item.getKey(), "null");
                                     }
                                 }
+//                                log("------------------------insert end---------------------" + "\n\n");
                                 // 判断插入的数据是否是发送过来的消息
                                 String tableName = (String) param.args[0];
                                 log("tableName:" + tableName);

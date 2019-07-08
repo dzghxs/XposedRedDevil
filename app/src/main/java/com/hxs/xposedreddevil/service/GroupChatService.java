@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.hxs.xposedreddevil.entry.ChatRoom;
@@ -119,6 +120,10 @@ public class GroupChatService extends IntentService {
             @Override
             public void postKey(SQLiteDatabase database) {
                 database.rawExecSQL("PRAGMA cipher_migrate;"); // 兼容2.0的数据库
+                database.execSQL("PRAGMA cipher_page_size = 1024");
+                database.execSQL("PRAGMA kdf_iter = 64000");
+                database.execSQL("PRAGMA cipher_hmac_algorithm = HMAC_SHA1");
+                database.execSQL("PRAGMA cipher_kdf_algorithm = PBKDF2_HMAC_SHA1");
             }
         };
         SQLiteDatabase db = null;
@@ -147,4 +152,5 @@ public class GroupChatService extends IntentService {
         cursor.close();
         return map;
     }
+
 }

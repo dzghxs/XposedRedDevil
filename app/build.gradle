@@ -7,8 +7,8 @@ android {
         applicationId "com.hxs.xposedreddevil"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 32
-        versionName "2.1.2"
+        versionCode 33
+        versionName "2.1.3"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         ndk {
             //设置支持的SO库架构
@@ -39,7 +39,7 @@ dependencies {
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     implementation 'com.lzy.net:okgo:3.0.4'
-    implementation 'com.google.code.gson:gson:2.8.4'
+    implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'com.jakewharton:butterknife:8.8.1'
     implementation 'com.hjq:xxpermissions:5.2'
     implementation 'org.greenrobot:greendao:3.2.2'
@@ -54,7 +54,7 @@ dependencies {
     implementation 'org.jsoup:jsoup:1.11.2'
     implementation 'org.litepal.android:core:1.6.0'
     implementation 'me.jessyan:autosize:1.1.2'
-    implementation 'net.zetetic:android-database-sqlcipher:3.5.9@aar'
+    implementation 'net.zetetic:android-database-sqlcipher:4.2.0@aar'
     implementation 'com.tencent.bugly:crashreport_upgrade:latest.release'
     //其中latest.release指代最新版本号，也可以指定明确的版本号，例如1.2.0
     testImplementation 'junit:junit:4.12'
