@@ -9,7 +9,7 @@ import android.os.Environment;
  */
 
 public class Constant {
-    public static final String RED_FILE = Environment.getExternalStorageDirectory()+"/xposedreddevil/reddevil_config.pro";
+    public static final String RED_FILE = Environment.getExternalStorageDirectory() + "/xposedreddevil/reddevil_config.pro";
     public static final String TARGET_ID = "targetId";
     public static final String CONVERSATION_TYPE = "conversationType";
     public static final String TITLE = "title";
@@ -21,7 +21,7 @@ public class Constant {
     public static final String WX_FILE_PATH = "/storage/emulated/0/Tencent/micromsg/";                    // 微信保存聊天时语音、图片、视频文件的地址
 
     //  public static final String currApkPath = "/data/data/com.dfsc.wechatrecord/"
-    public static final String currApkPath = "/storage/emulated/0/xposedreddevil/";
+    public static final String currApkPath = Environment.getExternalStorageDirectory() + "/xposedreddevil/";
     public static final String COPY_WX_DATA_DB = "wx_data.db";
 
     public static String uin = "";

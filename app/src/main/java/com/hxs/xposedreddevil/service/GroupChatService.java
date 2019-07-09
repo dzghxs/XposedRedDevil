@@ -93,7 +93,7 @@ public class GroupChatService extends IntentService {
             if (u.length() == 0) {
                 Toast.makeText(this, "请登录微信后重试", Toast.LENGTH_SHORT).show();
             }
-            Constant.dbPwd = AppMD5Util.getMD5Str(imei + u).substring(0, 7);
+            Constant.dbPwd = AppMD5Util.getMD5Str(imei + u).substring(0, 7).toLowerCase();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -119,7 +119,7 @@ public class GroupChatService extends IntentService {
 
             @Override
             public void postKey(SQLiteDatabase database) {
-//                database.rawExecSQL("PRAGMA cipher_migrate;"); // 兼容2.0的数据库
+                database.rawExecSQL("PRAGMA cipher_migrate;"); // 兼容2.0的数据库
                 database.execSQL("PRAGMA cipher_page_size = 1024");
                 database.execSQL("PRAGMA kdf_iter = 64000");
                 database.execSQL("PRAGMA cipher_hmac_algorithm = HMAC_SHA1");
