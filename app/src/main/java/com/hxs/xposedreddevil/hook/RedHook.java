@@ -2,7 +2,9 @@ package com.hxs.xposedreddevil.hook;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Application;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -80,119 +82,143 @@ public class RedHook {
         try {
             if (lpparam.packageName.equals("com.tencent.mm")) {
                 SetValues();
+                if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.O_MR1) {
+                    // 过防止调用loadClass加载 de.robv.android.xposed.
+                    XposedHelpers.findAndHookMethod(ClassLoader.class, "loadClass", String.class, new XC_MethodHook() {
+                        @Override
+                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                            if (param.args != null && param.args[0] != null && param.args[0].toString().startsWith("de.robv.android.xposed.")) {
+                                // 改成一个不存在的类
+                                param.args[0] = "com.tencent.cndy";
+                            }
+
+                            super.beforeHookedMethod(param);
+                        }
+                    });
+                }
                 log("监听微信");
                 // hook微信插入数据的方法，监听红包消息
-                XposedHelpers.findAndHookMethod("com.tencent.wcdb.database.SQLiteDatabase",
-                        lpparam.classLoader, "insertWithOnConflict",
-                        String.class, String.class, ContentValues.class, int.class, new XC_MethodHook() {
-                            @RequiresApi(api = Build.VERSION_CODES.O)
-                            @Override
-                            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                                // 打印插入数据信息
-                                log("------------------------insert start---------------------" + "\n\n");
-                                ContentValues contentValues = (ContentValues) param.args[2];
-                                String title = "";
-                                for (Map.Entry<String, Object> item : contentValues.valueSet()) {
-                                    if (item.getValue() != null) {
-                                        log(item.getKey() + "---------" + item.getValue().toString());
-                                        //过滤选择不抢的群组
-                                        if (item.getKey().equals("talker")) {
-                                            if (!PropertiesUtils.getValue(RED_FILE, "selectfilter", "").equals("")) {
-                                                List<FilterSaveBean> list = new ArrayList<>();
-                                                JsonArray jsonArray = parser.parse(PropertiesUtils
-                                                        .getValue(RED_FILE, "selectfilter", "")).getAsJsonArray();
-                                                for (JsonElement user : jsonArray) {
-                                                    filterSaveBean = new FilterSaveBean();
-                                                    //使用GSON，直接转成Bean对象
-                                                    filterSaveBean = gson.fromJson(user, FilterSaveBean.class);
-                                                    list.add(filterSaveBean);
-                                                }
-                                                for (int i = 0; i < list.size(); i++) {
-                                                    if (list.get(i).getName().equals(item.getValue().toString())) {
-                                                        return;
+                XposedHelpers.findAndHookMethod(Application.class, "attach", Context.class, new XC_MethodHook() {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        final ClassLoader cl = ((Context) param.args[0]).getClassLoader(); // 获取ClassLoader
+                        Class<?> hookClass = null;
+                        Class<?> hookLauncherUIClass = null;
+                        hookClass = cl.loadClass("com.tencent.wcdb.database.SQLiteDatabase");
+                        hookLauncherUIClass = cl.loadClass("com.tencent.mm.ui.LauncherUI");
+                        XposedHelpers.findAndHookMethod(hookClass,
+                                "insertWithOnConflict",
+                                String.class, String.class, ContentValues.class, int.class, new XC_MethodHook() {
+                                    @RequiresApi(api = Build.VERSION_CODES.O)
+                                    @Override
+                                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                                        // 打印插入数据信息
+//                                        log("------------------------insert start---------------------" + "\n\n");
+                                        ContentValues contentValues = (ContentValues) param.args[2];
+                                        String title = "";
+                                        for (Map.Entry<String, Object> item : contentValues.valueSet()) {
+                                            if (item.getValue() != null) {
+//                                                log(item.getKey() + "---------" + item.getValue().toString());
+                                                //过滤选择不抢的群组
+                                                if (item.getKey().equals("talker")) {
+                                                    if (!PropertiesUtils.getValue(RED_FILE, "selectfilter", "").equals("")) {
+                                                        List<FilterSaveBean> list = new ArrayList<>();
+                                                        JsonArray jsonArray = parser.parse(PropertiesUtils
+                                                                .getValue(RED_FILE, "selectfilter", "")).getAsJsonArray();
+                                                        for (JsonElement user : jsonArray) {
+                                                            filterSaveBean = new FilterSaveBean();
+                                                            //使用GSON，直接转成Bean对象
+                                                            filterSaveBean = gson.fromJson(user, FilterSaveBean.class);
+                                                            list.add(filterSaveBean);
+                                                        }
+                                                        for (int i = 0; i < list.size(); i++) {
+                                                            if (list.get(i).getName().equals(item.getValue().toString())) {
+                                                                return;
+                                                            }
+                                                        }
                                                     }
                                                 }
+                                                if (item.getKey().equals("content")) {
+                                                    String data = item.getValue().toString();
+                                                    title = data.split("<receivertitle>")[1].split("</receivertitle>")[0];
+                                                }
+                                                stringMap.put(item.getKey(), item.getValue().toString());
+                                            } else {
+                                                stringMap.put(item.getKey(), "null");
                                             }
                                         }
-                                        if (item.getKey().equals("content")) {
-                                            String data = item.getValue().toString();
-                                            title = data.split("<receivertitle>")[1].split("</receivertitle>")[0];
-                                        }
-                                        stringMap.put(item.getKey(), item.getValue().toString());
-                                    } else {
-                                        stringMap.put(item.getKey(), "null");
-                                    }
-                                }
-                                log("------------------------insert end---------------------" + "\n\n");
-                                // 判断插入的数据是否是发送过来的消息
-                                String tableName = (String) param.args[0];
-                                log("tableName:" + tableName);
-                                if (TextUtils.isEmpty(tableName) || !tableName.equals("message")) {
-                                    return;
-                                }
-                                // 判断是否是红包消息类型
-                                Integer type = contentValues.getAsInteger("type");
-                                log("type" + type);
-                                if (null == type) {
-                                    return;
-                                }
-                                if (type == 436207665 || type == 469762097) {
-                                    if (PropertiesUtils.getValue(RED_FILE, "redmain", "2").equals("2")) {
-                                        return;
-                                    }
-                                    if (PropertiesUtils.getValue(RED_FILE, "red", "2").equals("1")) {
-                                        if (stringMap.get("isSend").equals("1")) {
+//                                        log("------------------------insert end---------------------" + "\n\n");
+                                        // 判断插入的数据是否是发送过来的消息
+                                        String tableName = (String) param.args[0];
+                                        log("tableName:" + tableName);
+                                        if (TextUtils.isEmpty(tableName) || !tableName.equals("message")) {
                                             return;
                                         }
-                                    }
-                                    if (PropertiesUtils.getValue(RED_FILE, "sound", "2").equals("1")) {
-                                        PlaySoundUtils.Play();
-                                    }
-                                    if (PropertiesUtils.getValue(RED_FILE, "push", "2").equals("1")) {
+                                        // 判断是否是红包消息类型
+                                        Integer type = contentValues.getAsInteger("type");
+                                        log("type" + type);
+                                        if (null == type) {
+                                            return;
+                                        }
+                                        if (type == 436207665 || type == 469762097) {
+                                            if (PropertiesUtils.getValue(RED_FILE, "redmain", "2").equals("2")) {
+                                                return;
+                                            }
+                                            if (PropertiesUtils.getValue(RED_FILE, "red", "2").equals("1")) {
+                                                if (stringMap.get("isSend").equals("1")) {
+                                                    return;
+                                                }
+                                            }
+                                            if (PropertiesUtils.getValue(RED_FILE, "sound", "2").equals("1")) {
+                                                PlaySoundUtils.Play();
+                                            }
+                                            if (PropertiesUtils.getValue(RED_FILE, "push", "2").equals("1")) {
 //                                        EventBus.getDefault().post(new MessageEvent("天降红包"));
+                                            }
+                                            log("接收标题---------->" + title);
+                                            if (PinYinUtils.getPingYin(title).contains("gua") ||
+                                                    title.contains("圭") ||
+                                                    title.contains("G") ||
+                                                    title.contains("GUA") ||
+                                                    title.contains("gua") ||
+                                                    title.contains("g")) {
+                                                return;
+                                            }
+                                            // 处理红包消息
+                                            handleLuckyMoney(contentValues, cl);
+                                        }
                                     }
-                                    log("接收标题---------->" + title);
-                                    if (PinYinUtils.getPingYin(title).contains("gua") ||
-                                            title.contains("圭") ||
-                                            title.contains("G") ||
-                                            title.contains("GUA") ||
-                                            title.contains("gua") ||
-                                            title.contains("g")) {
-                                        return;
-                                    }
-                                    // 处理红包消息
-                                    handleLuckyMoney(contentValues, lpparam);
-                                }
-                            }
-                        });
-
-                // hook 微信主界面的onCreate方法，获得主界面对象
-                findAndHookMethod("com.tencent.mm.ui.LauncherUI", lpparam.classLoader, "onCreate", Bundle.class, new XC_MethodHook() {
-                    @Override
-                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                        launcherUiActivity = (Activity) param.thisObject;
-                    }
-                });
-
-                // hook领取红包页面的onCreate方法，打印Intent中的参数（只起到调试作用）
-                findAndHookMethod("com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyNotHookReceiveUI", lpparam.classLoader, "onCreate", Bundle.class, new XC_MethodHook() {
-                    @Override
-                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    }
-                });
-
-                XposedHelpers.findAndHookMethod(AcxiliaryServiceStaticValues.LuckyMoneyNotHookReceiveUI, lpparam.classLoader, AcxiliaryServiceStaticValues.LuckyMoneyNotHookReceiveUIMethod, int.class, int.class,
-                        String.class, findClass(AcxiliaryServiceStaticValues.LuckyMoneyNotHookReceiveUIMethodParameter, lpparam.classLoader), new XC_MethodHook() {
-                            //进行hook操作
+                                });
+                        // hook 微信主界面的onCreate方法，获得主界面对象
+                        findAndHookMethod(hookLauncherUIClass, "onCreate", Bundle.class, new XC_MethodHook() {
                             @Override
                             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-//                                log("com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyReceiveUI: Method d called" + "\n");
-                                Field buttonField = XposedHelpers.findField(param.thisObject.getClass(), AcxiliaryServiceStaticValues.LuckyMoneyNotHookReceiveUIButton);
-                                final Button kaiButton = (Button) buttonField.get(param.thisObject);
-                                kaiButton.performClick();
+                                launcherUiActivity = (Activity) param.thisObject;
                             }
                         });
+
+                        // hook领取红包页面的onCreate方法，打印Intent中的参数（只起到调试作用）
+                        findAndHookMethod("com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyNotHookReceiveUI", lpparam.classLoader, "onCreate", Bundle.class, new XC_MethodHook() {
+                            @Override
+                            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                            }
+                        });
+
+                        XposedHelpers.findAndHookMethod(findClass(AcxiliaryServiceStaticValues.LuckyMoneyNotHookReceiveUI, cl), AcxiliaryServiceStaticValues.LuckyMoneyNotHookReceiveUIMethod, int.class, int.class,
+                                String.class, findClass(AcxiliaryServiceStaticValues.LuckyMoneyNotHookReceiveUIMethodParameter, cl), new XC_MethodHook() {
+                                    //进行hook操作
+                                    @Override
+                                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+//                                log("com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyReceiveUI: Method d called" + "\n");
+                                        Field buttonField = XposedHelpers.findField(param.thisObject.getClass(), AcxiliaryServiceStaticValues.LuckyMoneyNotHookReceiveUIButton);
+                                        final Button kaiButton = (Button) buttonField.get(param.thisObject);
+                                        kaiButton.performClick();
+                                    }
+                                });
+                    }
+                });
             }
+            log("监听微信2");
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -201,7 +227,7 @@ public class RedHook {
     }
 
     // 处理红包消息
-    private void handleLuckyMoney(ContentValues contentValues, XC_LoadPackage.LoadPackageParam lpparam) throws Exception {
+    private void handleLuckyMoney(ContentValues contentValues, ClassLoader lpparam) throws Exception {
         // 获得发送人
         String talker = contentValues.getAsString("talker");
         String content = contentValues.getAsString("content");
@@ -231,7 +257,7 @@ public class RedHook {
             paramau.putExtra("key_native_url", nativeUrlString);
             paramau.putExtra("key_username", talker);
             paramau.putExtra("key_cropname", cropname);       //7.0新增
-            callStaticMethod(findClass(AcxiliaryServiceStaticValues.handleLuckyMoney, lpparam.classLoader), AcxiliaryServiceStaticValues.handleLuckyMoneyMethod,
+            callStaticMethod(findClass(AcxiliaryServiceStaticValues.handleLuckyMoney, lpparam), AcxiliaryServiceStaticValues.handleLuckyMoneyMethod,
                     launcherUiActivity, "luckymoney", AcxiliaryServiceStaticValues.handleLuckyMoneyClass, paramau);
         } else {
             log("launcherUiActivity == null" + "\n");
