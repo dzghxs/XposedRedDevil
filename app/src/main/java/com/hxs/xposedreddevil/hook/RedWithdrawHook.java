@@ -36,6 +36,7 @@ import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
 import static com.hxs.xposedreddevil.utils.Constant.RED_FILE;
+import static de.robv.android.xposed.XposedBridge.log;
 
 public class RedWithdrawHook {
 
@@ -71,8 +72,8 @@ public class RedWithdrawHook {
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                     super.afterHookedMethod(param);
                     Context context = (Context) param.args[0];
-                    hookWxChatUIMM(context, lpparam.classLoader);
-                    hookDB(context, lpparam.classLoader);
+                    hookWxChatUIMM(context, context.getClassLoader());
+                    hookDB(context, context.getClassLoader());
                 }
             });
         }
@@ -185,6 +186,11 @@ public class RedWithdrawHook {
         try {
             if (position < adapter.getCount()) {
                 itemData = gson.fromJson(gson.toJson(adapter.getItem(position)), JsonObject.class);
+                try {
+                    log("" + adapter.getItem(position));
+                } catch (Exception e) {
+                    System.out.println("防撤回------------>" + e);
+                }
                 //经过以上代码可以知道    itemViewType == 1的时候打印的值是正常对话列表的值
                 if (itemData != null && (view != null && view.toString().contains("com.tencent.mm.ui.chatting.viewitems.v"))) {
                     String field_msgId = itemData.get("field_msgId").toString();
@@ -219,8 +225,8 @@ public class RedWithdrawHook {
                         lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
                         lp.addRule(RelativeLayout.BELOW, msgView.getId());
                         lp.bottomMargin = 50;
-    //                                                            textView.setText(Html.fromHtml("<font color='#FF0000'>想</font><font color='#FF6600'>撤</font><font color='#FFFF00'>回</font><font color='#008000'>消</font><font color='#00FFFF'>息</font><font color='#0000FF'>？</font><font color='#800080'>biubiubiu</font>"));
-                        textView.setText("对方想撤回消息，但被我乃伊组特了");
+                        textView.setText(Html.fromHtml("<font color='#FF0000'>想</font><font color='#FF6600'>撤</font><font color='#FFFF00'>回</font><font color='#008000'>消</font><font color='#00FFFF'>息</font><font color='#0000FF'>？</font><font color='#800080'>biubiubiu</font>"));
+//                        textView.setText("对方想撤回消息，但被我乃伊组特了");
                         textView.setVisibility(View.VISIBLE);
                     }
                 }
