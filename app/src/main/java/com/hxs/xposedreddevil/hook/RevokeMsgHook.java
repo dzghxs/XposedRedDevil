@@ -224,7 +224,7 @@ public class RevokeMsgHook {
             long createTime = XposedHelpers.getLongField(msg, "field_createTime");
             XposedHelpers.setIntField(msg, "field_type", contentValues.getAsInteger("type"));
             XposedHelpers.setObjectField(msg, "field_content",
-                    contentValues.getAsString("content") + "(已被阻止)");
+                    contentValues.getAsString("content") + "(已经让我留下了)");
             XposedHelpers.setLongField(msg, "field_createTime", createTime + 1L);
             XposedHelpers.callMethod(storageInsertObject, insertMethodName, msg, false);
         }
