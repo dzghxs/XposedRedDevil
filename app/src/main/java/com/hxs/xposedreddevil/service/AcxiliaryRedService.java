@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Handler;
 import android.os.PowerManager;
+import android.os.Vibrator;
 import android.provider.Settings;
 import android.support.annotation.RequiresApi;
 import android.text.TextUtils;
@@ -17,10 +18,14 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.hxs.xposedreddevil.contentprovider.PropertiesUtils;
+import com.hxs.xposedreddevil.model.MsgsBean;
 import com.hxs.xposedreddevil.utils.AccessibilityUtils;
 import com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues;
+import com.hxs.xposedreddevil.utils.MessageEvent;
 import com.hxs.xposedreddevil.utils.PackageManagerUtil;
 import com.hxs.xposedreddevil.utils.PinYinUtils;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
@@ -65,6 +70,8 @@ public class AcxiliaryRedService extends AccessibilityService {
      */
     private AccessibilityNodeInfo rpNode;
 
+    private int postnum = 0;
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onAccessibilityEvent(final AccessibilityEvent event) {
@@ -83,6 +90,11 @@ public class AcxiliaryRedService extends AccessibilityService {
                 for (CharSequence text : texts) {
                     String content = text.toString();
                     //通过微信红包这个关键词来判断是否红包。（如果有个朋友取名叫微信红包的话。。。）
+                    if (PropertiesUtils.getValue(RED_FILE, "nottootkeyword", "2").equals("1")) {
+                        if (content.contains("@" + PropertiesUtils.getValue(RED_FILE, "nottootname", ""))) {
+                            EventBus.getDefault().post(new MessageEvent(content));
+                        }
+                    }
                     int i = text.toString().indexOf("[微信红包]");
                     //如果不是微信红包，则不需要做其他工作了
                     if (i == -1)
@@ -132,6 +144,7 @@ public class AcxiliaryRedService extends AccessibilityService {
                 }
                 break;
             case AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED:
+                postnum += 1;
                 if (event.getPackageName().equals("com.tencent.mm")) {
                     try {
                         List<AccessibilityNodeInfo> itemNodes = getRootInActiveWindow().findAccessibilityNodeInfosByViewId(chatid);
@@ -139,6 +152,15 @@ public class AcxiliaryRedService extends AccessibilityService {
                             for (int i = 0; i < itemNodes.size(); i++) {
                                 AccessibilityNodeInfo chatContentNode = itemNodes.get(i).findAccessibilityNodeInfosByViewId(chatredid).get(0);
                                 if (chatContentNode != null && chatContentNode.getText() != null) {
+                                    if (PropertiesUtils.getValue(RED_FILE, "nottootkeyword", "2").equals("1")) {
+                                        if (chatContentNode.getText().toString().contains("有人@我")) {
+                                            if (postnum == itemNodes.size()) {
+                                                EventBus.getDefault().post(new MessageEvent(itemNodes.get(i).findAccessibilityNodeInfosByViewId(chatnameid).
+                                                        get(0).getText().toString() + "@了我"));
+                                                postnum = 0;
+                                            }
+                                        }
+                                    }
                                     if (chatContentNode.getText().toString().contains("微信红包")) {
                                         AccessibilityNodeInfo chatNode;
                                         if (itemNodes.get(i).findAccessibilityNodeInfosByViewId(chatnameid).size() == 0) {
@@ -147,15 +169,15 @@ public class AcxiliaryRedService extends AccessibilityService {
                                             chatNode = itemNodes.get(i).findAccessibilityNodeInfosByViewId(chatnameid).get(0);
                                         }
                                         if (chatNode != null && chatNode.getText() != null) {
-                                            if(itemNodes.get(i).
-                                                    findAccessibilityNodeInfosByViewId(redcircle).size()>0){
+                                            if (itemNodes.get(i).
+                                                    findAccessibilityNodeInfosByViewId(redcircle).size() > 0) {
                                                 AccessibilityNodeInfo circlenode = itemNodes.get(i).
                                                         findAccessibilityNodeInfosByViewId(redcircle).get(0);
                                                 if (circlenode != null && circlenode.getText() != null) {
                                                     itemNodes.get(i).performAction(AccessibilityNodeInfo.ACTION_CLICK);
                                                 }
-                                            }else if(itemNodes.get(i).
-                                                    findAccessibilityNodeInfosByViewId(redunmsgcircle).size()>0){
+                                            } else if (itemNodes.get(i).
+                                                    findAccessibilityNodeInfosByViewId(redunmsgcircle).size() > 0) {
                                                 AccessibilityNodeInfo circlenode = itemNodes.get(i).
                                                         findAccessibilityNodeInfosByViewId(redunmsgcircle).get(0);
                                                 if (PropertiesUtils.getValue(RED_FILE, "nottootdisturb", "2").equals("2")) {
@@ -230,7 +252,7 @@ public class AcxiliaryRedService extends AccessibilityService {
                     redstatus = null;
                 }
                 if (redstatus == null) {
-                    if(list.get(i).findAccessibilityNodeInfosByViewId(msgisredid).size()==0){
+                    if (list.get(i).findAccessibilityNodeInfosByViewId(msgisredid).size() == 0) {
                         return;
                     }
                     if (list.get(i).isClickable()) {

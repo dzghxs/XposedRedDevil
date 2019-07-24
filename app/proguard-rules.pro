@@ -202,3 +202,7 @@
 public static java.lang.String TABLENAME;
 }
 -keep class **$Properties
+
+#百度语音
+-keep class com.baidu.tts.**{*;}
+-keep class com.baidu.speechsynthesizer.**{*;}

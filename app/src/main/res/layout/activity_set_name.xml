@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.SetNameActivity">
+
+    <EditText
+        android:id="@+id/et_name"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="8dp"
+        android:hint="请输入微信昵称"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:textColor="@android:color/black"
+        android:textSize="16sp" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_name"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="16dp"
+        android:src="@mipmap/add" />
+
+</RelativeLayout>

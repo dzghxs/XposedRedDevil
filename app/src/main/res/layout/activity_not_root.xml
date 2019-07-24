@@ -3,15 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/bg"
+    android:orientation="vertical"
     tools:context=".ui.NotRootActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:orientation="horizontal"
         android:layout_marginTop="8dp"
+        android:orientation="horizontal"
         android:paddingLeft="16dp"
         android:paddingRight="16dp">
 
@@ -34,8 +34,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:orientation="horizontal"
         android:layout_marginTop="8dp"
+        android:orientation="horizontal"
         android:paddingLeft="16dp"
         android:paddingRight="16dp">
 
@@ -54,5 +54,40 @@
             android:checked="false" />
 
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="谁@了我"
+            android:textColor="@color/colorText" />
+
+        <Switch
+            android:id="@+id/sw_noroot_keyword"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_noroot_name"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="8dp"
+        android:gravity="center_vertical"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:text="设置微信名"
+        android:textColor="@color/colorText" />
 
 </LinearLayout>
