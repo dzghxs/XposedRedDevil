@@ -96,7 +96,7 @@ public class HomeActivity extends BaseActivity {
     protected String offlineVoice = OfflineResource.VOICE_MALE;
 
     // 主控制类，所有合成控制方法从这个类开始
-    public static MySyntherizer synthesizer;
+    public MySyntherizer synthesizer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,8 +128,9 @@ public class HomeActivity extends BaseActivity {
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
+        synthesizer.release();
         EventBus.getDefault().unregister(this);
+        super.onDestroy();
     }
 
     private void DataInit() {
@@ -147,8 +148,6 @@ public class HomeActivity extends BaseActivity {
         }
         if (spCenterVersion.getSelectedItem().equals("7.0.0")) {
             PropertiesUtils.putValue(RED_FILE, "wechatversion", "7.0.0");
-        } else if (spCenterVersion.getSelectedItem().equals("7.0.3")) {
-            PropertiesUtils.putValue(RED_FILE, "wechatversion", "7.0.3");
         } else if (spCenterVersion.getSelectedItem().equals("7.0.3")) {
             PropertiesUtils.putValue(RED_FILE, "wechatversion", "7.0.3");
         } else if (spCenterVersion.getSelectedItem().equals("7.0.4")) {
