@@ -33,32 +33,4 @@
 
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/tv_update"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:textColor="@color/colorText"
-        android:paddingLeft="16dp"
-        android:gravity="center_vertical"
-        android:paddingRight="16dp"
-        android:text="检查更新"/>
-
-    <TextView
-        android:id="@+id/tv_pay"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_margin="16dp"
-        android:gravity="center_vertical"
-        android:text="支持红包\n(您的支持才是我的动力)"
-        android:textColor="#71c3de" />
-
-    <TextView
-        android:id="@+id/tv_star"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:textColor="#71c3de"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:text="去star"/>
-
 </LinearLayout>

@@ -1,19 +1,14 @@
 package com.hxs.xposedreddevil.ui;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.graphics.Typeface;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Vibrator;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.view.View;
 import android.widget.ImageView;
@@ -36,16 +31,11 @@ import com.hxs.xposedreddevil.control.InitConfig;
 import com.hxs.xposedreddevil.control.MySyntherizer;
 import com.hxs.xposedreddevil.control.NonBlockSyntherizer;
 import com.hxs.xposedreddevil.listener.UiMessageListener;
-import com.hxs.xposedreddevil.model.VersionBean;
 import com.hxs.xposedreddevil.utils.AssetsCopyTOSDcard;
 import com.hxs.xposedreddevil.utils.AutoCheck;
-import com.hxs.xposedreddevil.utils.GetAppVersion;
 import com.hxs.xposedreddevil.utils.MessageEvent;
 import com.hxs.xposedreddevil.utils.OfflineResource;
 import com.hxs.xposedreddevil.utils.PackageManagerUtil;
-import com.lzy.okgo.OkGo;
-import com.lzy.okgo.callback.StringCallback;
-import com.lzy.okgo.model.Response;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -138,12 +128,14 @@ public class HomeActivity extends BaseActivity {
         tvHomeRoot.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/font.ttf"));
         AssetsCopyTOSDcard.Assets2Sd(this, "lucky_sound.mp3", Environment.getExternalStorageDirectory().toString() + "/xposedreddevil/lucky_sound.mp3");
         if (PropertiesUtils.getValue(RED_FILE, "wechatversion", "").equals("7.0.0")) {
-            spCenterVersion.setSelection(3);
+            spCenterVersion.setSelection(4);
         } else if (PropertiesUtils.getValue(RED_FILE, "wechatversion", "").equals("7.0.3")) {
-            spCenterVersion.setSelection(2);
+            spCenterVersion.setSelection(3);
         } else if (PropertiesUtils.getValue(RED_FILE, "wechatversion", "").equals("7.0.4")) {
-            spCenterVersion.setSelection(1);
+            spCenterVersion.setSelection(2);
         } else if (PropertiesUtils.getValue(RED_FILE, "wechatversion", "").equals("7.0.5")) {
+            spCenterVersion.setSelection(1);
+        } else if (PropertiesUtils.getValue(RED_FILE, "wechatversion", "").equals("7.0.6")) {
             spCenterVersion.setSelection(0);
         }
         if (spCenterVersion.getSelectedItem().equals("7.0.0")) {
@@ -154,6 +146,8 @@ public class HomeActivity extends BaseActivity {
             PropertiesUtils.putValue(RED_FILE, "wechatversion", "7.0.4");
         } else if (spCenterVersion.getSelectedItem().equals("7.0.5")) {
             PropertiesUtils.putValue(RED_FILE, "wechatversion", "7.0.5");
+        } else if (spCenterVersion.getSelectedItem().equals("7.0.6")) {
+            PropertiesUtils.putValue(RED_FILE, "wechatversion", "7.0.6");
         }
         if (!PackageManagerUtil.getItems(this).equals("")) {
             PropertiesUtils.putValue(RED_FILE, "wechatversion", PackageManagerUtil.getItems(this));
