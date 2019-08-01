@@ -29,6 +29,8 @@ public class NotRootActivity extends BaseActivity {
     Switch swNorootKeyword;
     @BindView(R.id.tv_noroot_name)
     TextView tvNorootName;
+    @BindView(R.id.sw_noroot_own)
+    Switch swNorootOwn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +60,11 @@ public class NotRootActivity extends BaseActivity {
                 swNorootDisturb.setChecked(true);
             } else {
                 swNorootDisturb.setChecked(false);
+            }
+            if (PropertiesUtils.getValue(RED_FILE, "notrooown", "2").equals("1")) {
+                swNorootOwn.setChecked(true);
+            } else {
+                swNorootOwn.setChecked(false);
             }
             if (PropertiesUtils.getValue(RED_FILE, "nottootkeyword", "2").equals("1")) {
                 swNorootKeyword.setChecked(true);
@@ -105,10 +112,20 @@ public class NotRootActivity extends BaseActivity {
                 }
             }
         });
+        swNorootOwn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    PropertiesUtils.putValue(RED_FILE, "notrooown", "1");
+                } else {
+                    PropertiesUtils.putValue(RED_FILE, "notrooown", "2");
+                }
+            }
+        });
     }
 
     @OnClick(R.id.tv_noroot_name)
     public void onViewClicked() {
-        startActivity(new Intent(this,SetNameActivity.class));
+        startActivity(new Intent(this, SetNameActivity.class));
     }
 }

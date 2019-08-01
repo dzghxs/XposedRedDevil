@@ -10,6 +10,8 @@ import android.os.Message;
 import android.os.Vibrator;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
+import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -94,6 +96,10 @@ public class HomeActivity extends BaseActivity {
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
         EventBus.getDefault().register(this);
+        DisplayMetrics outMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(outMetrics);
+        int widthPixels = outMetrics.widthPixels;
+        PropertiesUtils.putValue(RED_FILE, "widthPixels", widthPixels+"");
         CheckPermissionInit();
         SpeechSynthesizerListener listener = new UiMessageListener(mainHandler);
         Map<String, String> params = getParams();
@@ -159,7 +165,7 @@ public class HomeActivity extends BaseActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getMsg(MessageEvent msg) {
         if (msg.getMessage().contains("@")) {
-            Vibrator vibrator = (Vibrator)this.getSystemService(VIBRATOR_SERVICE);
+            Vibrator vibrator = (Vibrator) this.getSystemService(VIBRATOR_SERVICE);
             vibrator.vibrate(1000);
             speak(msg.getMessage());
         }

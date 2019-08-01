@@ -16,6 +16,7 @@ public class AcxiliaryServiceStaticValues {
     public static String msgredid = "";       //聊天页面红包ID（聊天页面红包id）
     public static String msgredcontent = "";  //聊天页面红包内容ID(恭喜发财，大吉大利)
     public static String msgisredid = "";     //微信红包下方微信红包四个字
+    public static String msgname = "";        //微信聊天界面对方昵称
     //xposed
     public static String LuckyMoneyNotHookReceiveUI = ""; //红包页面名称
     public static String LuckyMoneyNotHookReceiveUIMethod = "";     //红包页面方法
@@ -71,6 +72,7 @@ public class AcxiliaryServiceStaticValues {
             msgredcontent = "com.tencent.mm:id/asn";
             msgisredid = "com.tencent.mm:id/asp";
             redunmsgcircle = "com.tencent.mm:id/b9h";
+            msgname = "com.tencent.mm:id/l5";
 
             LuckyMoneyNotHookReceiveUI = "com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyNotHookReceiveUI";
             LuckyMoneyNotHookReceiveUIMethod = "onSceneEnd";

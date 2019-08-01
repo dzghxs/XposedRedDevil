@@ -7,18 +7,20 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Build;
 import android.os.Handler;
 import android.os.PowerManager;
-import android.os.Vibrator;
 import android.provider.Settings;
 import android.support.annotation.RequiresApi;
 import android.text.TextUtils;
+import android.view.Display;
+import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
+import android.widget.Button;
 
 import com.hxs.xposedreddevil.contentprovider.PropertiesUtils;
-import com.hxs.xposedreddevil.model.MsgsBean;
 import com.hxs.xposedreddevil.utils.AccessibilityUtils;
 import com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues;
 import com.hxs.xposedreddevil.utils.MessageEvent;
@@ -28,6 +30,7 @@ import com.hxs.xposedreddevil.utils.PinYinUtils;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.LAUCHER;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.LUCKEY_MONEY_DETAIL;
@@ -37,6 +40,7 @@ import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.chatid;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.chatnameid;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.chatredid;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.msgisredid;
+import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.msgname;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.msgredcontent;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.msgredid;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.redcircle;
@@ -216,6 +220,8 @@ public class AcxiliaryRedService extends AccessibilityService {
         }
         // 找到领取红包的点击事件
         List<AccessibilityNodeInfo> list = null;
+        AccessibilityNodeInfo msgnames = null;
+        msgnames = nodeInfo.findAccessibilityNodeInfosByViewId(msgname).get(0);
         list = nodeInfo.findAccessibilityNodeInfosByViewId(msgredid);
         // 最新的红包领起
         for (int i = list.size() - 1; i >= 0; i--) {
@@ -256,6 +262,18 @@ public class AcxiliaryRedService extends AccessibilityService {
                         return;
                     }
                     if (list.get(i).isClickable()) {
+                        Rect rect = new Rect();
+                        list.get(i).getBoundsInScreen(rect);
+                        if (rect.centerX() > (Integer.parseInt(PropertiesUtils.getValue(RED_FILE, "widthPixels", "0")) / 2)) {
+                            String pattern = ".*[(].*\\d[)]";
+                            if (Pattern.compile(pattern).matcher(msgnames.getText().toString()).matches()) {
+                                if (PropertiesUtils.getValue(RED_FILE, "notrooown", "2").equals("1")) {
+                                    return;
+                                }
+                            } else {
+                                return;
+                            }
+                        }
                         //模拟点击
                         list.get(i).performAction(AccessibilityNodeInfo.ACTION_CLICK);
                         //isOpenRP用于判断该红包是否点击过
