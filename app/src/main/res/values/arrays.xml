@@ -3,8 +3,5 @@
     <string-array name="version">
         <item >7.0.6</item>
         <item >7.0.5</item>
-        <item >7.0.4</item>
-        <item >7.0.3</item>
-        <item >7.0.0</item>
     </string-array>
 </resources>
