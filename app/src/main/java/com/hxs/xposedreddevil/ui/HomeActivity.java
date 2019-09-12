@@ -32,17 +32,20 @@ import com.hxs.xposedreddevil.contentprovider.PropertiesUtils;
 import com.hxs.xposedreddevil.control.InitConfig;
 import com.hxs.xposedreddevil.control.MySyntherizer;
 import com.hxs.xposedreddevil.control.NonBlockSyntherizer;
+import com.hxs.xposedreddevil.greendao.DbCarryList;
 import com.hxs.xposedreddevil.listener.UiMessageListener;
 import com.hxs.xposedreddevil.utils.AssetsCopyTOSDcard;
 import com.hxs.xposedreddevil.utils.AutoCheck;
 import com.hxs.xposedreddevil.utils.MessageEvent;
 import com.hxs.xposedreddevil.utils.OfflineResource;
 import com.hxs.xposedreddevil.utils.PackageManagerUtil;
+import com.hxs.xposedreddevil.utils.SQLiteUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -52,7 +55,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.carrypagenum;
+import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.carrypagetime;
 import static com.hxs.xposedreddevil.utils.Constant.RED_FILE;
+import static com.hxs.xposedreddevil.utils.Constant.currApkPath;
 
 public class HomeActivity extends BaseActivity {
 
@@ -90,6 +96,8 @@ public class HomeActivity extends BaseActivity {
     // 主控制类，所有合成控制方法从这个类开始
     public MySyntherizer synthesizer;
 
+    DbCarryList carryList = new DbCarryList();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,24 +109,28 @@ public class HomeActivity extends BaseActivity {
         int widthPixels = outMetrics.widthPixels;
         PropertiesUtils.putValue(RED_FILE, "widthPixels", widthPixels+"");
         CheckPermissionInit();
-        SpeechSynthesizerListener listener = new UiMessageListener(mainHandler);
-        Map<String, String> params = getParams();
-        InitConfig initConfig = new InitConfig(appId, appKey, secretKey, ttsMode, params, listener);
-        AutoCheck.getInstance(getApplicationContext()).check(initConfig, new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                if (msg.what == 100) {
-                    AutoCheck autoCheck = (AutoCheck) msg.obj;
-                    synchronized (autoCheck) {
-                        String message = autoCheck.obtainDebugMessage();
-                        toPrint(message); // 可以用下面一行替代，在logcat中查看代码
-                        // Log.w("AutoCheckMessage", message);
+        try {
+            SpeechSynthesizerListener listener = new UiMessageListener(mainHandler);
+            Map<String, String> params = getParams();
+            InitConfig initConfig = new InitConfig(appId, appKey, secretKey, ttsMode, params, listener);
+            AutoCheck.getInstance(getApplicationContext()).check(initConfig, new Handler() {
+                @Override
+                public void handleMessage(Message msg) {
+                    if (msg.what == 100) {
+                        AutoCheck autoCheck = (AutoCheck) msg.obj;
+                        synchronized (autoCheck) {
+                            String message = autoCheck.obtainDebugMessage();
+                            toPrint(message); // 可以用下面一行替代，在logcat中查看代码
+                            // Log.w("AutoCheckMessage", message);
+                        }
                     }
                 }
-            }
 
-        });
-        synthesizer = new NonBlockSyntherizer(this, initConfig, mainHandler);
+            });
+            synthesizer = new NonBlockSyntherizer(this, initConfig, mainHandler);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         DataInit();
     }
 
@@ -130,6 +142,11 @@ public class HomeActivity extends BaseActivity {
     }
 
     private void DataInit() {
+        File file = new File(currApkPath+"ListTime");
+        //判断文件夹是否存在,如果不存在则创建文件夹
+        if (!file.exists()) {
+            file.mkdir();
+        }
         tvHomeUnroot.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/font.ttf"));
         tvHomeRoot.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/font.ttf"));
         AssetsCopyTOSDcard.Assets2Sd(this, "lucky_sound.mp3", Environment.getExternalStorageDirectory().toString() + "/xposedreddevil/lucky_sound.mp3");

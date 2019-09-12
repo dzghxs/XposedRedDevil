@@ -21,32 +21,47 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Button;
 
 import com.hxs.xposedreddevil.contentprovider.PropertiesUtils;
+import com.hxs.xposedreddevil.greendao.DbCarryList;
+import com.hxs.xposedreddevil.greendao.DbCarryListDao;
+import com.hxs.xposedreddevil.greendao.db.DbManager;
 import com.hxs.xposedreddevil.utils.AccessibilityUtils;
 import com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues;
+import com.hxs.xposedreddevil.utils.DateUtils;
 import com.hxs.xposedreddevil.utils.MessageEvent;
 import com.hxs.xposedreddevil.utils.PackageManagerUtil;
 import com.hxs.xposedreddevil.utils.PinYinUtils;
+import com.hxs.xposedreddevil.utils.SQLiteUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 import java.util.regex.Pattern;
 
+import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.CARRYUI;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.LAUCHER;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.LUCKEY_MONEY_DETAIL;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.LUCKEY_MONEY_RECEIVER;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.OPEN_ID;
+import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.carrypagebtn;
+import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.carrypagenum;
+import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.carrypagetime;
+import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.carrystates;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.chatid;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.chatnameid;
+import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.chatonenameid;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.chatredid;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.msgisredid;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.msgname;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.msgredcontent;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.msgredid;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.redcircle;
+import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.redpagenum;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.redunmsgcircle;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.strredstatus;
 import static com.hxs.xposedreddevil.utils.Constant.RED_FILE;
+import static com.hxs.xposedreddevil.utils.Constant.RED_LIST;
 
 public class AcxiliaryRedService extends AccessibilityService {
     /**
@@ -76,6 +91,10 @@ public class AcxiliaryRedService extends AccessibilityService {
 
     private int postnum = 0;
 
+    private String username = "";
+
+    private DbCarryList carryList;
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onAccessibilityEvent(final AccessibilityEvent event) {
@@ -102,6 +121,10 @@ public class AcxiliaryRedService extends AccessibilityService {
                     int i = text.toString().indexOf("[微信红包]");
                     //如果不是微信红包，则不需要做其他工作了
                     if (i == -1)
+                        break;
+                    int a = text.toString().indexOf("[转账]");
+                    //如果不是微信红包，则不需要做其他工作了
+                    if (a == -1)
                         break;
                     if (!TextUtils.isEmpty(content)) {
                         if (isScreenLocked()) {
@@ -134,17 +157,27 @@ public class AcxiliaryRedService extends AccessibilityService {
                     AccessibilityNodeInfo rootNode = getRootInActiveWindow();
                     //开始抢红包
                     findOpenBtn(rootNode);
-//                    for (int i = 0; i < getWindows().size(); i++) {
-//                        findOpenBtn(getWindows().get(i).getRoot());
-//                    }
+                }
+
+                //判断是否是转账那个界面
+                if (CARRYUI.equals(className)) {
+                    AccessibilityNodeInfo rootNode = getRootInActiveWindow();
+//                    System.out.println(rootNode.findAccessibilityNodeInfosByViewId(carrypagetime).get(0).getText().toString());
+                    //开始抢红包
+                    findCarryOpenBtn(rootNode);
                 }
 
                 //判断是否是红包领取后的详情界面
                 if (isOpenDetail && LUCKEY_MONEY_DETAIL.equals(className)) {
-
+                    carryList = new DbCarryList();
+                    carryList.setMoney("￥" + getRootInActiveWindow().findAccessibilityNodeInfosByViewId(redpagenum).get(0).getText().toString());
+                    carryList.setName(username);
+                    carryList.setTime(DateUtils.getYear() + "-" + DateUtils.getMonth() + "-" + DateUtils.getDay() + " " + DateUtils.getHour() + ":" + DateUtils.getMinute());
+                    carryList.setStatus("红包");
+                    SQLiteUtils.getInstance().addContacts(carryList);
                     isOpenDetail = false;
                     //返回桌面
-                    back2Home();
+//                    back2Home();
                 }
                 break;
             case AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED:
@@ -165,12 +198,17 @@ public class AcxiliaryRedService extends AccessibilityService {
                                             }
                                         }
                                     }
-                                    if (chatContentNode.getText().toString().contains("微信红包")) {
+                                    if (chatContentNode.getText().toString().contains("微信红包") || chatContentNode.getText().toString().contains("转账")) {
                                         AccessibilityNodeInfo chatNode;
-                                        if (itemNodes.get(i).findAccessibilityNodeInfosByViewId(chatnameid).size() == 0) {
+                                        if (itemNodes.get(i).findAccessibilityNodeInfosByViewId(chatnameid).size() == 0 &&
+                                                itemNodes.get(i).findAccessibilityNodeInfosByViewId(chatonenameid).size() == 0) {
                                             continue;
                                         } else {
-                                            chatNode = itemNodes.get(i).findAccessibilityNodeInfosByViewId(chatnameid).get(0);
+                                            if (itemNodes.get(i).findAccessibilityNodeInfosByViewId(chatnameid).size() == 0) {
+                                                chatNode = itemNodes.get(i).findAccessibilityNodeInfosByViewId(chatonenameid).get(0);
+                                            } else {
+                                                chatNode = itemNodes.get(i).findAccessibilityNodeInfosByViewId(chatnameid).get(0);
+                                            }
                                         }
                                         if (chatNode != null && chatNode.getText() != null) {
                                             if (itemNodes.get(i).
@@ -221,73 +259,105 @@ public class AcxiliaryRedService extends AccessibilityService {
         // 找到领取红包的点击事件
         List<AccessibilityNodeInfo> list = null;
         AccessibilityNodeInfo msgnames = null;
-        msgnames = nodeInfo.findAccessibilityNodeInfosByViewId(msgname).get(0);
-        list = nodeInfo.findAccessibilityNodeInfosByViewId(msgredid);
-        // 最新的红包领起
-        for (int i = list.size() - 1; i >= 0; i--) {
-            // 通过调试可知[领取红包]是text，本身不可被点击，用getParent()获取可被点击的对象
-            if (list.get(i) == null) {
-                continue;
-            }
-            AccessibilityNodeInfo parent = list.get(i).getParent();
-            // 谷歌重写了toString()方法，不能用它获取ClassName@hashCode串
-            while (parent != null) {
-                String redcontent = "";     //红包内容
-                try {
-                    redcontent = list.get(i).getParent().findAccessibilityNodeInfosByViewId(msgredcontent).get(0).getText().toString();
-                    if (PinYinUtils.getPingYin(redcontent).contains("gua") ||
-                            redcontent.contains("圭") ||
-                            redcontent.contains("G") ||
-                            redcontent.contains("GUA") ||
-                            redcontent.contains("gua") ||
-                            redcontent.contains("g")) {
-                        return;
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
+        try {
+            msgnames = nodeInfo.findAccessibilityNodeInfosByViewId(msgname).get(0);
+            list = nodeInfo.findAccessibilityNodeInfosByViewId(msgredid);
+            // 最新的红包领起
+            for (int i = list.size() - 1; i >= 0; i--) {
+                // 通过调试可知[领取红包]是text，本身不可被点击，用getParent()获取可被点击的对象
+                if (list.get(i) == null) {
+                    continue;
                 }
-                AccessibilityNodeInfo redstatus = null;
-                try {
-                    if (list.get(i).getParent().findAccessibilityNodeInfosByViewId(strredstatus) == null
-                            || list.get(i).getParent().findAccessibilityNodeInfosByViewId(strredstatus).size() == 0) {
-                        redstatus = null;
-                    } else {
-                        redstatus = list.get(i).getParent().findAccessibilityNodeInfosByViewId(strredstatus).get(0);
-                    }
-                } catch (Exception e) {
-                    redstatus = null;
-                }
-                if (redstatus == null) {
-                    if (list.get(i).findAccessibilityNodeInfosByViewId(msgisredid).size() == 0) {
-                        return;
-                    }
-                    if (list.get(i).isClickable()) {
-                        Rect rect = new Rect();
-                        list.get(i).getBoundsInScreen(rect);
-                        if (rect.centerX() > (Integer.parseInt(PropertiesUtils.getValue(RED_FILE, "widthPixels", "0")) / 2)) {
-                            String pattern = ".*[(].*\\d[)]";
-                            if (Pattern.compile(pattern).matcher(msgnames.getText().toString()).matches()) {
-                                if (PropertiesUtils.getValue(RED_FILE, "notrooown", "2").equals("1")) {
-                                    return;
-                                }
-                            } else {
+                AccessibilityNodeInfo parent = list.get(i).getParent();
+                // 谷歌重写了toString()方法，不能用它获取ClassName@hashCode串
+                while (parent != null) {
+                    if (list.get(i).getParent().findAccessibilityNodeInfosByViewId(msgredcontent).size() > 0) {
+                        String redcontent = "";     //红包内容
+                        try {
+                            redcontent = list.get(i).getParent().findAccessibilityNodeInfosByViewId(msgredcontent).get(0).getText().toString();
+                            if (PinYinUtils.getPingYin(redcontent).contains("gua") ||
+                                    redcontent.contains("圭") ||
+                                    redcontent.contains("G") ||
+                                    redcontent.contains("GUA") ||
+                                    redcontent.contains("gua") ||
+                                    redcontent.contains("g")) {
                                 return;
                             }
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
-                        //模拟点击
-                        list.get(i).performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                        //isOpenRP用于判断该红包是否点击过
-                        isOpenRP = true;
+                        AccessibilityNodeInfo redstatus = null;
+                        try {
+                            if (list.get(i).getParent().findAccessibilityNodeInfosByViewId(strredstatus) == null
+                                    || list.get(i).getParent().findAccessibilityNodeInfosByViewId(strredstatus).size() == 0) {
+                                redstatus = null;
+                            } else {
+                                redstatus = list.get(i).getParent().findAccessibilityNodeInfosByViewId(strredstatus).get(0);
+                            }
+                        } catch (Exception e) {
+                            redstatus = null;
+                        }
+                        if (redstatus == null) {
+                            if (list.get(i).findAccessibilityNodeInfosByViewId(msgisredid).size() == 0) {
+                                return;
+                            }
+                            if (list.get(i).isClickable()) {
+                                Rect rect = new Rect();
+                                list.get(i).getBoundsInScreen(rect);
+                                username = msgnames.getText().toString();
+                                if (rect.centerX() > (Integer.parseInt(PropertiesUtils.getValue(RED_FILE, "widthPixels", "0")) / 2)) {
+                                    String pattern = ".*[(].*\\d[)]";
+                                    if (Pattern.compile(pattern).matcher(msgnames.getText().toString()).matches()) {
+                                        if (PropertiesUtils.getValue(RED_FILE, "notrooown", "2").equals("1")) {
+                                            return;
+                                        }
+                                    } else {
+                                        return;
+                                    }
+                                }
+                                //模拟点击
+                                list.get(i).performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                                //isOpenRP用于判断该红包是否点击过
+                                isOpenRP = true;
+                                isOpenDetail = true;
+                            }
+                        }
+                    } else if (list.get(i).getParent().findAccessibilityNodeInfosByViewId(carrystates).size() > 0) {
+                        if (list.get(i).getParent().findAccessibilityNodeInfosByViewId(carrystates).get(0)
+                                .getText().toString().equals("已被领取")) {
+                            return;
+                        }
+                        if (list.get(i).isClickable()) {
+                            Rect rect = new Rect();
+                            list.get(i).getBoundsInScreen(rect);
+                            username = msgnames.getText().toString();
+                            if (rect.centerX() > (Integer.parseInt(PropertiesUtils.getValue(RED_FILE, "widthPixels", "0")) / 2)) {
+                                String pattern = ".*[(].*\\d[)]";
+                                if (Pattern.compile(pattern).matcher(msgnames.getText().toString()).matches()) {
+                                    if (PropertiesUtils.getValue(RED_FILE, "notrooown", "2").equals("1")) {
+                                        return;
+                                    }
+                                } else {
+                                    return;
+                                }
+                            }
+                            //模拟点击
+                            list.get(i).performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                            //isOpenRP用于判断该红包是否点击过
+                            isOpenRP = true;
+                        }
                     }
+                    break; // 只领最新的一个红包
                 }
-                break; // 只领最新的一个红包
+                //判断是否已经打开过那个最新的红包了，是的话就跳出for循环，不是的话继续遍历
+                if (isOpenRP) {
+                    return;
+                } else {
+                    WindowRed(nodeInfo);
+                }
             }
-            //判断是否已经打开过那个最新的红包了，是的话就跳出for循环，不是的话继续遍历
-            if (isOpenRP) {
-                return;
-            } else {
-                WindowRed(nodeInfo);
-            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -313,6 +383,40 @@ public class AcxiliaryRedService extends AccessibilityService {
                     findOpenBtn(getRootInActiveWindow());
                 }
             }, 1500);
+        }
+    }
+
+    private void findCarryOpenBtn(final AccessibilityNodeInfo rootNode) {
+
+        AccessibilityNodeInfo button_open = AccessibilityUtils.findNodeInfosById(rootNode, carrypagebtn);
+
+        if (button_open != null) {
+            final AccessibilityNodeInfo n = button_open;
+
+//            AccessibilityUtils.performClick(n);
+
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    AccessibilityUtils.performClick(n);
+                    if (PropertiesUtils.getValue(RED_FILE, "notrootlist", "2").equals("1")) {
+                        carryList = new DbCarryList();
+                        carryList.setMoney(rootNode.findAccessibilityNodeInfosByViewId(carrypagenum).get(0).getText().toString());
+                        carryList.setName(username);
+                        carryList.setTime(DateUtils.getYear() + "-" + DateUtils.getMonth() + "-" + DateUtils.getDay() + " " + DateUtils.getHour() + ":" + DateUtils.getMinute());
+                        carryList.setStatus("转账");
+                        SQLiteUtils.getInstance().addContacts(carryList);
+                    }
+                }
+            }, 500);
+
+        } else {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    findCarryOpenBtn(getRootInActiveWindow());
+                }
+            }, 2000);
         }
     }
 

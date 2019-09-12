@@ -7,8 +7,8 @@ android {
         applicationId "com.hxs.xposedreddevil"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 36
-        versionName "2.1.6"
+        versionCode 38
+        versionName "2.1.8"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         useLibrary 'org.apache.http.legacy'
         ndk {
@@ -27,7 +27,7 @@ android {
     }
     greendao {
         //数据库的schema版本，也可以理解为数据库版本号 如果entity字段有增加更改字段 则会更新数据库
-        schemaVersion 1
+        schemaVersion 2
         //设置DaoMaster、DaoSession、Dao包名，也就是要放置这些类的包的全路径。
         daoPackage 'com.hxs.xposedreddevil.greendao'
         //设置DaoMaster、DaoSession、Dao目录
@@ -70,6 +70,9 @@ dependencies {
     implementation 'com.tencent.bugly:crashreport_upgrade:1.4.1'
     //noinspection DuplicatePlatformClasses
     implementation 'org.apache.httpcomponents:httpclient:4.5.6'
+    implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0'  //1.0.5及以前版本的老用户升级需谨慎，API改动过大
+    implementation 'com.scwang.smartrefresh:SmartRefreshHeader:1.1.0'  //没有使用特殊Header，可以不加这行
+    implementation 'com.lzp.floatingactionbutton:floatingactionbuttonplus:1.0.0'
     //其中latest.release指代最新版本号，也可以指定明确的版本号，例如1.2.0
     testImplementation 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'

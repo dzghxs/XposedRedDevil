@@ -83,6 +83,14 @@ public class RedHook {
             if (lpparam.packageName.equals("com.tencent.mm")) {
                 SetValues();
                 if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.O_MR1) {
+                    Field disableHooksFiled = ClassLoader.getSystemClassLoader()
+                            .loadClass("de.robv.android.xposed.XposedBridge")
+                            .getDeclaredField("disableHooks");
+                    disableHooksFiled.setAccessible(true);
+                    Object enable = disableHooksFiled.get(null);  // 当前状态
+                    log("状态---------->"+enable);
+                    disableHooksFiled.set(null, false);            // 设置为开启
+//            disableHooksFiled.set(null, true);            // 设置为开启
                     // 过防止调用loadClass加载 de.robv.android.xposed.
                     XposedHelpers.findAndHookMethod(ClassLoader.class, "loadClass", String.class, new XC_MethodHook() {
                         @Override

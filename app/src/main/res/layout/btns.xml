@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.lzp.floatingactionbuttonplus.FloatingActionButtonPlus xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/FabPlus"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:layout_behavior="com.lzp.floatingactionbuttonplus.FabBehavior"
+    app:position="right_bottom"
+    app:switchFabColor="#E91E63"
+    app:switchFabIcon="@mipmap/addbig">
+
+    <com.lzp.floatingactionbuttonplus.FabTagLayout
+        android:layout_width="145dp"
+        android:layout_height="50dp"
+        app:tagText="按时间">
+
+        <android.support.design.widget.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/time"
+            app:backgroundTint="#9C27B0"
+            app:fabSize="mini" />
+    </com.lzp.floatingactionbuttonplus.FabTagLayout>
+
+    <com.lzp.floatingactionbuttonplus.FabTagLayout
+        android:layout_width="145dp"
+        android:layout_height="50dp"
+        app:tagText="按人名">
+
+        <android.support.design.widget.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/user"
+            app:backgroundTint="#F44336"
+            app:fabSize="mini" />
+    </com.lzp.floatingactionbuttonplus.FabTagLayout>
+
+    <com.lzp.floatingactionbuttonplus.FabTagLayout
+        android:layout_width="145dp"
+        android:layout_height="50dp"
+        app:tagText="导出至">
+
+        <android.support.design.widget.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/export"
+            app:backgroundTint="#F44336"
+            app:fabSize="mini" />
+    </com.lzp.floatingactionbuttonplus.FabTagLayout>
+
+</com.lzp.floatingactionbuttonplus.FloatingActionButtonPlus>

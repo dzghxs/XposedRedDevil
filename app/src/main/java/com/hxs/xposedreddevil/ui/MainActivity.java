@@ -22,11 +22,14 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.File;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static com.hxs.xposedreddevil.utils.Constant.RED_FILE;
+import static com.hxs.xposedreddevil.utils.Constant.RED_LIST;
 
 public class MainActivity extends AppCompatActivity {
 

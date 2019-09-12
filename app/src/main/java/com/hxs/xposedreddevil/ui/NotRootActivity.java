@@ -31,6 +31,10 @@ public class NotRootActivity extends BaseActivity {
     TextView tvNorootName;
     @BindView(R.id.sw_noroot_own)
     Switch swNorootOwn;
+    @BindView(R.id.sw_noroot_list)
+    Switch swNorootList;
+    @BindView(R.id.tv_noroot_carrylist)
+    TextView tvNorootCarrylist;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,10 +52,10 @@ public class NotRootActivity extends BaseActivity {
     private void DataInit() {
         try {
             if (PropertiesUtils.getValue(RED_FILE, "rednorootmain", "2").equals("1")) {
-                if (!PackageManagerUtil.isAccessibilitySettingsOn(this)) {
-                    Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
-                    startActivity(intent);
-                }
+//                if (!PackageManagerUtil.isAccessibilitySettingsOn(this)) {
+//                    Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
+//                    startActivity(intent);
+//                }
                 swNorootMain.setChecked(true);
             } else {
                 swNorootMain.setChecked(false);
@@ -65,6 +69,13 @@ public class NotRootActivity extends BaseActivity {
                 swNorootOwn.setChecked(true);
             } else {
                 swNorootOwn.setChecked(false);
+            }
+            if (PropertiesUtils.getValue(RED_FILE, "notrootlist", "2").equals("1")) {
+                swNorootList.setChecked(true);
+                tvNorootCarrylist.setVisibility(View.VISIBLE);
+            } else {
+                swNorootList.setChecked(false);
+                tvNorootCarrylist.setVisibility(View.GONE);
             }
             if (PropertiesUtils.getValue(RED_FILE, "nottootkeyword", "2").equals("1")) {
                 swNorootKeyword.setChecked(true);
@@ -122,10 +133,29 @@ public class NotRootActivity extends BaseActivity {
                 }
             }
         });
+        swNorootList.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    PropertiesUtils.putValue(RED_FILE, "notrootlist", "1");
+                } else {
+                    PropertiesUtils.putValue(RED_FILE, "notrootlist", "2");
+                    tvNorootCarrylist.setVisibility(View.GONE);
+                }
+            }
+        });
     }
 
-    @OnClick(R.id.tv_noroot_name)
-    public void onViewClicked() {
-        startActivity(new Intent(this, SetNameActivity.class));
+    @OnClick({R.id.tv_noroot_name, R.id.tv_noroot_carrylist})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.tv_noroot_name:
+                startActivity(new Intent(this, SetNameActivity.class));
+                break;
+            case R.id.tv_noroot_carrylist:
+                startActivity(new Intent(this, CarryListActivity.class));
+                break;
+        }
     }
+
 }
