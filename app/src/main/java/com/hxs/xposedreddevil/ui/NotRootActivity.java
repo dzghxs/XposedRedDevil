@@ -52,10 +52,10 @@ public class NotRootActivity extends BaseActivity {
     private void DataInit() {
         try {
             if (PropertiesUtils.getValue(RED_FILE, "rednorootmain", "2").equals("1")) {
-//                if (!PackageManagerUtil.isAccessibilitySettingsOn(this)) {
-//                    Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
-//                    startActivity(intent);
-//                }
+                if (!PackageManagerUtil.isAccessibilitySettingsOn(this)) {
+                    Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
+                    startActivity(intent);
+                }
                 swNorootMain.setChecked(true);
             } else {
                 swNorootMain.setChecked(false);
@@ -138,6 +138,7 @@ public class NotRootActivity extends BaseActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     PropertiesUtils.putValue(RED_FILE, "notrootlist", "1");
+                    tvNorootCarrylist.setVisibility(View.VISIBLE);
                 } else {
                     PropertiesUtils.putValue(RED_FILE, "notrootlist", "2");
                     tvNorootCarrylist.setVisibility(View.GONE);
