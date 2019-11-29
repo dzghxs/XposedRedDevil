@@ -169,13 +169,17 @@ public class AcxiliaryRedService extends AccessibilityService {
 
                 //判断是否是红包领取后的详情界面
                 if (isOpenDetail && LUCKEY_MONEY_DETAIL.equals(className)) {
-                    carryList = new DbCarryList();
-                    carryList.setMoney("￥" + getRootInActiveWindow().findAccessibilityNodeInfosByViewId(redpagenum).get(0).getText().toString());
-                    carryList.setName(username);
-                    carryList.setTime(DateUtils.getYear() + "-" + DateUtils.getMonth() + "-" + DateUtils.getDay() + " " + DateUtils.getHour() + ":" + DateUtils.getMinute());
-                    carryList.setStatus("红包");
-                    SQLiteUtils.getInstance().addContacts(carryList);
-                    isOpenDetail = false;
+                    try {
+                        carryList = new DbCarryList();
+                        carryList.setMoney("￥" + getRootInActiveWindow().findAccessibilityNodeInfosByViewId(redpagenum).get(0).getText().toString());
+                        carryList.setName(username);
+                        carryList.setTime(DateUtils.getYear() + "-" + DateUtils.getMonth() + "-" + DateUtils.getDay() + " " + DateUtils.getHour() + ":" + DateUtils.getMinute());
+                        carryList.setStatus("红包");
+                        SQLiteUtils.getInstance().addContacts(carryList);
+                        isOpenDetail = false;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                     //返回桌面
 //                    back2Home();
                 }

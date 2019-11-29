@@ -22,14 +22,11 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.io.File;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static com.hxs.xposedreddevil.utils.Constant.RED_FILE;
-import static com.hxs.xposedreddevil.utils.Constant.RED_LIST;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -51,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
     Switch swWithdraw;
     @BindView(R.id.sw_push)
     Switch swPush;
+    @BindView(R.id.sw_money)
+    Switch swMoney;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +93,11 @@ public class MainActivity extends AppCompatActivity {
                 swWithdraw.setChecked(true);
             } else {
                 swWithdraw.setChecked(false);
+            }
+            if (PropertiesUtils.getValue(RED_FILE, "money", "2").equals("1")) {
+                swMoney.setChecked(true);
+            } else {
+                swMoney.setChecked(false);
             }
             etSleep.setText(PropertiesUtils.getValue(RED_FILE, "sleeptime", "1"));
         } catch (Exception e) {
@@ -154,10 +158,20 @@ public class MainActivity extends AppCompatActivity {
         swWithdraw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean b) {
-                if(b){
+                if (b) {
                     PropertiesUtils.putValue(RED_FILE, "withdraw", "1");
-                }else{
+                } else {
                     PropertiesUtils.putValue(RED_FILE, "withdraw", "2");
+                }
+            }
+        });
+        swMoney.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean b) {
+                if (b) {
+                    PropertiesUtils.putValue(RED_FILE, "money", "1");
+                } else {
+                    PropertiesUtils.putValue(RED_FILE, "money", "2");
                 }
             }
         });

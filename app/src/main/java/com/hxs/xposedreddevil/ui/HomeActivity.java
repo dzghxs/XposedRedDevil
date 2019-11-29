@@ -107,7 +107,7 @@ public class HomeActivity extends BaseActivity {
         DisplayMetrics outMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(outMetrics);
         int widthPixels = outMetrics.widthPixels;
-        PropertiesUtils.putValue(RED_FILE, "widthPixels", widthPixels+"");
+        PropertiesUtils.putValue(RED_FILE, "widthPixels", widthPixels + "");
         CheckPermissionInit();
         try {
             SpeechSynthesizerListener listener = new UiMessageListener(mainHandler);
@@ -142,7 +142,7 @@ public class HomeActivity extends BaseActivity {
     }
 
     private void DataInit() {
-        File file = new File(currApkPath+"ListTime");
+        File file = new File(currApkPath + "ListTime");
         //判断文件夹是否存在,如果不存在则创建文件夹
         if (!file.exists()) {
             file.mkdir();
@@ -155,10 +155,10 @@ public class HomeActivity extends BaseActivity {
         } else if (PropertiesUtils.getValue(RED_FILE, "wechatversion", "").equals("7.0.6")) {
             spCenterVersion.setSelection(0);
         }
-        if (spCenterVersion.getSelectedItem().equals("7.0.5")) {
-            PropertiesUtils.putValue(RED_FILE, "wechatversion", "7.0.5");
-        } else if (spCenterVersion.getSelectedItem().equals("7.0.6")) {
-            PropertiesUtils.putValue(RED_FILE, "wechatversion", "7.0.6");
+        if (spCenterVersion.getSelectedItem().equals("7.0.7")) {
+            PropertiesUtils.putValue(RED_FILE, "wechatversion", "7.0.7");
+        } else if (spCenterVersion.getSelectedItem().equals("7.0.8")) {
+            PropertiesUtils.putValue(RED_FILE, "wechatversion", "7.0.8");
         }
         if (!PackageManagerUtil.getItems(this).equals("")) {
             PropertiesUtils.putValue(RED_FILE, "wechatversion", PackageManagerUtil.getItems(this));

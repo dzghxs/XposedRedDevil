@@ -9,8 +9,11 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -209,6 +212,36 @@ public class RedHook {
                         findAndHookMethod("com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyNotHookReceiveUI", lpparam.classLoader, "onCreate", Bundle.class, new XC_MethodHook() {
                             @Override
                             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                            }
+                        });
+
+                        findAndHookMethod("com.tencent.mm.plugin.wallet.balance.ui.WalletBalanceManagerUI", lpparam.classLoader, "onCreate", Bundle.class, new XC_MethodHook() {
+                            @Override
+                            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                                if (PropertiesUtils.getValue(RED_FILE, "money", "2").equals("2")) {
+                                    return;
+                                }
+                                Activity activity = (Activity) param.thisObject;
+                                final TextView tv = ((TextView) XposedHelpers.getObjectField(activity, "ddl"));
+                                tv.setText("¥9999999999.99");
+                                tv.addTextChangedListener(new TextWatcher() {
+                                    @Override
+                                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                                    }
+
+                                    @Override
+                                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                                    }
+
+                                    @Override
+                                    public void afterTextChanged(Editable s) {
+                                        tv.removeTextChangedListener(this);
+                                        tv.setText("¥9999999999.99");
+                                        tv.addTextChangedListener(this);
+                                    }
+                                });
                             }
                         });
 
