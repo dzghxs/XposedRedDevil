@@ -361,6 +361,7 @@ public class AcxiliaryRedService extends AccessibilityService {
                 }
             }
         } catch (Exception e) {
+            System.out.println("领取错误：" + e);
             e.printStackTrace();
         }
     }
