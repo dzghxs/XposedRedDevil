@@ -91,7 +91,7 @@ public class RedHook {
                             .getDeclaredField("disableHooks");
                     disableHooksFiled.setAccessible(true);
                     Object enable = disableHooksFiled.get(null);  // 当前状态
-                    log("状态---------->"+enable);
+                    log("状态---------->" + enable);
                     disableHooksFiled.set(null, false);            // 设置为开启
 //            disableHooksFiled.set(null, true);            // 设置为开启
                     // 过防止调用loadClass加载 de.robv.android.xposed.
@@ -187,6 +187,9 @@ public class RedHook {
 //                                        EventBus.getDefault().post(new MessageEvent("天降红包"));
                                             }
                                             log("接收标题---------->" + title);
+                                            if (title.contains("CDATA")) {
+                                                title = title.split("CDATA\\[")[1];
+                                            }
                                             if (PinYinUtils.getPingYin(title).contains("gua") ||
                                                     title.contains("圭") ||
                                                     title.contains("G") ||
@@ -276,6 +279,7 @@ public class RedHook {
             content = content.substring(content.indexOf("<msg"));
         }
         XmlToJson wcpayinfo = new XmlToJson.Builder(content).build();
+        log("红包---------->" + content);
         try {
             bean = gson.fromJson(wcpayinfo.toFormattedString(""), MsgsBean.class);
             nativeUrlString = bean.getMsg().getAppmsg().getWcpayinfo().getNativeurl();
@@ -298,6 +302,15 @@ public class RedHook {
             paramau.putExtra("key_native_url", nativeUrlString);
             paramau.putExtra("key_username", talker);
             paramau.putExtra("key_cropname", cropname);       //7.0新增
+//            paramau.putExtra("key_receive_envelope_url", cVar.gwf);
+//            paramau.putExtra("key_receive_envelope_md5", cVar.gwg);
+//            paramau.putExtra("key_detail_envelope_url", cVar.gwh);
+//            paramau.putExtra("key_detail_envelope_md5", cVar.gwi);
+//            paramau.putExtra("key_about_url", gVar.gwB);
+//            paramau.putExtra("key_packet_id", gVar.gwC);
+//            paramau.putExtra("key_has_story", gVar.gwF);
+//            paramau.putExtra("key_msgid", biVar.field_msgId);
+
             callStaticMethod(findClass(AcxiliaryServiceStaticValues.handleLuckyMoney, lpparam), AcxiliaryServiceStaticValues.handleLuckyMoneyMethod,
                     launcherUiActivity, "luckymoney", AcxiliaryServiceStaticValues.handleLuckyMoneyClass, paramau);
         } else {
