@@ -150,13 +150,13 @@ public class HomeActivity extends BaseActivity {
         tvHomeUnroot.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/font.ttf"));
         tvHomeRoot.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/font.ttf"));
         AssetsCopyTOSDcard.Assets2Sd(this, "lucky_sound.mp3", Environment.getExternalStorageDirectory().toString() + "/xposedreddevil/lucky_sound.mp3");
-        if (PropertiesUtils.getValue(RED_FILE, "wechatversion", "").equals("7.0.12")) {
+        if (PropertiesUtils.getValue(RED_FILE, "wechatversion", "").equals("7.0.14")) {
             spCenterVersion.setSelection(1);
         } else if (PropertiesUtils.getValue(RED_FILE, "wechatversion", "").equals("7.0.13")) {
             spCenterVersion.setSelection(0);
         }
-        if (spCenterVersion.getSelectedItem().equals("7.0.12")) {
-            PropertiesUtils.putValue(RED_FILE, "wechatversion", "7.0.12");
+        if (spCenterVersion.getSelectedItem().equals("7.0.14")) {
+            PropertiesUtils.putValue(RED_FILE, "wechatversion", "7.0.14");
         } else if (spCenterVersion.getSelectedItem().equals("7.0.13")) {
             PropertiesUtils.putValue(RED_FILE, "wechatversion", "7.0.13");
         }
