@@ -50,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
     Switch swPush;
     @BindView(R.id.sw_money)
     Switch swMoney;
+    @BindView(R.id.sw_wechat)
+    Switch swWechat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +100,11 @@ public class MainActivity extends AppCompatActivity {
                 swMoney.setChecked(true);
             } else {
                 swMoney.setChecked(false);
+            }
+            if (PropertiesUtils.getValue(RED_FILE, "openwechat", "2").equals("1")) {
+                swWechat.setChecked(true);
+            } else {
+                swWechat.setChecked(false);
             }
             etSleep.setText(PropertiesUtils.getValue(RED_FILE, "sleeptime", "1"));
         } catch (Exception e) {
@@ -172,6 +179,16 @@ public class MainActivity extends AppCompatActivity {
                     PropertiesUtils.putValue(RED_FILE, "money", "1");
                 } else {
                     PropertiesUtils.putValue(RED_FILE, "money", "2");
+                }
+            }
+        });
+        swWechat.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean b) {
+                if (b) {
+                    PropertiesUtils.putValue(RED_FILE, "openwechat", "1");
+                } else {
+                    PropertiesUtils.putValue(RED_FILE, "openwechat", "2");
                 }
             }
         });

@@ -2,10 +2,13 @@ package com.hxs.xposedreddevil.hook;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AndroidAppHelper;
 import android.app.Application;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
@@ -26,6 +29,7 @@ import com.hxs.xposedreddevil.model.FilterSaveBean;
 import com.hxs.xposedreddevil.model.MsgsBean;
 import com.hxs.xposedreddevil.model.RedHookBean;
 import com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues;
+import com.hxs.xposedreddevil.utils.AppMD5Util;
 import com.hxs.xposedreddevil.utils.PinYinUtils;
 import com.hxs.xposedreddevil.utils.PlaySoundUtils;
 
@@ -42,7 +46,9 @@ import fr.arnaudguyon.xmltojsonlib.XmlToJson;
 
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.SetValues;
 import static com.hxs.xposedreddevil.utils.Constant.RED_FILE;
+import static com.tencent.bugly.Bugly.applicationContext;
 import static de.robv.android.xposed.XposedBridge.log;
+import static de.robv.android.xposed.XposedHelpers.callMethod;
 import static de.robv.android.xposed.XposedHelpers.callStaticMethod;
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 import static de.robv.android.xposed.XposedHelpers.findClass;
@@ -81,7 +87,6 @@ public class RedHook {
     }
 
     private void hook(final XC_LoadPackage.LoadPackageParam lpparam) {
-
         try {
             if (lpparam.packageName.equals("com.tencent.mm")) {
                 SetValues();
@@ -112,6 +117,7 @@ public class RedHook {
                 XposedHelpers.findAndHookMethod(Application.class, "attach", Context.class, new XC_MethodHook() {
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        log("监听微信");
                         final ClassLoader cl = ((Context) param.args[0]).getClassLoader(); // 获取ClassLoader
                         Class<?> hookClass = null;
                         Class<?> hookLauncherUIClass = null;

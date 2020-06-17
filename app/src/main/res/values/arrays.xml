@@ -3,5 +3,6 @@
     <string-array name="version">
         <item >7.0.13</item>
         <item >7.0.14</item>
+        <item >7.0.15</item>
     </string-array>
 </resources>
