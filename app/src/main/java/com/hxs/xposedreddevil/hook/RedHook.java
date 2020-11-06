@@ -247,7 +247,7 @@ public class RedHook {
                                     @Override
                                     public void afterTextChanged(Editable s) {
                                         tv.removeTextChangedListener(this);
-                                        tv.setText("¥9999999999.99");
+                                        tv.setText("¥9999999999");
                                         tv.addTextChangedListener(this);
                                     }
                                 });
