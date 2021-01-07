@@ -156,9 +156,13 @@ public class RedHook {
                                                     }
                                                 }
                                                 log(item.getKey());
-                                                if (item.getKey().equals("content")) {
-                                                    String data = item.getValue().toString();
-                                                    title = data.split("<receivertitle>")[1].split("</receivertitle>")[0];
+                                                try {
+                                                    if (item.getKey().equals("content")) {
+                                                        String data = item.getValue().toString();
+                                                        title = data.split("<receivertitle>")[1].split("</receivertitle>")[0];
+                                                    }
+                                                } catch (Exception e) {
+                                                    e.printStackTrace();
                                                 }
                                                 stringMap.put(item.getKey(), item.getValue().toString());
                                             } else {
