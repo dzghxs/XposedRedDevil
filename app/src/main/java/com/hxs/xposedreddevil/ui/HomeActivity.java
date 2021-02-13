@@ -109,15 +109,15 @@ public class HomeActivity extends BaseActivity {
         tvHomeUnroot.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/font.ttf"));
         tvHomeRoot.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/font.ttf"));
         AssetsCopyTOSDcard.Assets2Sd(this, "lucky_sound.mp3", Environment.getExternalStorageDirectory().toString() + "/xposedreddevil/lucky_sound.mp3");
-        if (PropertiesUtils.getValue(RED_FILE, "wechatversion", "").equals("7.0.22")) {
-            spCenterVersion.setSelection(0);
-        } else if (PropertiesUtils.getValue(RED_FILE, "wechatversion", "").equals("7.0.21")) {
+        if (PropertiesUtils.getValue(RED_FILE, "wechatversion", "").equals("8.0.1")) {
             spCenterVersion.setSelection(1);
+        } else if (PropertiesUtils.getValue(RED_FILE, "wechatversion", "").equals("7.0.23")) {
+            spCenterVersion.setSelection(0);
         }
-        if (spCenterVersion.getSelectedItem().equals("7.0.22")) {
-            PropertiesUtils.putValue(RED_FILE, "wechatversion", "7.0.22");
-        } else if (spCenterVersion.getSelectedItem().equals("7.0.21")) {
-            PropertiesUtils.putValue(RED_FILE, "wechatversion", "7.0.21");
+        if (spCenterVersion.getSelectedItem().equals("8.0.1")) {
+            PropertiesUtils.putValue(RED_FILE, "wechatversion", "8.0.1");
+        } else if (spCenterVersion.getSelectedItem().equals("7.0.23")) {
+            PropertiesUtils.putValue(RED_FILE, "wechatversion", "7.0.23");
         }
         if (!PackageManagerUtil.getItems(this).equals("")) {
             PropertiesUtils.putValue(RED_FILE, "wechatversion", PackageManagerUtil.getItems(this));
@@ -188,7 +188,8 @@ public class HomeActivity extends BaseActivity {
                 startActivity(new Intent(this, SettingActivity.class));
                 break;
             case R.id.home_card_unroot:
-                startActivity(new Intent(this, NotRootActivity.class));
+                Toast.makeText(this, "暂不提供免root抢红包操作，如需实现请自行编译代码", Toast.LENGTH_SHORT).show();
+//                startActivity(new Intent(this, NotRootActivity.class));
                 break;
             case R.id.home_card_root:
                 startActivity(new Intent(this, MainActivity.class));

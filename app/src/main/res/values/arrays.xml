@@ -2,6 +2,6 @@
 <resources>
     <string-array name="version">
         <item >7.0.22</item>
-        <item >7.0.21</item>
+        <item >8.0.1</item>
     </string-array>
 </resources>

@@ -72,6 +72,8 @@
             android:id="@+id/home_card_unroot"
             android:layout_width="100dp"
             android:layout_height="100dp"
+            android:focusable="false"
+            android:clickable="false"
             android:layout_centerInParent="true"
             app:cardBackgroundColor="@color/card_bg"
             app:cardCornerRadius="60dp"
