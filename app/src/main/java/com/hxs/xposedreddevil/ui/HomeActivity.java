@@ -109,15 +109,15 @@ public class HomeActivity extends BaseActivity {
         tvHomeUnroot.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/font.ttf"));
         tvHomeRoot.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/font.ttf"));
         AssetsCopyTOSDcard.Assets2Sd(this, "lucky_sound.mp3", Environment.getExternalStorageDirectory().toString() + "/xposedreddevil/lucky_sound.mp3");
-        if (PropertiesUtils.getValue(RED_FILE, "wechatversion", "").equals("8.0.1")) {
+        if (PropertiesUtils.getValue(RED_FILE, "wechatversion", "").equals("8.0.3")) {
             spCenterVersion.setSelection(1);
-        } else if (PropertiesUtils.getValue(RED_FILE, "wechatversion", "").equals("7.0.23")) {
+        } else if (PropertiesUtils.getValue(RED_FILE, "wechatversion", "").equals("8.0.2")) {
             spCenterVersion.setSelection(0);
         }
-        if (spCenterVersion.getSelectedItem().equals("8.0.1")) {
-            PropertiesUtils.putValue(RED_FILE, "wechatversion", "8.0.1");
-        } else if (spCenterVersion.getSelectedItem().equals("7.0.23")) {
-            PropertiesUtils.putValue(RED_FILE, "wechatversion", "7.0.23");
+        if (spCenterVersion.getSelectedItem().equals("8.0.3")) {
+            PropertiesUtils.putValue(RED_FILE, "wechatversion", "8.0.3");
+        } else if (spCenterVersion.getSelectedItem().equals("8.0.2")) {
+            PropertiesUtils.putValue(RED_FILE, "wechatversion", "8.0.2");
         }
         if (!PackageManagerUtil.getItems(this).equals("")) {
             PropertiesUtils.putValue(RED_FILE, "wechatversion", PackageManagerUtil.getItems(this));
@@ -129,12 +129,6 @@ public class HomeActivity extends BaseActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getMsg(MessageEvent msg) {
         if (msg.getMessage().contains("@")) {
-        }
-    }
-
-    private void checkResult(int result, String method) {
-        if (result != 0) {
-            toPrint("error code :" + result + " method:" + method + ", 错误码文档:http://yuyin.baidu.com/docs/tts/122 ");
         }
     }
 

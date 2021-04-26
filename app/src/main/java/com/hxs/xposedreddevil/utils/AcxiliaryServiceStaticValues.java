@@ -68,36 +68,7 @@ public class AcxiliaryServiceStaticValues {
             handleLuckyMoneyMethod = "b";
             handleLuckyMoneyClass = ".ui.LuckyMoneyNotHookReceiveUI";
 
-        } else if (wechatversion.equals("7.0.22")) {
-            LUCKEY_MONEY_RECEIVER = "com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyNotHookReceiveUI";
-            OPEN_ID = "com.tencent.mm:id/dan";
-            strredstatus = "com.tencent.mm:id/aul";
-            chatredid = "com.tencent.mm:id/bal";
-            chatid = "com.tencent.mm:id/bah";
-            redcircle = "com.tencent.mm:id/op";
-            chatnameid = "com.tencent.mm:id/baj";
-            msgredid = "com.tencent.mm:id/atb";
-            msgredcontent = "com.tencent.mm:id/auk";
-            msgisredid = "com.tencent.mm:id/aum";
-            redunmsgcircle = "com.tencent.mm:id/bai";
-            msgname = "com.tencent.mm:id/lt";
-
-            chatonenameid = "com.tencent.mm:id/b9i";
-            carrynum = "com.tencent.mm:id/ata";
-            carrystates = "com.tencent.mm:id/atb";
-            carrypagenum = "com.tencent.mm:id/e71";
-            carrypagetime = "com.tencent.mm:id/e81";
-            carrypagebtn = "com.tencent.mm:id/e7x";
-            redpagenum = "com.tencent.mm:id/czp";
-
-            LuckyMoneyNotHookReceiveUI = "com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyNotHookReceiveUI";
-            LuckyMoneyNotHookReceiveUIMethod = "onSceneEnd";
-            LuckyMoneyNotHookReceiveUIMethodParameter = "com.tencent.mm.aj.q";
-            LuckyMoneyNotHookReceiveUIButton = "wVR";
-            handleLuckyMoney = "com.tencent.mm.bq.c";
-            handleLuckyMoneyMethod = "b";
-            handleLuckyMoneyClass = ".ui.LuckyMoneyNotHookReceiveUI";
-        } else if (wechatversion.equals("8.0.1")) {
+        } else if (wechatversion.equals("8.0.2")) {
             LUCKEY_MONEY_RECEIVER = "com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyNotHookReceiveUI";
             OPEN_ID = "com.tencent.mm:id/dan";
             strredstatus = "com.tencent.mm:id/aul";
@@ -122,8 +93,37 @@ public class AcxiliaryServiceStaticValues {
             LuckyMoneyNotHookReceiveUI = "com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyNotHookReceiveUI";
             LuckyMoneyNotHookReceiveUIMethod = "onSceneEnd";
             LuckyMoneyNotHookReceiveUIMethodParameter = "com.tencent.mm.ak.q";
-            LuckyMoneyNotHookReceiveUIButton = "yRl";
-            handleLuckyMoney = "com.tencent.mm.br.c";
+            LuckyMoneyNotHookReceiveUIButton = "zYL";
+            handleLuckyMoney = "com.tencent.mm.bt.c";
+            handleLuckyMoneyMethod = "b";
+            handleLuckyMoneyClass = ".ui.LuckyMoneyNotHookReceiveUI";
+        } else if (wechatversion.equals("8.0.3")) {
+            LUCKEY_MONEY_RECEIVER = "com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyNotHookReceiveUI";
+            OPEN_ID = "com.tencent.mm:id/dan";
+            strredstatus = "com.tencent.mm:id/aul";
+            chatredid = "com.tencent.mm:id/bal";
+            chatid = "com.tencent.mm:id/bah";
+            redcircle = "com.tencent.mm:id/op";
+            chatnameid = "com.tencent.mm:id/baj";
+            msgredid = "com.tencent.mm:id/atb";
+            msgredcontent = "com.tencent.mm:id/auk";
+            msgisredid = "com.tencent.mm:id/aum";
+            redunmsgcircle = "com.tencent.mm:id/bai";
+            msgname = "com.tencent.mm:id/lt";
+
+            chatonenameid = "com.tencent.mm:id/b9i";
+            carrynum = "com.tencent.mm:id/ata";
+            carrystates = "com.tencent.mm:id/atb";
+            carrypagenum = "com.tencent.mm:id/e71";
+            carrypagetime = "com.tencent.mm:id/e81";
+            carrypagebtn = "com.tencent.mm:id/e7x";
+            redpagenum = "com.tencent.mm:id/czp";
+
+            LuckyMoneyNotHookReceiveUI = "com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyNotHookReceiveUI";
+            LuckyMoneyNotHookReceiveUIMethod = "onSceneEnd";
+            LuckyMoneyNotHookReceiveUIMethodParameter = "com.tencent.mm.al.q";
+            LuckyMoneyNotHookReceiveUIButton = "AqN";
+            handleLuckyMoney = "com.tencent.mm.bt.c";
             handleLuckyMoneyMethod = "b";
             handleLuckyMoneyClass = ".ui.LuckyMoneyNotHookReceiveUI";
         }
