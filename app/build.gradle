@@ -7,8 +7,8 @@ android {
         applicationId "com.hxs.xposedreddevil"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 52
-        versionName "2.3.2"
+        versionCode 53
+        versionName "2.3.3"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         useLibrary 'org.apache.http.legacy'
         ndk {
@@ -39,6 +39,10 @@ android {
         exclude 'META-INF/LICENSE'
         exclude 'META-INF/LICENSE.txt'
         exclude 'META-INF/NOTICE.txt'
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
