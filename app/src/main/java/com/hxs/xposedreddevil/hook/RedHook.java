@@ -11,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.RequiresApi;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -303,29 +304,35 @@ public class RedHook {
         log("nativeurl: " + nativeUrlString + "\n");
         log("cropname: " + cropname + "\n");
         if (PropertiesUtils.getValue(RED_FILE, "sleep", "2").equals("1")) {
-            Thread.sleep(Long.parseLong(PropertiesUtils.getValue(RED_FILE, "sleeptime", "1")));
-        }
-        // 启动红包页面
-        if (launcherUiActivity != null) {
-            log("call method com.tencent.mm.br.d, start LuckyMoneyReceiveUI" + "\n");
-            Intent paramau = new Intent();
-            paramau.putExtra("key_way", 1);
-            paramau.putExtra("key_native_url", nativeUrlString);
-            paramau.putExtra("key_username", talker);
-            paramau.putExtra("key_cropname", cropname);       //7.0新增
-//            paramau.putExtra("key_receive_envelope_url", cVar.gwf);
-//            paramau.putExtra("key_receive_envelope_md5", cVar.gwg);
-//            paramau.putExtra("key_detail_envelope_url", cVar.gwh);
-//            paramau.putExtra("key_detail_envelope_md5", cVar.gwi);
-//            paramau.putExtra("key_about_url", gVar.gwB);
-//            paramau.putExtra("key_packet_id", gVar.gwC);
-//            paramau.putExtra("key_has_story", gVar.gwF);
-//            paramau.putExtra("key_msgid", biVar.field_msgId);
-
-            callStaticMethod(findClass(AcxiliaryServiceStaticValues.handleLuckyMoney, lpparam), AcxiliaryServiceStaticValues.handleLuckyMoneyMethod,
-                    launcherUiActivity, "luckymoney", AcxiliaryServiceStaticValues.handleLuckyMoneyClass, paramau);
+            new Handler().postDelayed(() -> {
+                // 启动红包页面
+                if (launcherUiActivity != null) {
+                    log("call method com.tencent.mm.br.d, start LuckyMoneyReceiveUI" + "\n");
+                    Intent paramau = new Intent();
+                    paramau.putExtra("key_way", 1);
+                    paramau.putExtra("key_native_url", nativeUrlString);
+                    paramau.putExtra("key_username", talker);
+                    paramau.putExtra("key_cropname", cropname);       //7.0新增
+                    callStaticMethod(findClass(AcxiliaryServiceStaticValues.handleLuckyMoney, lpparam), AcxiliaryServiceStaticValues.handleLuckyMoneyMethod,
+                            launcherUiActivity, "luckymoney", AcxiliaryServiceStaticValues.handleLuckyMoneyClass, paramau);
+                } else {
+                    log("launcherUiActivity == null" + "\n");
+                }
+            }, Long.parseLong(PropertiesUtils.getValue(RED_FILE, "sleeptime", "1")));
         } else {
-            log("launcherUiActivity == null" + "\n");
+            // 启动红包页面
+            if (launcherUiActivity != null) {
+                log("call method com.tencent.mm.br.d, start LuckyMoneyReceiveUI" + "\n");
+                Intent paramau = new Intent();
+                paramau.putExtra("key_way", 1);
+                paramau.putExtra("key_native_url", nativeUrlString);
+                paramau.putExtra("key_username", talker);
+                paramau.putExtra("key_cropname", cropname);       //7.0新增
+                callStaticMethod(findClass(AcxiliaryServiceStaticValues.handleLuckyMoney, lpparam), AcxiliaryServiceStaticValues.handleLuckyMoneyMethod,
+                        launcherUiActivity, "luckymoney", AcxiliaryServiceStaticValues.handleLuckyMoneyClass, paramau);
+            } else {
+                log("launcherUiActivity == null" + "\n");
+            }
         }
     }
 

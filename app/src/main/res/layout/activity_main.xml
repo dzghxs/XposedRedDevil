@@ -109,7 +109,7 @@
             <LinearLayout
                 android:id="@+id/ll_sleep"
                 android:layout_width="match_parent"
-                android:layout_height="80dp"
+                android:layout_height="40dp"
                 android:orientation="vertical"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp">
@@ -147,6 +147,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:visibility="gone"
                     android:text="建议：延迟时间不最好不要超过2000毫秒，否则容易造成微信假死，影响使用感受"
                     android:textColor="#ff0000" />
 
