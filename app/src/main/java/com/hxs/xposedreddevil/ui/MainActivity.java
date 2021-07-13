@@ -110,86 +110,62 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        swMain.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b) {
-                    PropertiesUtils.putValue(RED_FILE, "redmain", "1");
-                } else {
-                    PropertiesUtils.putValue(RED_FILE, "redmain", "2");
-                }
+        swMain.setOnCheckedChangeListener((compoundButton, b) -> {
+            if (b) {
+                PropertiesUtils.putValue(RED_FILE, "redmain", "1");
+            } else {
+                PropertiesUtils.putValue(RED_FILE, "redmain", "2");
             }
         });
-        swOwn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b) {
-                    PropertiesUtils.putValue(RED_FILE, "red", "1");
-                } else {
-                    PropertiesUtils.putValue(RED_FILE, "red", "2");
-                }
+        swOwn.setOnCheckedChangeListener((compoundButton, b) -> {
+            if (b) {
+                PropertiesUtils.putValue(RED_FILE, "red", "1");
+            } else {
+                PropertiesUtils.putValue(RED_FILE, "red", "2");
             }
         });
-        swSleep.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b) {
-                    PropertiesUtils.putValue(RED_FILE, "sleep", "1");
-                    llSleep.setVisibility(View.VISIBLE);
-                } else {
-                    PropertiesUtils.putValue(RED_FILE, "sleep", "2");
-                    llSleep.setVisibility(View.GONE);
-                }
+        swSleep.setOnCheckedChangeListener((compoundButton, b) -> {
+            if (b) {
+                PropertiesUtils.putValue(RED_FILE, "sleep", "1");
+                llSleep.setVisibility(View.VISIBLE);
+            } else {
+                PropertiesUtils.putValue(RED_FILE, "sleep", "2");
+                llSleep.setVisibility(View.GONE);
             }
         });
-        swSound.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b) {
-                    PropertiesUtils.putValue(RED_FILE, "sound", "1");
-                } else {
-                    PropertiesUtils.putValue(RED_FILE, "sound", "2");
-                }
+        swSound.setOnCheckedChangeListener((compoundButton, b) -> {
+            if (b) {
+                PropertiesUtils.putValue(RED_FILE, "sound", "1");
+            } else {
+                PropertiesUtils.putValue(RED_FILE, "sound", "2");
             }
         });
-        swPush.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b) {
-                    PropertiesUtils.putValue(RED_FILE, "push", "1");
-                } else {
-                    PropertiesUtils.putValue(RED_FILE, "push", "2");
-                }
+        swPush.setOnCheckedChangeListener((compoundButton, b) -> {
+            if (b) {
+                PropertiesUtils.putValue(RED_FILE, "push", "1");
+            } else {
+                PropertiesUtils.putValue(RED_FILE, "push", "2");
             }
         });
-        swWithdraw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean b) {
-                if (b) {
-                    PropertiesUtils.putValue(RED_FILE, "withdraw", "1");
-                } else {
-                    PropertiesUtils.putValue(RED_FILE, "withdraw", "2");
-                }
+        swWithdraw.setOnCheckedChangeListener((buttonView, b) -> {
+            if (b) {
+                PropertiesUtils.putValue(RED_FILE, "withdraw", "1");
+            } else {
+                PropertiesUtils.putValue(RED_FILE, "withdraw", "2");
             }
         });
-        swMoney.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean b) {
-                if (b) {
-                    PropertiesUtils.putValue(RED_FILE, "money", "1");
-                } else {
-                    PropertiesUtils.putValue(RED_FILE, "money", "2");
-                }
+        swMoney.setOnCheckedChangeListener((buttonView, b) -> {
+            if (b) {
+                PropertiesUtils.putValue(RED_FILE, "money", "1");
+            } else {
+                PropertiesUtils.putValue(RED_FILE, "money", "2");
             }
         });
-        swWechat.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean b) {
-                if (b) {
-                    PropertiesUtils.putValue(RED_FILE, "openwechat", "1");
-                } else {
-                    PropertiesUtils.putValue(RED_FILE, "openwechat", "2");
-                }
+        swWechat.setOnCheckedChangeListener((buttonView, b) -> {
+            if (b) {
+                PropertiesUtils.putValue(RED_FILE, "openwechat", "1");
+            } else {
+                PropertiesUtils.putValue(RED_FILE, "openwechat", "2");
             }
         });
         etSleep.addTextChangedListener(new TextWatcher() {
