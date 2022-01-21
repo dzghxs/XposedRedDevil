@@ -313,6 +313,7 @@ public class RedHook {
                     paramau.putExtra("key_native_url", nativeUrlString);
                     paramau.putExtra("key_username", talker);
                     paramau.putExtra("key_cropname", cropname);       //7.0新增
+                    System.out.println("界面："+AcxiliaryServiceStaticValues.handleLuckyMoney);
                     callStaticMethod(findClass(AcxiliaryServiceStaticValues.handleLuckyMoney, lpparam), AcxiliaryServiceStaticValues.handleLuckyMoneyMethod,
                             launcherUiActivity, "luckymoney", AcxiliaryServiceStaticValues.handleLuckyMoneyClass, paramau);
                 } else {
