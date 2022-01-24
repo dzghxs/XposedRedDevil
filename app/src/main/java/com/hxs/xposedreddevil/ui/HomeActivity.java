@@ -111,13 +111,13 @@ public class HomeActivity extends BaseActivity {
         AssetsCopyTOSDcard.Assets2Sd(this, "lucky_sound.mp3", Environment.getExternalStorageDirectory().toString() + "/xposedreddevil/lucky_sound.mp3");
         if (PropertiesUtils.getValue(RED_FILE, "wechatversion", "").equals("8.0.16")) {
             spCenterVersion.setSelection(1);
-        } else if (PropertiesUtils.getValue(RED_FILE, "wechatversion", "").equals("8.0.15")) {
+        } else if (PropertiesUtils.getValue(RED_FILE, "wechatversion", "").equals("8.0.18")) {
             spCenterVersion.setSelection(0);
         }
         if (spCenterVersion.getSelectedItem().equals("8.0.16")) {
             PropertiesUtils.putValue(RED_FILE, "wechatversion", "8.0.16");
-        } else if (spCenterVersion.getSelectedItem().equals("8.0.9")) {
-            PropertiesUtils.putValue(RED_FILE, "wechatversion", "8.0.15");
+        } else if (spCenterVersion.getSelectedItem().equals("8.0.18")) {
+            PropertiesUtils.putValue(RED_FILE, "wechatversion", "8.0.18");
         }
         if (!PackageManagerUtil.getItems(this).equals("")) {
             PropertiesUtils.putValue(RED_FILE, "wechatversion", PackageManagerUtil.getItems(this));

@@ -68,7 +68,7 @@ public class AcxiliaryServiceStaticValues {
             handleLuckyMoneyMethod = "b";
             handleLuckyMoneyClass = ".ui.LuckyMoneyNotHookReceiveUI";
 
-        } else if (wechatversion.equals("8.0.15")) {
+        } else if (wechatversion.equals("8.0.18")) {
             LUCKEY_MONEY_RECEIVER = "com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyNotHookReceiveUI";
             OPEN_ID = "com.tencent.mm:id/dan";
             strredstatus = "com.tencent.mm:id/aul";
@@ -92,9 +92,9 @@ public class AcxiliaryServiceStaticValues {
 
             LuckyMoneyNotHookReceiveUI = "com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyNotHookReceiveUI";
             LuckyMoneyNotHookReceiveUIMethod = "onSceneEnd";
-            LuckyMoneyNotHookReceiveUIMethodParameter = "com.tencent.mm.al.q";
-            LuckyMoneyNotHookReceiveUIButton = "GxU";
-            handleLuckyMoney = "com.tencent.mm.bv.c";
+            LuckyMoneyNotHookReceiveUIMethodParameter = "com.tencent.mm.ao.p";
+            LuckyMoneyNotHookReceiveUIButton = "IKx";
+            handleLuckyMoney = "com.tencent.mm.bz.c";
             handleLuckyMoneyMethod = "b";
             handleLuckyMoneyClass = ".ui.LuckyMoneyNotHookReceiveUI";
         } else if (wechatversion.equals("8.0.16")) {
