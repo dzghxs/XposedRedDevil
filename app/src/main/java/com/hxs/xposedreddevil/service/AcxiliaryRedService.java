@@ -264,7 +264,12 @@ public class AcxiliaryRedService extends AccessibilityService {
         List<AccessibilityNodeInfo> list = null;
         AccessibilityNodeInfo msgnames = null;
         try {
-            msgnames = nodeInfo.findAccessibilityNodeInfosByViewId(msgname).get(0);
+            if (nodeInfo.findAccessibilityNodeInfosByViewId(msgname).size() == 0) {
+                username = "";
+            } else {
+                msgnames = nodeInfo.findAccessibilityNodeInfosByViewId(msgname).get(0);
+                username = msgnames.getText().toString();
+            }
             list = nodeInfo.findAccessibilityNodeInfosByViewId(msgredid);
             // 最新的红包领起
             for (int i = list.size() - 1; i >= 0; i--) {
@@ -308,15 +313,20 @@ public class AcxiliaryRedService extends AccessibilityService {
                             if (list.get(i).isClickable()) {
                                 Rect rect = new Rect();
                                 list.get(i).getBoundsInScreen(rect);
-                                username = msgnames.getText().toString();
                                 if (rect.centerX() > (Integer.parseInt(PropertiesUtils.getValue(RED_FILE, "widthPixels", "0")) / 2)) {
                                     String pattern = ".*[(].*\\d[)]";
-                                    if (Pattern.compile(pattern).matcher(msgnames.getText().toString()).matches()) {
+                                    if (username.equals("")) {
                                         if (PropertiesUtils.getValue(RED_FILE, "notrooown", "2").equals("1")) {
                                             return;
                                         }
                                     } else {
-                                        return;
+                                        if (Pattern.compile(pattern).matcher(username).matches()) {
+                                            if (PropertiesUtils.getValue(RED_FILE, "notrooown", "2").equals("1")) {
+                                                return;
+                                            }
+                                        } else {
+                                            return;
+                                        }
                                     }
                                 }
                                 //模拟点击
@@ -334,10 +344,9 @@ public class AcxiliaryRedService extends AccessibilityService {
                         if (list.get(i).isClickable()) {
                             Rect rect = new Rect();
                             list.get(i).getBoundsInScreen(rect);
-                            username = msgnames.getText().toString();
                             if (rect.centerX() > (Integer.parseInt(PropertiesUtils.getValue(RED_FILE, "widthPixels", "0")) / 2)) {
                                 String pattern = ".*[(].*\\d[)]";
-                                if (Pattern.compile(pattern).matcher(msgnames.getText().toString()).matches()) {
+                                if (Pattern.compile(pattern).matcher(username).matches()) {
                                     if (PropertiesUtils.getValue(RED_FILE, "notrooown", "2").equals("1")) {
                                         return;
                                     }
@@ -371,23 +380,15 @@ public class AcxiliaryRedService extends AccessibilityService {
         AccessibilityNodeInfo button_open = AccessibilityUtils.findNodeInfosById(rootNode, OPEN_ID);
         if (button_open != null) {
             final AccessibilityNodeInfo n = button_open;
-
-            AccessibilityUtils.performClick(n);
-
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    AccessibilityUtils.performClick(n);
-                }
-            }, 1500);
-
+//            Rect rect = new Rect();
+//            n.getBoundsInScreen(rect);
+//            View v = new View(this);
+            synchronized (this){
+                AccessibilityUtils.performClick(n);
+//                new Handler().postDelayed(() -> AccessibilityUtils.performClick(n), 1500);
+            }
         } else {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    findOpenBtn(getRootInActiveWindow());
-                }
-            }, 1500);
+            new Handler().postDelayed(() -> findOpenBtn(getRootInActiveWindow()), 1500);
         }
     }
 

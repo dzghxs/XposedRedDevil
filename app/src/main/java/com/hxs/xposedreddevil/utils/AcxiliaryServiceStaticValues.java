@@ -24,6 +24,7 @@ public class AcxiliaryServiceStaticValues {
     public static String carrypagetime = "";  //微信转账时间
     public static String carrypagebtn = "";   //微信确认按钮
     public static String redpagenum = "";   //微信红包详情页金额
+    public static String OPEN_ID = "com.tencent.mm:id/cv0";   //开按钮
     //xposed
     public static String LuckyMoneyNotHookReceiveUI = ""; //红包页面名称
     public static String LuckyMoneyNotHookReceiveUIMethod = "";     //红包页面方法
@@ -40,7 +41,6 @@ public class AcxiliaryServiceStaticValues {
     public static String LAUCHER = "com.tencent.mm.ui.LauncherUI";
     public static String LUCKEY_MONEY_DETAIL = "com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyDetailUI";
     public static String LUCKEY_MONEY_RECEIVER = "com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyReceiveUI";
-    public static String OPEN_ID = "com.tencent.mm:id/cv0";   //开按钮
     public static String CARRYUI = "com.tencent.mm.plugin.remittance.ui.RemittanceDetailUI";    //转账页面
 
     public static String wechatversion;
@@ -70,25 +70,25 @@ public class AcxiliaryServiceStaticValues {
 
         } else if (wechatversion.equals("8.0.18")) {
             LUCKEY_MONEY_RECEIVER = "com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyNotHookReceiveUI";
-            OPEN_ID = "com.tencent.mm:id/dan";
-            strredstatus = "com.tencent.mm:id/aul";
-            chatredid = "com.tencent.mm:id/bal";
-            chatid = "com.tencent.mm:id/bah";
-            redcircle = "com.tencent.mm:id/op";
-            chatnameid = "com.tencent.mm:id/baj";
-            msgredid = "com.tencent.mm:id/atb";
-            msgredcontent = "com.tencent.mm:id/auk";
-            msgisredid = "com.tencent.mm:id/aum";
-            redunmsgcircle = "com.tencent.mm:id/bai";
-            msgname = "com.tencent.mm:id/lt";
+            OPEN_ID = "com.tencent.mm:id/gix";
+            strredstatus = "com.tencent.mm:id/xs";
+            chatredid = "com.tencent.mm:id/fhz";
+            chatid = "com.tencent.mm:id/btg";
+            redcircle = "com.tencent.mm:id/kn6";
+            chatnameid = "com.tencent.mm:id/hga";
+            msgredid = "com.tencent.mm:id/b47";
+            msgredcontent = "com.tencent.mm:id/y0";
+            msgisredid = "com.tencent.mm:id/y4";
+            redunmsgcircle = "com.tencent.mm:id/a2f";
+            msgname = "com.tencent.mm:id/b9_";
 
-            chatonenameid = "com.tencent.mm:id/b9i";
-            carrynum = "com.tencent.mm:id/ata";
-            carrystates = "com.tencent.mm:id/atb";
-            carrypagenum = "com.tencent.mm:id/e71";
-            carrypagetime = "com.tencent.mm:id/e81";
-            carrypagebtn = "com.tencent.mm:id/e7x";
-            redpagenum = "com.tencent.mm:id/czp";
+            chatonenameid = "com.tencent.mm:id/hga";
+            carrynum = "com.tencent.mm:id/yc";
+            carrystates = "com.tencent.mm:id/y_";
+            carrypagenum = "com.tencent.mm:id/imp";
+            carrypagetime = "com.tencent.mm:id/imk";
+            carrypagebtn = "com.tencent.mm:id/imh";
+            redpagenum = "com.tencent.mm:id/gcq";
 
             LuckyMoneyNotHookReceiveUI = "com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyNotHookReceiveUI";
             LuckyMoneyNotHookReceiveUIMethod = "onSceneEnd";
