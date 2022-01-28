@@ -15,9 +15,10 @@
  */
 package fr.arnaudguyon.xmltojsonlib;
 
-import android.support.annotation.IntRange;
-import android.support.annotation.NonNull;
 import android.util.Xml;
+
+import androidx.annotation.IntRange;
+import androidx.annotation.NonNull;
 
 import org.json.JSONArray;
 import org.json.JSONException;

@@ -1,13 +1,15 @@
 package com.hxs.xposedreddevil.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.hxs.xposedreddevil.R;
 import com.hxs.xposedreddevil.model.FilterBean;
@@ -43,7 +45,7 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.ViewHolder
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, final int i) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") final int i) {
         holder.tv_filter_name.setText(list.get(i).getDisplayname());
         if (list.get(i).isCheck()) {
             holder.cb_filter_select.setChecked(true);

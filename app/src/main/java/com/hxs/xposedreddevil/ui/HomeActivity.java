@@ -5,13 +5,8 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.os.Message;
-import android.os.Vibrator;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.CardView;
 import android.util.DisplayMetrics;
-import android.view.Display;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -19,46 +14,33 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.baidu.tts.client.SpeechSynthesizer;
-import com.baidu.tts.client.SpeechSynthesizerListener;
-import com.baidu.tts.client.TtsMode;
 import com.google.gson.Gson;
-import com.hjq.permissions.OnPermission;
+import com.hjq.permissions.OnPermissionCallback;
 import com.hjq.permissions.Permission;
 import com.hjq.permissions.XXPermissions;
 import com.hxs.xposedreddevil.R;
 import com.hxs.xposedreddevil.base.BaseActivity;
 import com.hxs.xposedreddevil.contentprovider.PropertiesUtils;
-import com.hxs.xposedreddevil.control.InitConfig;
-import com.hxs.xposedreddevil.control.MySyntherizer;
-import com.hxs.xposedreddevil.control.NonBlockSyntherizer;
-import com.hxs.xposedreddevil.greendao.DbCarryList;
-import com.hxs.xposedreddevil.listener.UiMessageListener;
 import com.hxs.xposedreddevil.utils.AssetsCopyTOSDcard;
-import com.hxs.xposedreddevil.utils.AutoCheck;
 import com.hxs.xposedreddevil.utils.MessageEvent;
-import com.hxs.xposedreddevil.utils.OfflineResource;
 import com.hxs.xposedreddevil.utils.PackageManagerUtil;
-import com.hxs.xposedreddevil.utils.SQLiteUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.carrypagenum;
-import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.carrypagetime;
 import static com.hxs.xposedreddevil.utils.Constant.RED_FILE;
 import static com.hxs.xposedreddevil.utils.Constant.currApkPath;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.cardview.widget.CardView;
 
 public class HomeActivity extends BaseActivity {
 
@@ -109,15 +91,11 @@ public class HomeActivity extends BaseActivity {
         tvHomeUnroot.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/font.ttf"));
         tvHomeRoot.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/font.ttf"));
         AssetsCopyTOSDcard.Assets2Sd(this, "lucky_sound.mp3", Environment.getExternalStorageDirectory().toString() + "/xposedreddevil/lucky_sound.mp3");
-        if (PropertiesUtils.getValue(RED_FILE, "wechatversion", "").equals("8.0.16")) {
-            spCenterVersion.setSelection(1);
-        } else if (PropertiesUtils.getValue(RED_FILE, "wechatversion", "").equals("8.0.18")) {
+        if (PropertiesUtils.getValue(RED_FILE, "wechatversion", "").equals("8.0.19")) {
             spCenterVersion.setSelection(0);
         }
-        if (spCenterVersion.getSelectedItem().equals("8.0.16")) {
-            PropertiesUtils.putValue(RED_FILE, "wechatversion", "8.0.16");
-        } else if (spCenterVersion.getSelectedItem().equals("8.0.18")) {
-            PropertiesUtils.putValue(RED_FILE, "wechatversion", "8.0.18");
+        if (spCenterVersion.getSelectedItem().equals("8.0.19")) {
+            PropertiesUtils.putValue(RED_FILE, "wechatversion", "8.0.19");
         }
         if (!PackageManagerUtil.getItems(this).equals("")) {
             PropertiesUtils.putValue(RED_FILE, "wechatversion", PackageManagerUtil.getItems(this));
@@ -128,14 +106,6 @@ public class HomeActivity extends BaseActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getMsg(MessageEvent msg) {
-        if (msg.getMessage().contains("@")) {
-        }
-    }
-
-    protected void toPrint(String str) {
-        Message msg = Message.obtain();
-        msg.obj = str;
-        mainHandler.sendMessage(msg);
     }
 
     /**
@@ -145,15 +115,15 @@ public class HomeActivity extends BaseActivity {
         XXPermissions.with(this)
                 .permission(Permission.Group.STORAGE)
                 .permission(Permission.READ_PHONE_STATE)
-                .constantRequest() //可设置被拒绝后继续申请，直到用户授权或者永久拒绝
-                .request(new OnPermission() {
+                .request(new OnPermissionCallback() {
 
                     @Override
-                    public void hasPermission(List<String> granted, boolean isAll) {
+                    public void onGranted(List<String> permissions, boolean all) {
+
                     }
 
                     @Override
-                    public void noPermission(List<String> denied, boolean quick) {
+                    public void onDenied(List<String> permissions, boolean never) {
                         Toast.makeText(HomeActivity.this, "必要权限未提供，app即将关闭", Toast.LENGTH_SHORT).show();
                         try {
                             Thread.sleep(2000);
@@ -167,12 +137,7 @@ public class HomeActivity extends BaseActivity {
 
     private void WriteVersion() {
         new AlertDialog.Builder(this).setTitle("获取微信版本失败，请手动选择微信版本")
-                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
+                .setPositiveButton("确定", (dialog, which) -> dialog.dismiss());
     }
 
     @OnClick({R.id.home_card_unroot, R.id.home_card_root, R.id.iv_home_setting})

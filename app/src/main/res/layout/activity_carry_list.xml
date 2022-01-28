@@ -72,7 +72,7 @@
         android:layout_height="match_parent"
         android:layout_below="@id/v">
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rl_carry"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

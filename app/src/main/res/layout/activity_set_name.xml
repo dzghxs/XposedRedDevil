@@ -17,7 +17,7 @@
         android:textColor="@android:color/black"
         android:textSize="16sp" />
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_name"
         android:layout_width="60dp"
         android:layout_height="60dp"

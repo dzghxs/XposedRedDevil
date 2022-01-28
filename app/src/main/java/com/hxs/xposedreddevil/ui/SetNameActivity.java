@@ -1,11 +1,10 @@
 package com.hxs.xposedreddevil.ui;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.hxs.xposedreddevil.R;
 import com.hxs.xposedreddevil.contentprovider.PropertiesUtils;
 
@@ -14,6 +13,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static com.hxs.xposedreddevil.utils.Constant.RED_FILE;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class SetNameActivity extends AppCompatActivity {
 

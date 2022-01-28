@@ -1,15 +1,13 @@
 package com.hxs.xposedreddevil.service;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Build;
-import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.ActivityCompat;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
@@ -46,6 +44,10 @@ import static com.hxs.xposedreddevil.utils.Constant.WX_SP_UIN_PATH;
 import static com.hxs.xposedreddevil.utils.Constant.currApkPath;
 import static com.hxs.xposedreddevil.utils.Constant.uin;
 
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
+
 public class GroupChatService extends IntentService {
 
     public GroupChatService() {
@@ -69,7 +71,7 @@ public class GroupChatService extends IntentService {
         }
         Iterator olditerator = null;
         String u = "";
-        String imei = manager.getDeviceId();
+        @SuppressLint("MissingPermission") String imei = manager.getDeviceId();
         ShellCommand.shellCommand("chmod -R 777 " + WX_ROOT_PATH);
         Document doc = null;
         try {

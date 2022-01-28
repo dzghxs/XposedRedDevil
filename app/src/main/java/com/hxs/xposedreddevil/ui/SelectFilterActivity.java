@@ -3,11 +3,6 @@ package com.hxs.xposedreddevil.ui;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -15,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -44,6 +40,11 @@ import butterknife.OnClick;
 import static com.hxs.xposedreddevil.utils.Constant.COPY_WX_DATA_DB;
 import static com.hxs.xposedreddevil.utils.Constant.RED_FILE;
 import static com.hxs.xposedreddevil.utils.Constant.currApkPath;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class SelectFilterActivity extends AppCompatActivity
         implements FilterAdapter.onItemClickListener {

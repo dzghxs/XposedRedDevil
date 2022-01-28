@@ -15,8 +15,6 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Vibrator;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.hxs.xposedreddevil.R;
@@ -28,6 +26,9 @@ import java.net.URL;
 import java.util.Random;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
+
+import androidx.annotation.RequiresApi;
+import androidx.core.app.NotificationCompat;
 
 public class PushUtils {
 

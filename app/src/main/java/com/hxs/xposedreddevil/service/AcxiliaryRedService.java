@@ -12,7 +12,6 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.PowerManager;
 import android.provider.Settings;
-import android.support.annotation.RequiresApi;
 import android.text.TextUtils;
 import android.view.Display;
 import android.view.View;
@@ -62,6 +61,8 @@ import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.redunmsg
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.strredstatus;
 import static com.hxs.xposedreddevil.utils.Constant.RED_FILE;
 import static com.hxs.xposedreddevil.utils.Constant.RED_LIST;
+
+import androidx.annotation.RequiresApi;
 
 public class AcxiliaryRedService extends AccessibilityService {
     /**
@@ -338,7 +339,8 @@ public class AcxiliaryRedService extends AccessibilityService {
                         }
                     } else if (list.get(i).getParent().findAccessibilityNodeInfosByViewId(carrystates).size() > 0) {
                         if (list.get(i).getParent().findAccessibilityNodeInfosByViewId(carrystates).get(0)
-                                .getText().toString().equals("已被领取")) {
+                                .getText().toString().startsWith("已被") || list.get(i).getParent().findAccessibilityNodeInfosByViewId(carrystates).get(0)
+                                .getText().toString().equals("已收款")) {
                             return;
                         }
                         if (list.get(i).isClickable()) {
@@ -383,7 +385,7 @@ public class AcxiliaryRedService extends AccessibilityService {
 //            Rect rect = new Rect();
 //            n.getBoundsInScreen(rect);
 //            View v = new View(this);
-            synchronized (this){
+            synchronized (this) {
                 AccessibilityUtils.performClick(n);
 //                new Handler().postDelayed(() -> AccessibilityUtils.performClick(n), 1500);
             }
