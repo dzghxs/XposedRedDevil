@@ -15,7 +15,6 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
 import static com.hxs.xposedreddevil.utils.Constant.RED_FILE;
 import static com.tencent.bugly.Bugly.applicationContext;
-import static de.robv.android.xposed.XposedBridge.log;
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 import static de.robv.android.xposed.XposedHelpers.findClass;
 

@@ -2,13 +2,10 @@ package com.hxs.xposedreddevil.hook;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AndroidAppHelper;
 import android.app.Application;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -27,10 +24,8 @@ import com.hxs.xposedreddevil.contentprovider.PropertiesUtils;
 import com.hxs.xposedreddevil.model.DBean;
 import com.hxs.xposedreddevil.model.FilterSaveBean;
 import com.hxs.xposedreddevil.model.MsgsBean;
-import com.hxs.xposedreddevil.model.RedHookBean;
 import com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues;
-import com.hxs.xposedreddevil.utils.AppMD5Util;
-import com.hxs.xposedreddevil.utils.PinYinUtils;
+import com.hxs.xposedreddevil.utils.Hanzi2PinyinHelper;
 import com.hxs.xposedreddevil.utils.PlaySoundUtils;
 
 import java.lang.reflect.Field;
@@ -46,7 +41,6 @@ import fr.arnaudguyon.xmltojsonlib.XmlToJson;
 
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.SetValues;
 import static com.hxs.xposedreddevil.utils.Constant.RED_FILE;
-import static com.tencent.bugly.Bugly.applicationContext;
 import static de.robv.android.xposed.XposedBridge.log;
 import static de.robv.android.xposed.XposedHelpers.callMethod;
 import static de.robv.android.xposed.XposedHelpers.callStaticMethod;
@@ -203,13 +197,17 @@ public class RedHook {
                                             if (title.contains("CDATA")) {
                                                 title = title.split("CDATA\\[")[1];
                                             }
-                                            if (PinYinUtils.getPingYin(title).contains("gua") ||
-                                                    title.contains("圭") ||
-                                                    title.contains("G") ||
-                                                    title.contains("GUA") ||
-                                                    title.contains("gua") ||
-                                                    title.contains("g")) {
-                                                return;
+                                            try {
+                                                if (Hanzi2PinyinHelper.Hanzi2Pinyin(title).contains("gua") ||
+                                                        title.contains("圭") ||
+                                                        title.contains("G") ||
+                                                        title.contains("GUA") ||
+                                                        title.contains("gua") ||
+                                                        title.contains("g")) {
+                                                    return;
+                                                }
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
                                             }
                                             // 处理红包消息
                                             handleLuckyMoney(contentValues, cl);
@@ -314,7 +312,7 @@ public class RedHook {
                     paramau.putExtra("key_native_url", nativeUrlString);
                     paramau.putExtra("key_username", talker);
                     paramau.putExtra("key_cropname", cropname);       //7.0新增
-                    System.out.println("界面："+AcxiliaryServiceStaticValues.handleLuckyMoney);
+                    System.out.println("界面：" + AcxiliaryServiceStaticValues.handleLuckyMoney);
                     callStaticMethod(findClass(AcxiliaryServiceStaticValues.handleLuckyMoney, lpparam), AcxiliaryServiceStaticValues.handleLuckyMoneyMethod,
                             launcherUiActivity, "luckymoney", AcxiliaryServiceStaticValues.handleLuckyMoneyClass, paramau);
                 } else {

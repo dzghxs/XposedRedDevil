@@ -197,11 +197,18 @@
 -keep  class net.sqlcipher.database.** {*;}
 
 #greendao3.2.0,此是针对3.2.0，如果是之前的，可能需要更换下包名
--keep class org.greenrobot.greendao.**{*;}
 -keepclassmembers class * extends org.greenrobot.greendao.AbstractDao {
 public static java.lang.String TABLENAME;
 }
--keep class **$Properties
+-keep class **$Properties { *; }
+
+# If you DO use SQLCipher:
+-keep class org.greenrobot.greendao.database.SqlCipherEncryptedHelper { *; }
+
+# If you do NOT use SQLCipher:
+-dontwarn net.sqlcipher.database.**
+# If you do NOT use RxJava:
+-dontwarn rx.**
 
 #百度语音
 -keep class com.baidu.tts.**{*;}

@@ -13,29 +13,22 @@ import android.os.Handler;
 import android.os.PowerManager;
 import android.provider.Settings;
 import android.text.TextUtils;
-import android.view.Display;
-import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
-import android.widget.Button;
 
 import com.hxs.xposedreddevil.contentprovider.PropertiesUtils;
 import com.hxs.xposedreddevil.greendao.DbCarryList;
-import com.hxs.xposedreddevil.greendao.DbCarryListDao;
-import com.hxs.xposedreddevil.greendao.db.DbManager;
 import com.hxs.xposedreddevil.utils.AccessibilityUtils;
 import com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues;
 import com.hxs.xposedreddevil.utils.DateUtils;
+import com.hxs.xposedreddevil.utils.Hanzi2PinyinHelper;
 import com.hxs.xposedreddevil.utils.MessageEvent;
 import com.hxs.xposedreddevil.utils.PackageManagerUtil;
-import com.hxs.xposedreddevil.utils.PinYinUtils;
 import com.hxs.xposedreddevil.utils.SQLiteUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.UUID;
 import java.util.regex.Pattern;
 
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.CARRYUI;
@@ -45,7 +38,6 @@ import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.LUCKEY_M
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.OPEN_ID;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.carrypagebtn;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.carrypagenum;
-import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.carrypagetime;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.carrystates;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.chatid;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.chatnameid;
@@ -60,7 +52,6 @@ import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.redpagen
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.redunmsgcircle;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.strredstatus;
 import static com.hxs.xposedreddevil.utils.Constant.RED_FILE;
-import static com.hxs.xposedreddevil.utils.Constant.RED_LIST;
 
 import androidx.annotation.RequiresApi;
 
@@ -285,7 +276,7 @@ public class AcxiliaryRedService extends AccessibilityService {
                         String redcontent = "";     //红包内容
                         try {
                             redcontent = list.get(i).getParent().findAccessibilityNodeInfosByViewId(msgredcontent).get(0).getText().toString();
-                            if (PinYinUtils.getPingYin(redcontent).contains("gua") ||
+                            if (Hanzi2PinyinHelper.Hanzi2Pinyin(redcontent).contains("gua") ||
                                     redcontent.contains("圭") ||
                                     redcontent.contains("G") ||
                                     redcontent.contains("GUA") ||
