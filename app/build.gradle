@@ -8,8 +8,8 @@ android {
         minSdkVersion 19
         //noinspection ExpiredTargetSdkVersion
         targetSdkVersion 29
-        versionCode 57
-        versionName "2.3.7"
+        versionCode 58
+        versionName "2.3.8"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         useLibrary 'org.apache.http.legacy'
     }

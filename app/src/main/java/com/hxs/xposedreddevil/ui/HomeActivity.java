@@ -74,7 +74,7 @@ public class HomeActivity extends BaseActivity {
         CheckPermissionInit();
         DataInit();
     }
-
+//d
     @Override
     protected void onDestroy() {
 //        synthesizer.release();

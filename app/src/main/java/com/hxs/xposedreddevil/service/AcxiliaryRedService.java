@@ -13,6 +13,7 @@ import android.os.Handler;
 import android.os.PowerManager;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
@@ -36,10 +37,12 @@ import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.LAUCHER;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.LUCKEY_MONEY_DETAIL;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.LUCKEY_MONEY_RECEIVER;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.OPEN_ID;
+import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.carryclose;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.carrypagebtn;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.carrypagenum;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.carrystates;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.chatid;
+import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.chatitem;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.chatnameid;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.chatonenameid;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.chatredid;
@@ -48,9 +51,11 @@ import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.msgname;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.msgredcontent;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.msgredid;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.redcircle;
+import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.redclose;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.redpagenum;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.redunmsgcircle;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.strredstatus;
+import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.userhead;
 import static com.hxs.xposedreddevil.utils.Constant.RED_FILE;
 
 import androidx.annotation.RequiresApi;
@@ -83,7 +88,7 @@ public class AcxiliaryRedService extends AccessibilityService {
 
     private int postnum = 0;
 
-    private String username = "";
+//    private String username = "";
 
     private DbCarryList carryList;
 
@@ -164,7 +169,7 @@ public class AcxiliaryRedService extends AccessibilityService {
                     try {
                         carryList = new DbCarryList();
                         carryList.setMoney("￥" + getRootInActiveWindow().findAccessibilityNodeInfosByViewId(redpagenum).get(0).getText().toString());
-                        carryList.setName(username);
+                        carryList.setName("");
                         carryList.setTime(DateUtils.getYear() + "-" + DateUtils.getMonth() + "-" + DateUtils.getDay() + " " + DateUtils.getHour() + ":" + DateUtils.getMinute());
                         carryList.setStatus("红包");
                         SQLiteUtils.getInstance().addContacts(carryList);
@@ -174,6 +179,7 @@ public class AcxiliaryRedService extends AccessibilityService {
                     }
                     //返回桌面
 //                    back2Home();
+                    findRedCloseBtn(getRootInActiveWindow());
                 }
                 break;
             case AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED:
@@ -256,12 +262,13 @@ public class AcxiliaryRedService extends AccessibilityService {
         List<AccessibilityNodeInfo> list = null;
         AccessibilityNodeInfo msgnames = null;
         try {
-            if (nodeInfo.findAccessibilityNodeInfosByViewId(msgname).size() == 0) {
-                username = "";
-            } else {
-                msgnames = nodeInfo.findAccessibilityNodeInfosByViewId(msgname).get(0);
-                username = msgnames.getText().toString();
-            }
+//            if (nodeInfo.findAccessibilityNodeInfosByViewId(msgname).size() == 0) {
+//                username = "";
+//            } else {
+//                msgnames = nodeInfo.findAccessibilityNodeInfosByViewId(msgname).get(0);
+//                username = msgnames.getText().toString();
+//            }
+//            System.out.println("对方名字：" + username);
             list = nodeInfo.findAccessibilityNodeInfosByViewId(msgredid);
             // 最新的红包领起
             for (int i = list.size() - 1; i >= 0; i--) {
@@ -303,23 +310,29 @@ public class AcxiliaryRedService extends AccessibilityService {
                                 return;
                             }
                             if (list.get(i).isClickable()) {
-                                Rect rect = new Rect();
-                                list.get(i).getBoundsInScreen(rect);
-                                if (rect.centerX() > (Integer.parseInt(PropertiesUtils.getValue(RED_FILE, "widthPixels", "0")) / 2)) {
-                                    String pattern = ".*[(].*\\d[)]";
-                                    if (username.equals("")) {
-                                        if (PropertiesUtils.getValue(RED_FILE, "notrooown", "2").equals("1")) {
-                                            return;
-                                        }
-                                    } else {
-                                        if (Pattern.compile(pattern).matcher(username).matches()) {
-                                            if (PropertiesUtils.getValue(RED_FILE, "notrooown", "2").equals("1")) {
-                                                return;
-                                            }
-                                        } else {
-                                            return;
-                                        }
+                                try {
+                                    Rect rect = new Rect();
+                                    list.get(i).getParent().getParent().getChild(1).findAccessibilityNodeInfosByViewId(userhead).get(0).getBoundsInScreen(rect);
+                                    System.out.println(rect.centerX());
+                                    if (rect.centerX() > (Integer.parseInt(PropertiesUtils.getValue(RED_FILE, "widthPixels", "0")) / 2)) {
+                                        //                                    String pattern = ".*[(].*\\d[)]";
+                                        //                                    if (username.equals("")) {
+                                        //                                    if (PropertiesUtils.getValue(RED_FILE, "notrooown", "2").equals("1")) {
+                                        return;
+                                        //                                    }
+                                        //                                    } else {
+                                        //                                        if (Pattern.compile(pattern).matcher(username).matches()) {
+                                        //                                            if (PropertiesUtils.getValue(RED_FILE, "notrooown", "2").equals("1")) {
+                                        //                                                return;
+                                        //                                            }
+                                        //                                        } else {
+                                        //                                            return;
+                                        //                                        }
+                                        //                                    }
                                     }
+                                } catch (Exception e) {
+                                    System.out.println("报错了：" + e);
+                                    e.printStackTrace();
                                 }
                                 //模拟点击
                                 list.get(i).performAction(AccessibilityNodeInfo.ACTION_CLICK);
@@ -336,16 +349,17 @@ public class AcxiliaryRedService extends AccessibilityService {
                         }
                         if (list.get(i).isClickable()) {
                             Rect rect = new Rect();
-                            list.get(i).getBoundsInScreen(rect);
+                            list.get(i).getParent().getParent().getChild(1).findAccessibilityNodeInfosByViewId(userhead).get(0).getBoundsInScreen(rect);
+                            System.out.println(rect.centerX());
                             if (rect.centerX() > (Integer.parseInt(PropertiesUtils.getValue(RED_FILE, "widthPixels", "0")) / 2)) {
-                                String pattern = ".*[(].*\\d[)]";
-                                if (Pattern.compile(pattern).matcher(username).matches()) {
-                                    if (PropertiesUtils.getValue(RED_FILE, "notrooown", "2").equals("1")) {
-                                        return;
-                                    }
-                                } else {
-                                    return;
-                                }
+//                                String pattern = ".*[(].*\\d[)]";
+//                                if (Pattern.compile(pattern).matcher(username).matches()) {
+//                                    if (PropertiesUtils.getValue(RED_FILE, "notrooown", "2").equals("1")) {
+                                return;
+//                                    }
+//                                } else {
+//                                    return;
+//                                }
                             }
                             //模拟点击
                             list.get(i).performAction(AccessibilityNodeInfo.ACTION_CLICK);
@@ -373,12 +387,8 @@ public class AcxiliaryRedService extends AccessibilityService {
         AccessibilityNodeInfo button_open = AccessibilityUtils.findNodeInfosById(rootNode, OPEN_ID);
         if (button_open != null) {
             final AccessibilityNodeInfo n = button_open;
-//            Rect rect = new Rect();
-//            n.getBoundsInScreen(rect);
-//            View v = new View(this);
             synchronized (this) {
                 AccessibilityUtils.performClick(n);
-//                new Handler().postDelayed(() -> AccessibilityUtils.performClick(n), 1500);
             }
         } else {
             new Handler().postDelayed(() -> findOpenBtn(getRootInActiveWindow()), 1500);
@@ -391,31 +401,42 @@ public class AcxiliaryRedService extends AccessibilityService {
 
         if (button_open != null) {
             final AccessibilityNodeInfo n = button_open;
-
-//            AccessibilityUtils.performClick(n);
-
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    AccessibilityUtils.performClick(n);
-                    if (PropertiesUtils.getValue(RED_FILE, "notrootlist", "2").equals("1")) {
-                        carryList = new DbCarryList();
-                        carryList.setMoney(rootNode.findAccessibilityNodeInfosByViewId(carrypagenum).get(0).getText().toString());
-                        carryList.setName(username);
-                        carryList.setTime(DateUtils.getYear() + "-" + DateUtils.getMonth() + "-" + DateUtils.getDay() + " " + DateUtils.getHour() + ":" + DateUtils.getMinute());
-                        carryList.setStatus("转账");
-                        SQLiteUtils.getInstance().addContacts(carryList);
-                    }
+            new Handler().postDelayed(() -> {
+                AccessibilityUtils.performClick(n);
+                if (PropertiesUtils.getValue(RED_FILE, "notrootlist", "2").equals("1")) {
+                    carryList = new DbCarryList();
+                    carryList.setMoney(rootNode.findAccessibilityNodeInfosByViewId(carrypagenum).get(0).getText().toString());
+                    carryList.setName("");
+                    carryList.setTime(DateUtils.getYear() + "-" + DateUtils.getMonth() + "-" + DateUtils.getDay() + " " + DateUtils.getHour() + ":" + DateUtils.getMinute());
+                    carryList.setStatus("转账");
+                    SQLiteUtils.getInstance().addContacts(carryList);
                 }
             }, 500);
-
+            new Handler().postDelayed(() -> findCarryCloseBtn(getRootInActiveWindow()), 1000);
         } else {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    findCarryOpenBtn(getRootInActiveWindow());
-                }
-            }, 2000);
+            new Handler().postDelayed(() -> findCarryOpenBtn(getRootInActiveWindow()), 2000);
+        }
+    }
+
+    //转账关闭按钮
+    private void findCarryCloseBtn(final AccessibilityNodeInfo rootNode) {
+        AccessibilityNodeInfo button_open = AccessibilityUtils.findNodeInfosById(rootNode, carryclose);
+        if (button_open != null) {
+            final AccessibilityNodeInfo n = button_open;
+            new Handler().postDelayed(() -> AccessibilityUtils.performClick(n), 500);
+        } else {
+            new Handler().postDelayed(() -> findCarryCloseBtn(getRootInActiveWindow()), 2000);
+        }
+    }
+
+    //红包关闭按钮
+    private void findRedCloseBtn(final AccessibilityNodeInfo rootNode) {
+        AccessibilityNodeInfo button_open = AccessibilityUtils.findNodeInfosById(rootNode, redclose);
+        if (button_open != null) {
+            final AccessibilityNodeInfo n = button_open;
+            new Handler().postDelayed(() -> AccessibilityUtils.performClick(n), 500);
+        } else {
+            new Handler().postDelayed(() -> findRedCloseBtn(getRootInActiveWindow()), 2000);
         }
     }
 

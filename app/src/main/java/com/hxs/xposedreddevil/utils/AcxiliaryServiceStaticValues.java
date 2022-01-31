@@ -17,7 +17,7 @@ public class AcxiliaryServiceStaticValues {
     public static String msgredid = "";       //聊天页面红包转账ID（聊天页面红包转账id）
     public static String msgredcontent = "";  //聊天页面红包内容ID(恭喜发财，大吉大利)
     public static String msgisredid = "";     //微信红包下方微信红包四个字
-    public static String msgname = "";        //微信聊天界面对方昵称
+    public static String msgname = "";        //微信聊天界面对方昵称 (新版微信由于设置该属性NAF为TRUE，导致该属性无法使用，现已废弃)
     public static String carrynum = "";       //微信聊天页面转账金额
     public static String carrystates = "";    //微信聊天页面转账状态
     public static String carrypagenum = "";   //微信转账金额
@@ -25,6 +25,10 @@ public class AcxiliaryServiceStaticValues {
     public static String carrypagebtn = "";   //微信确认按钮
     public static String redpagenum = "";   //微信红包详情页金额
     public static String OPEN_ID = "com.tencent.mm:id/cv0";   //开按钮
+    public static String redclose = "";     //红包详情页面关闭按钮
+    public static String carryclose = "";   //转账详情页面关闭按钮
+    public static String userhead = "";   //本人头像
+    public static String chatitem = "";   //聊天列表item
     //xposed
     public static String LuckyMoneyNotHookReceiveUI = ""; //红包页面名称
     public static String LuckyMoneyNotHookReceiveUIMethod = "";     //红包页面方法
@@ -59,7 +63,7 @@ public class AcxiliaryServiceStaticValues {
         msgredcontent = "com.tencent.mm:id/y0";
         msgisredid = "com.tencent.mm:id/y4";
         redunmsgcircle = "com.tencent.mm:id/a2f";
-        msgname = "com.tencent.mm:id/b9_";
+        msgname = "com.tencent.mm:id/kog";
 
         chatonenameid = "com.tencent.mm:id/hga";
         carrynum = "com.tencent.mm:id/yc";
@@ -68,6 +72,11 @@ public class AcxiliaryServiceStaticValues {
         carrypagetime = "com.tencent.mm:id/imk";
         carrypagebtn = "com.tencent.mm:id/imh";
         redpagenum = "com.tencent.mm:id/gcq";
+        userhead = "com.tencent.mm:id/b3s";
+        chatitem = "com.tencent.mm:id/b4_";
+
+        redclose = "com.tencent.mm:id/k6t";
+        carryclose = "com.tencent.mm:id/fz";
 
         LuckyMoneyNotHookReceiveUI = "com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyNotHookReceiveUI";
         LuckyMoneyNotHookReceiveUIMethod = "onSceneEnd";
