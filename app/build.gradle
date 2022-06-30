@@ -8,8 +8,8 @@ android {
         minSdkVersion 19
         //noinspection ExpiredTargetSdkVersion
         targetSdkVersion 29
-        versionCode 58
-        versionName "2.3.8"
+        versionCode 60
+        versionName "2.4.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         useLibrary 'org.apache.http.legacy'
     }
@@ -62,11 +62,11 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.8.0'
     implementation 'org.greenrobot:eventbus:3.1.1'
     implementation 'skin.support:skin-support:3.1.1'
-    implementation 'skin.support:skin-support:4.0.5'                   // skin-support
-    implementation 'skin.support:skin-support-appcompat:4.0.5'         // skin-support 基础控件支持
-    implementation 'skin.support:skin-support-design:4.0.5'            // skin-support-design material design 控件支持[可选]
-    implementation 'skin.support:skin-support-cardview:4.0.5'          // skin-support-cardview CardView 控件支持[可选]
-    implementation 'skin.support:skin-support-constraint-layout:4.0.5' // skin-support-constraint-layout ConstraintLayout 控件支持[可选]
+//    implementation 'skin.support:skin-support:4.0.5'                   // skin-support
+//    implementation 'skin.support:skin-support-appcompat:4.0.5'         // skin-support 基础控件支持
+//    implementation 'skin.support:skin-support-design:4.0.5'            // skin-support-design material design 控件支持[可选]
+//    implementation 'skin.support:skin-support-cardview:4.0.5'          // skin-support-cardview CardView 控件支持[可选]
+//    implementation 'skin.support:skin-support-constraint-layout:4.0.5' // skin-support-constraint-layout ConstraintLayout 控件支持[可选]
     // Jsoup HTML解析器
     implementation 'org.jsoup:jsoup:1.11.2'
     implementation 'org.litepal.android:core:1.6.0'

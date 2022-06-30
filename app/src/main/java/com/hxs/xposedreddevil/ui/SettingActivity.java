@@ -49,53 +49,53 @@ public class SettingActivity extends AppCompatActivity {
     /**
      * 选择主题
      */
-    private void SelectSkinInit() {
-        View v = LayoutInflater.from(this).inflate(R.layout.dialog_skin_layout, null);
-        initView(v);
-        AlertDialog.Builder dialog = new AlertDialog.Builder(SettingActivity.this);
-        dialog.setView(v);
-        final AlertDialog d = dialog.create();
-        llLight.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // 恢复应用默认皮肤
-                SkinCompatManager.getInstance().restoreDefaultTheme();
-                PropertiesUtils.putValue(RED_FILE, "redskin", "亮色");
-                rbLight.setChecked(true);
-                rbNight.setChecked(false);
-                tvSkin.setText("亮色");
-                d.dismiss();
-            }
-        });
-        vLight.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-            }
-        });
-        llNight.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SkinCompatManager.getInstance().loadSkin("night.skin", SkinCompatManager.SKIN_LOADER_STRATEGY_ASSETS);
-                PropertiesUtils.putValue(RED_FILE, "redskin", "暗色");
-                rbLight.setChecked(false);
-                rbNight.setChecked(true);
-                tvSkin.setText("暗色");
-                d.dismiss();
-            }
-        });
-        vNight.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-            }
-        });
-        tvDismiss.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                d.dismiss();
-            }
-        });
-        d.show();
-    }
+//    private void SelectSkinInit() {
+//        View v = LayoutInflater.from(this).inflate(R.layout.dialog_skin_layout, null);
+//        initView(v);
+//        AlertDialog.Builder dialog = new AlertDialog.Builder(SettingActivity.this);
+//        dialog.setView(v);
+//        final AlertDialog d = dialog.create();
+//        llLight.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                // 恢复应用默认皮肤
+//                SkinCompatManager.getInstance().restoreDefaultTheme();
+//                PropertiesUtils.putValue(RED_FILE, "redskin", "亮色");
+//                rbLight.setChecked(true);
+//                rbNight.setChecked(false);
+//                tvSkin.setText("亮色");
+//                d.dismiss();
+//            }
+//        });
+//        vLight.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//            }
+//        });
+//        llNight.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                SkinCompatManager.getInstance().loadSkin("night.skin", SkinCompatManager.SKIN_LOADER_STRATEGY_ASSETS);
+//                PropertiesUtils.putValue(RED_FILE, "redskin", "暗色");
+//                rbLight.setChecked(false);
+//                rbNight.setChecked(true);
+//                tvSkin.setText("暗色");
+//                d.dismiss();
+//            }
+//        });
+//        vNight.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//            }
+//        });
+//        tvDismiss.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                d.dismiss();
+//            }
+//        });
+//        d.show();
+//    }
 
     private void initView(View v) {
         llLight = v.findViewById(R.id.ll_light);
@@ -120,7 +120,7 @@ public class SettingActivity extends AppCompatActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.ll_skin:
-                SelectSkinInit();
+//                SelectSkinInit();
                 break;
         }
     }

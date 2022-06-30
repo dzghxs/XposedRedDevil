@@ -49,6 +49,8 @@ public class AcxiliaryServiceStaticValues {
 
     public static String wechatversion;
 
+    //LuckyMoneyNotHookReceiveUIMethodParameter 全局搜索 MicroMsg.NetSceneBase
+    //handleLuckyMoney 全局搜索 add(".ui.transmit.SelectConversationUI")
     public static void SetValues() {
 //        wechatversion = PropertiesUtils.getValue(RED_FILE, "wechatversion", "");
 //        if (wechatversion.equals("8.0.18")) {
@@ -80,9 +82,9 @@ public class AcxiliaryServiceStaticValues {
 
         LuckyMoneyNotHookReceiveUI = "com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyNotHookReceiveUI";
         LuckyMoneyNotHookReceiveUIMethod = "onSceneEnd";
-        LuckyMoneyNotHookReceiveUIMethodParameter = "com.tencent.mm.am.p";
-        LuckyMoneyNotHookReceiveUIButton = "KnQ";
-        handleLuckyMoney = "com.tencent.mm.br.c";
+        LuckyMoneyNotHookReceiveUIMethodParameter = "com.tencent.mm.at.p";      //全局搜索getIsKinda
+        LuckyMoneyNotHookReceiveUIButton = "QwZ";                               //LuckyMoneyNotHookReceiveUI中的button
+        handleLuckyMoney = "com.tencent.mm.bx.d";                               //全局搜索add(".ui.transmit.SelectConversationUI")
         handleLuckyMoneyMethod = "b";
         handleLuckyMoneyClass = ".ui.LuckyMoneyNotHookReceiveUI";
 //        }
