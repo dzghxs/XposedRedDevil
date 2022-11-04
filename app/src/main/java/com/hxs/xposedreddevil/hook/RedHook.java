@@ -305,7 +305,6 @@ public class RedHook {
         log("cropname: " + cropname + "\n");
         if (PropertiesUtils.getValue(RED_FILE, "sleep", "2").equals("1")) {
             new Handler().postDelayed(() -> {
-                Looper.prepare();
                 // 启动红包页面
                 if (launcherUiActivity != null) {
                     log("call method com.tencent.mm.br.d, start LuckyMoneyReceiveUI" + "\n");
@@ -320,7 +319,6 @@ public class RedHook {
                 } else {
                     log("launcherUiActivity == null" + "\n");
                 }
-                Looper.loop();
             }, Long.parseLong(PropertiesUtils.getValue(RED_FILE, "sleeptime", "1")));
         } else {
             // 启动红包页面

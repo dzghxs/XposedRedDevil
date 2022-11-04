@@ -165,12 +165,16 @@ public class RevokeMsgHook {
         if (values == null) {
             return false;
         }
-        String content = values.getAsString("content");
-        if (!TextUtils.isEmpty(content)
-                && values.getAsInteger("type") == 10000) {
-            if (!content.contains("你撤回了一条消息") && !content.contains("You've recalled a message")) {
-                return content.contains("\" 撤回了一条消息") || content.contains("has recalled a message");
+        try {
+            String content = values.getAsString("content");
+            if (!TextUtils.isEmpty(content)
+                    && values.getAsInteger("type") == 10000) {
+                if (!content.contains("你撤回了一条消息") && !content.contains("You've recalled a message")) {
+                    return content.contains("\" 撤回了一条消息") || content.contains("has recalled a message");
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return false;
     }
