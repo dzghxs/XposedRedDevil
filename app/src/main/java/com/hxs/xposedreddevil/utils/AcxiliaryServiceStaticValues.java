@@ -82,12 +82,27 @@ public class AcxiliaryServiceStaticValues {
 
         LuckyMoneyNotHookReceiveUI = "com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyNotHookReceiveUI";
         LuckyMoneyNotHookReceiveUIMethod = "onSceneEnd";
-        LuckyMoneyNotHookReceiveUIMethodParameter = "com.tencent.mm.az.v";      //全局搜索getIsKinda
-        LuckyMoneyNotHookReceiveUIButton = "XAX";                               //LuckyMoneyNotHookReceiveUI中的button
-        handleLuckyMoney = "com.tencent.mm.cc.d";                               //全局搜索add(".ui.transmit.SelectConversationUI")
-        handleLuckyMoneyMethod = "b";
+        LuckyMoneyNotHookReceiveUIMethodParameter = "a80.v";      //全局搜索getIsKinda
+        LuckyMoneyNotHookReceiveUIButton = "o";                               //LuckyMoneyNotHookReceiveUI中的button
+        handleLuckyMoney = "p53.e";                               //全局搜索add(".ui.transmit.SelectConversationUI") Log.i("MicroMsg.PluginHelper", "start multi webview!!!!!!!!!")
+        handleLuckyMoneyMethod = "k";
         handleLuckyMoneyClass = ".ui.LuckyMoneyNotHookReceiveUI";
 //        }
+
+//        HashMap hashMap = new HashMap();
+//        areF = hashMap;
+//        hashMap.put(FirebaseAnalytics.b.LOCATION, "talkroom");
+//        areF.put("talkroom", "voip");
+//        areG = new HashMap<>();
+//        interceptors = new CopyOnWriteArrayList();
+//        areH = new CopyOnWriteArrayList();
+//        aogT = new String[]{WeChatHosts.domainString(b.a.aBhz), WeChatHosts.domainString(b.a.aBhD), WeChatHosts.domainString(b.a.aBhx)};
+//        areI = new HashSet<String>() { // from class: com.tencent.mm.cc.d.2
+//            {
+//                add(".ui.transmit.SelectConversationUI");
+//            }
+//        };
+
     }
 
 }
