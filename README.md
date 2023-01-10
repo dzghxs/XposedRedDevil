@@ -18,4 +18,3 @@ xposed框架抢红包参考https://blog.csdn.net/xiao_nian/article/details/79391
 <Br/>
 <Br/>
 <Br/>点个star是极好的
-<Br/>吹水扯牛QQ群：221061642
