@@ -10,12 +10,16 @@ xposed框架抢红包参考https://blog.csdn.net/xiao_nian/article/details/79391
  <img src="https://github.com/dzghxs/XposedRedDevil/blob/master/mmexport1535081879134.jpg" width="375">
  <Br/>
  <span>微信6.7.3</span>
+ <Br/>
  <img src="https://raw.githubusercontent.com/dzghxs/XposedRedDevil/master/app/imgs/%E7%BA%A2%E5%8C%85.gif" width="375" align="top">
+ <Br/>
  <span>微信7.0.0</span>
+ <Br/>
  <img src="https://raw.githubusercontent.com/dzghxs/XposedRedDevil/master/app/imgs/20190107102343.gif" width="375" align="top">
+ <Br/>
  <span>微信7.0.0，免root测试效果</span>
-  <img src="https://raw.githubusercontent.com/dzghxs/XposedRedDevil/master/app/imgs/2019-01-08-15-29-55.gif" width="375" align="top">
+ <Br/>
+ <img src="https://raw.githubusercontent.com/dzghxs/XposedRedDevil/master/app/imgs/2019-01-08-15-29-55.gif" width="375" align="top">
 <Br/>
 <Br/>
 <Br/>点个star是极好的
-<Br/>吹水扯牛QQ群：221061642
