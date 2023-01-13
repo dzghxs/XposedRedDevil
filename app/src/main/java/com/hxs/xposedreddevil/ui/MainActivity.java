@@ -10,6 +10,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import com.hxs.xposedreddevil.R;
 import com.hxs.xposedreddevil.contentprovider.PropertiesUtils;
@@ -35,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
     Switch swMain;
     @BindView(R.id.sw_own)
     Switch swOwn;
+    @BindView(R.id.sw_slno)
+    Switch swSlNo;
     @BindView(R.id.ll_add_no)
     LinearLayout llAddNo;
     @BindView(R.id.sw_sleep)
@@ -74,6 +77,11 @@ public class MainActivity extends AppCompatActivity {
                 swOwn.setChecked(true);
             } else {
                 swOwn.setChecked(false);
+            }
+            if (PropertiesUtils.getValue(RED_FILE, "private", "2").equals("1")) {
+                swSlNo.setChecked(true);
+            } else {
+                swSlNo.setChecked(false);
             }
             if (PropertiesUtils.getValue(RED_FILE, "sleep", "2").equals("1")) {
                 swSleep.setChecked(true);
@@ -123,6 +131,16 @@ public class MainActivity extends AppCompatActivity {
                 PropertiesUtils.putValue(RED_FILE, "red", "1");
             } else {
                 PropertiesUtils.putValue(RED_FILE, "red", "2");
+            }
+        });
+        //TODO 不抢私聊红包
+        swSlNo.setOnCheckedChangeListener((compoundButton, b) -> {
+            swSlNo.setChecked(false);
+            Toast.makeText(this, "还在开发中~", Toast.LENGTH_SHORT).show();
+            if (b) {
+                PropertiesUtils.putValue(RED_FILE, "private", "1");
+            } else {
+                PropertiesUtils.putValue(RED_FILE, "private", "2");
             }
         });
         swSleep.setOnCheckedChangeListener((compoundButton, b) -> {

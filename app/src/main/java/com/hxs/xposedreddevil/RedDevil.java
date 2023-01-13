@@ -31,7 +31,7 @@ public class RedDevil implements IXposedHookLoadPackage {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                     super.afterHookedMethod(param);
-                    if (applicationContext != null)
+                    if (applicationContext == null)
                         return;
                     applicationContext = (Context) param.getResult();
 //                    log("微信状态：" + AppMD5Util.isRunning(applicationContext, "com.tencent.mm"));
