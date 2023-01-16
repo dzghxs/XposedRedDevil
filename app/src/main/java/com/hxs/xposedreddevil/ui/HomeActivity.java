@@ -148,7 +148,7 @@ public class HomeActivity extends BaseActivity {
                 break;
             case R.id.home_card_unroot:
 //                Toast.makeText(this, "暂不提供免root抢红包操作，如需实现请自行编译代码", Toast.LENGTH_SHORT).show();
-                Toast.makeText(this, "只支持8.0.19版本，其他版本自行编译代码", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "只支持8.0.32版本，其他版本自行编译代码", Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(this, NotRootActivity.class));
                 break;
             case R.id.home_card_root:

@@ -8,7 +8,9 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Build;
+import android.provider.Settings;
 import android.telephony.TelephonyManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -30,11 +32,13 @@ import org.jsoup.select.Elements;
 import org.litepal.crud.DataSupport;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import static com.hxs.xposedreddevil.utils.Constant.COPY_WX_DATA_DB;
 import static com.hxs.xposedreddevil.utils.Constant.WX_DB_DIR_PATH;
@@ -54,6 +58,84 @@ public class GroupChatService extends IntentService {
         super("GroupChatService");
     }
 
+
+    public static String getDeviceId(Context context) {
+        final int targetSdkVersion = context.getApplicationInfo().targetSdkVersion;
+        if (targetSdkVersion > Build.VERSION_CODES.P && Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+            return getUniqueID(context);
+        } else {
+            return getTelId(context);
+        }
+    }
+
+    private static String getTelId(Context context) {
+        final TelephonyManager manager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+            return null;
+        }
+        return manager.getDeviceId();
+    }
+
+    private static String getUniqueID(Context context) {
+        String id = null;
+        final String androidId = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+        if (!TextUtils.isEmpty(androidId) && !"9774d56d682e549c".equals(androidId)) {
+            try {
+                UUID uuid = UUID.nameUUIDFromBytes(androidId.getBytes("utf8"));
+                id = uuid.toString();
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (TextUtils.isEmpty(id)) {
+            id = getUUID(context);
+        }
+
+        return TextUtils.isEmpty(id) ? UUID.randomUUID().toString() : id;
+    }
+
+    private static String getUUID(Context context) {
+        String serial = null;
+
+        String m_szDevIDShort = "35" +
+                Build.BOARD.length() % 10 + Build.BRAND.length() % 10 +
+
+                ((null != Build.CPU_ABI) ? Build.CPU_ABI.length() : 0) % 10 +
+
+                Build.DEVICE.length() % 10 + Build.DISPLAY.length() % 10 +
+
+                Build.HOST.length() % 10 + Build.ID.length() % 10 +
+
+                Build.MANUFACTURER.length() % 10 + Build.MODEL.length() % 10 +
+
+                Build.PRODUCT.length() % 10 + Build.TAGS.length() % 10 +
+
+                Build.TYPE.length() % 10 + Build.USER.length() % 10; //13 位
+
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
+            try {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    if (ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+                        return null;
+                    }
+                    serial = Build.getSerial();
+                } else {
+                    serial = Build.SERIAL;
+                }
+                //API>=9 使用serial号
+                return new UUID(m_szDevIDShort.hashCode(), serial.hashCode()).toString();
+            } catch (Exception exception) {
+                serial = "serial" + UUID.randomUUID().toString(); // 随便一个初始化
+            }
+        } else {
+            serial = Build.UNKNOWN + UUID.randomUUID().toString(); // 随便一个初始化
+        }
+
+        //使用硬件信息拼凑出来的15位号码
+        return new UUID(m_szDevIDShort.hashCode(), serial.hashCode()).toString();
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
@@ -71,7 +153,7 @@ public class GroupChatService extends IntentService {
         }
         Iterator olditerator = null;
         String u = "";
-        @SuppressLint("MissingPermission") String imei = manager.getDeviceId();
+//        @SuppressLint({"MissingPermission", "HardwareIds"}) String imei = getDeviceId(this);
         ShellCommand.shellCommand("chmod -R 777 " + WX_ROOT_PATH);
         Document doc = null;
         try {
@@ -95,7 +177,7 @@ public class GroupChatService extends IntentService {
             if (u.length() == 0) {
                 Toast.makeText(this, "请登录微信后重试", Toast.LENGTH_SHORT).show();
             }
-            Constant.dbPwd = AppMD5Util.getMD5Str(imei + u).substring(0, 7).toLowerCase();
+//            Constant.dbPwd = AppMD5Util.getMD5Str(imei + u).substring(0, 7).toLowerCase();
         } catch (Exception e) {
             e.printStackTrace();
         }

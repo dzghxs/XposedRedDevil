@@ -384,7 +384,8 @@ public class AcxiliaryRedService extends AccessibilityService {
 
     //
     private void findOpenBtn(AccessibilityNodeInfo rootNode) {
-        AccessibilityNodeInfo button_open = AccessibilityUtils.findNodeInfosById(rootNode, OPEN_ID);
+//        AccessibilityNodeInfo button_open = AccessibilityUtils.findNodeInfosById(rootNode, AcxiliaryServiceStaticValues.OPEN_ID);
+        AccessibilityNodeInfo button_open = AccessibilityUtils.findNodeInfosById(rootNode, "com.tencent.mm:id/giq");
         if (button_open != null) {
             final AccessibilityNodeInfo n = button_open;
             synchronized (this) {

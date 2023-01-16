@@ -17,7 +17,7 @@ public class AcxiliaryServiceStaticValues {
     public static String msgredid = "";       //聊天页面红包转账ID（聊天页面红包转账id）
     public static String msgredcontent = "";  //聊天页面红包内容ID(恭喜发财，大吉大利)
     public static String msgisredid = "";     //微信红包下方微信红包四个字
-    public static String msgname = "";        //微信聊天界面对方昵称 (新版微信由于设置该属性NAF为TRUE，导致该属性无法使用，现已废弃)
+    public static String msgname = "";        //微信聊天界面对方昵称
     public static String carrynum = "";       //微信聊天页面转账金额
     public static String carrystates = "";    //微信聊天页面转账状态
     public static String carrypagenum = "";   //微信转账金额
@@ -55,19 +55,19 @@ public class AcxiliaryServiceStaticValues {
 //        wechatversion = PropertiesUtils.getValue(RED_FILE, "wechatversion", "");
 //        if (wechatversion.equals("8.0.18")) {
         LUCKEY_MONEY_RECEIVER = "com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyNotHookReceiveUI";
-        OPEN_ID = "com.tencent.mm:id/gix";
+        OPEN_ID = "com.tencent.mm:id/giq";
         strredstatus = "com.tencent.mm:id/xs";
-        chatredid = "com.tencent.mm:id/fhz";
-        chatid = "com.tencent.mm:id/btg";
+        chatredid = "com.tencent.mm:id/fhs";
+        chatid = "com.tencent.mm:id/b4b";
         redcircle = "com.tencent.mm:id/kn6";
-        chatnameid = "com.tencent.mm:id/hga";
+        chatnameid = "com.tencent.mm:id/hg4";
         msgredid = "com.tencent.mm:id/b47";
         msgredcontent = "com.tencent.mm:id/y0";
         msgisredid = "com.tencent.mm:id/y4";
         redunmsgcircle = "com.tencent.mm:id/a2f";
-        msgname = "com.tencent.mm:id/kog";
+        msgname = "com.tencent.mm:id/ko4";
 
-        chatonenameid = "com.tencent.mm:id/hga";
+        chatonenameid = "com.tencent.mm:id/hg4";
         carrynum = "com.tencent.mm:id/yc";
         carrystates = "com.tencent.mm:id/y_";
         carrypagenum = "com.tencent.mm:id/imp";
@@ -75,9 +75,9 @@ public class AcxiliaryServiceStaticValues {
         carrypagebtn = "com.tencent.mm:id/imh";
         redpagenum = "com.tencent.mm:id/gcq";
         userhead = "com.tencent.mm:id/b3s";
-        chatitem = "com.tencent.mm:id/b4_";
+        chatitem = "com.tencent.mm:id/bth";
 
-        redclose = "com.tencent.mm:id/k6t";
+        redclose = "com.tencent.mm:id/k6i";
         carryclose = "com.tencent.mm:id/fz";
 
         LuckyMoneyNotHookReceiveUI = "com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyNotHookReceiveUI";
