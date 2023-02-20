@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="version">
-        <item >8.0.32</item>
+        <item>8.0.32</item>
+    </string-array>
+    <string-array name="xposed_scope">
+        <item>com.tencent.mm</item>
     </string-array>
 </resources>

@@ -5,13 +5,16 @@ android {
     compileSdkVersion 29
     defaultConfig {
         applicationId "com.hxs.xposedreddevil"
-        minSdkVersion 19
+        minSdkVersion 23
         //noinspection ExpiredTargetSdkVersion
         targetSdkVersion 29
         versionCode 64
         versionName "2.4.4"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         useLibrary 'org.apache.http.legacy'
+        ndk{
+            abiFilters "armeabi-v7a", "arm64-v8a", "armeabi"
+        }
     }
     buildTypes {
         debug {
@@ -84,4 +87,7 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation project(':xmltojsonlib')
+    // 引入dex解析库,需要将minSdkVersion升至23（System.loadLibrary需要）
+    implementation 'org.luckypray:DexKit:1.1.0-beta5'
+    implementation 'org.luckypray:DexKit:1.1.0-beta5-sources'
 }
