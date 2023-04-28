@@ -8,12 +8,12 @@ android {
         minSdkVersion 23
         //noinspection ExpiredTargetSdkVersion
         targetSdkVersion 29
-        versionCode 64
-        versionName "2.4.4"
+        versionCode 65
+        versionName "2.4.5"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         useLibrary 'org.apache.http.legacy'
         ndk{
-            abiFilters "armeabi-v7a", "arm64-v8a", "armeabi"
+            abiFilters "arm64-v8a"
         }
     }
     buildTypes {
@@ -47,6 +47,14 @@ android {
         exclude 'META-INF/LICENSE'
         exclude 'META-INF/LICENSE.txt'
         exclude 'META-INF/NOTICE.txt'
+    }
+    signingConfigs {
+        debug {
+            keyAlias 'red'
+            storePassword '123456'
+            storeFile file('/red.jks')
+            keyPassword '123456'
+        }
     }
 }
 
