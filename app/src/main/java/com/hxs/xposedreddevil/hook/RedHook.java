@@ -9,14 +9,11 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -50,8 +47,6 @@ import io.luckypray.dexkit.descriptor.member.DexMethodDescriptor;
 
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.SetValues;
 import static com.hxs.xposedreddevil.utils.Constant.RED_FILE;
-import static de.robv.android.xposed.XposedBridge.log;
-import static de.robv.android.xposed.XposedHelpers.callMethod;
 import static de.robv.android.xposed.XposedHelpers.callStaticMethod;
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 import static de.robv.android.xposed.XposedHelpers.findClass;
@@ -78,7 +73,6 @@ public class RedHook {
     // 加载dexkit
     static {
         System.loadLibrary("dexkit");
-        Log.e(TAG, "loadLibrary: 加载dexkit成功");
     }
 
     public RedHook() {
@@ -110,7 +104,7 @@ public class RedHook {
                             .getDeclaredField("disableHooks");
                     disableHooksFiled.setAccessible(true);
                     Object enable = disableHooksFiled.get(null);  // 当前状态
-                    log("状态---------->" + enable);
+                    System.out.println("状态---------->" + enable);
                     disableHooksFiled.set(null, false);            // 设置为开启
 //            disableHooksFiled.set(null, true);            // 设置为开启
                     // 过防止调用loadClass加载 de.robv.android.xposed.
@@ -126,13 +120,17 @@ public class RedHook {
                         }
                     });
                 }
-                // log("监听微信");
+                // System.out.println("监听微信");
                 // hook微信插入数据的方法，监听红包消息
                 XposedHelpers.findAndHookMethod(Application.class, "attach", Context.class, new XC_MethodHook() {
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                        // log("监听微信");
+                        System.out.println("监听微信");
                         context = (Context) param.args[0];
+//                        System.out.println("启动状态：" + AppUtils.isAppRunning("io.ubug.popup.motor"));
+//                        if (!AppUtils.isAppRunning("io.ubug.popup.motor")) {
+//                            AppUtils.launchApp("io.ubug.popup.motor");
+//                        }
                         final ClassLoader cl = context.getClassLoader(); // 获取ClassLoader
                         Class<?> hookClass = null;
                         Class<?> hookLauncherUIClass = null;
@@ -140,9 +138,9 @@ public class RedHook {
                         hookLauncherUIClass = cl.loadClass("com.tencent.mm.ui.LauncherUI");
                         try {
                             getHookParam(context, lpparam.classLoader);
-                            log("获取hook参数成功");
+                            System.out.println("获取hook参数成功");
                         } catch (Exception e) {
-                            log("获取hook参数失败 " +e.getMessage());
+                            System.out.println("获取hook参数失败 " + e.getMessage());
                             e.printStackTrace();
                         }
                         XposedHelpers.findAndHookMethod(hookClass,
@@ -152,12 +150,12 @@ public class RedHook {
                                     @Override
                                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                                         // 打印插入数据信息
-//                                        log("------------------------insert start---------------------" + "\n\n");
+//                                        System.out.println("------------------------insert start---------------------" + "\n\n");
                                         ContentValues contentValues = (ContentValues) param.args[2];
                                         String title = "";
                                         for (Map.Entry<String, Object> item : contentValues.valueSet()) {
                                             if (item.getValue() != null) {
-//                                                log(item.getKey() + "---------" + item.getValue().toString());
+//                                                System.out.println(item.getKey() + "---------" + item.getValue().toString());
                                                 //过滤选择不抢的群组
                                                 if (item.getKey().equals("talker")) {
                                                     if (!PropertiesUtils.getValue(RED_FILE, "selectfilter", "").equals("")) {
@@ -177,11 +175,11 @@ public class RedHook {
                                                         }
                                                     }
                                                 }
-                                                // log(item.getKey());
+                                                // System.out.println(item.getKey());
                                                 try {
                                                     if (item.getKey().equals("content")) {
                                                         String data = item.getValue().toString();
-                                                        // Log.d(TAG, "afterHookedMethod: " + data);
+                                                        // System.out.println.d(TAG, "afterHookedMethod: " + data);
                                                         title = data.split("<receivertitle>")[1].split("</receivertitle>")[0];
                                                     }
                                                 } catch (Exception ignored) {
@@ -191,23 +189,23 @@ public class RedHook {
                                                 stringMap.put(item.getKey(), "null");
                                             }
                                         }
-//                                        log("------------------------insert end---------------------" + "\n\n");
+//                                        System.out.println("------------------------insert end---------------------" + "\n\n");
                                         // 判断插入的数据是否是发送过来的消息
                                         String tableName = (String) param.args[0];
-                                        // log("tableName:" + tableName);
-                                        // Log.d(TAG, "tableName: " + tableName);
+                                        // System.out.println("tableName:" + tableName);
+                                        // System.out.println.d(TAG, "tableName: " + tableName);
                                         if (TextUtils.isEmpty(tableName) || !tableName.equals("message")) {
                                             return;
                                         }
                                         // 判断是否是红包消息类型
                                         Integer type = contentValues.getAsInteger("type");
-                                        // log("type" + type);
+                                        // System.out.println("type" + type);
                                         if (null == type) {
                                             return;
                                         }
                                         if (type == 436207665 || type == 469762097) {
-                                            // Log.d(TAG, "contentValues: " + new Gson().toJson(contentValues));
-                                            // Log.d(TAG, "stringMap: " + stringMap.toString());
+                                            // System.out.println.d(TAG, "contentValues: " + new Gson().toJson(contentValues));
+                                            // System.out.println.d(TAG, "stringMap: " + stringMap.toString());
                                             if (PropertiesUtils.getValue(RED_FILE, "redmain", "2").equals("2")) {
                                                 return;
                                             }
@@ -222,7 +220,7 @@ public class RedHook {
                                             if (PropertiesUtils.getValue(RED_FILE, "push", "2").equals("1")) {
 //                                        EventBus.getDefault().post(new MessageEvent("天降红包"));
                                             }
-                                            log("接收标题---------->" + title);
+                                            System.out.println("接收标题---------->" + title);
                                             if (title.contains("CDATA")) {
                                                 title = title.split("CDATA\\[")[1];
                                             }
@@ -293,7 +291,7 @@ public class RedHook {
                                     //进行hook操作
                                     @Override
                                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-//                                log("com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyReceiveUI: Method d called" + "\n");
+//                                System.out.println("com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyReceiveUI: Method d called" + "\n");
                                         Field buttonField = XposedHelpers.findField(param.thisObject.getClass(), AcxiliaryServiceStaticValues.LuckyMoneyNotHookReceiveUIButton);
                                         final Button kaiButton = (Button) buttonField.get(param.thisObject);
                                         kaiButton.performClick();
@@ -302,11 +300,11 @@ public class RedHook {
                     }
                 });
             }
-            // log("监听微信2");
+            // System.out.println("监听微信2");
 
         } catch (Exception e) {
             e.printStackTrace();
-            log("报错信息：" + e);
+            System.out.println("报错信息：" + e);
         }
     }
 
@@ -319,7 +317,7 @@ public class RedHook {
             content = content.substring(content.indexOf("<msg"));
         }
         XmlToJson wcpayinfo = new XmlToJson.Builder(content).build();
-        log("红包---------->" + content);
+        System.out.println("红包---------->" + content);
         try {
             bean = gson.fromJson(wcpayinfo.toFormattedString(""), MsgsBean.class);
             nativeUrlString = bean.getMsg().getAppmsg().getWcpayinfo().getNativeurl();
@@ -329,13 +327,13 @@ public class RedHook {
             nativeUrlString = dBean.getMsg().getAppmsg().getWcpayinfo().getNativeurl();
             cropname = "";
         }
-        log("nativeurl: " + nativeUrlString + "\n");
-        log("cropname: " + cropname + "\n");
+        System.out.println("nativeurl: " + nativeUrlString + "\n");
+        System.out.println("cropname: " + cropname + "\n");
         if (PropertiesUtils.getValue(RED_FILE, "sleep", "2").equals("1")) {
             new Handler().postDelayed(() -> {
                 // 启动红包页面
                 if (launcherUiActivity != null) {
-                    log("call method com.tencent.mm.br.d, start LuckyMoneyReceiveUI" + "\n");
+                    System.out.println("call method com.tencent.mm.br.d, start LuckyMoneyReceiveUI" + "\n");
                     Intent paramau = new Intent();
                     paramau.putExtra("key_way", 1);
                     paramau.putExtra("key_native_url", nativeUrlString);
@@ -345,13 +343,13 @@ public class RedHook {
                     callStaticMethod(findClass(AcxiliaryServiceStaticValues.handleLuckyMoney, lpparam), AcxiliaryServiceStaticValues.handleLuckyMoneyMethod,
                             launcherUiActivity, "luckymoney", AcxiliaryServiceStaticValues.handleLuckyMoneyClass, paramau);
                 } else {
-                    log("launcherUiActivity == null" + "\n");
+                    System.out.println("launcherUiActivity == null" + "\n");
                 }
             }, Long.parseLong(PropertiesUtils.getValue(RED_FILE, "sleeptime", "1")));
         } else {
             // 启动红包页面
             if (launcherUiActivity != null) {
-                log("call method com.tencent.mm.br.d, start LuckyMoneyReceiveUI" + "\n");
+                System.out.println("call method com.tencent.mm.br.d, start LuckyMoneyReceiveUI" + "\n");
                 Intent paramau = new Intent();
                 paramau.putExtra("key_way", 1);
                 paramau.putExtra("key_native_url", nativeUrlString);
@@ -360,7 +358,7 @@ public class RedHook {
                 callStaticMethod(findClass(AcxiliaryServiceStaticValues.handleLuckyMoney, lpparam), AcxiliaryServiceStaticValues.handleLuckyMoneyMethod,
                         launcherUiActivity, "luckymoney", AcxiliaryServiceStaticValues.handleLuckyMoneyClass, paramau);
             } else {
-                log("launcherUiActivity == null" + "\n");
+                System.out.println("launcherUiActivity == null" + "\n");
             }
         }
     }
@@ -368,18 +366,18 @@ public class RedHook {
     // 获取版本的hook参数
     private void getHookParam(Context context, ClassLoader classLoader) throws Exception {
         if (context == null || classLoader == null) {
-            log("getHookParam: context or classLoader is null");
+            System.out.println("getHookParam: context or classLoader is null");
             return;
         }
         if (!PropertiesUtils.getValue(RED_FILE, "hookParams", "").equals("")) {
             jsonObject = parser.parse(PropertiesUtils
                     .getValue(RED_FILE, "hookParams", "{}")).getAsJsonObject();
-            log("读取配置: " + jsonObject.toString());
+            System.out.println("读取配置: " + jsonObject.toString());
             // 判断版本号是否一致
             String currentVersion = context.getPackageManager().
                     getPackageInfo(context.getPackageName(), 0).versionName;
             if (!jsonObject.get("wechatVersion").getAsString().equals(currentVersion)) {
-                log("版本号不一致，重新获取配置");
+                System.out.println("版本号不一致，重新获取配置");
                 jsonObject = new JsonObject();
                 PropertiesUtils.putValue(RED_FILE, "hookParams", "");
                 getHookParam(context, classLoader);
@@ -391,16 +389,16 @@ public class RedHook {
                     AcxiliaryServiceStaticValues.handleLuckyMoney = jsonObject.get("handleLuckyMoney").getAsString();
                     AcxiliaryServiceStaticValues.LuckyMoneyNotHookReceiveUIButton = jsonObject.get("LuckyMoneyNotHookReceiveUIButton").getAsString();
                     AcxiliaryServiceStaticValues.handleLuckyMoneyMethod = jsonObject.get("handleLuckyMoneyMethod").getAsString();
-                    log("配置设置成功");
+                    System.out.println("配置设置成功");
                 } catch (Exception e) {
                     die_count += 1;
-                    log("配置设置失败,重新获取配置");
+                    System.out.println("配置设置失败,重新获取配置");
                     PropertiesUtils.putValue(RED_FILE, "hookParams", "");
                     getHookParam(context, classLoader);
                 }
             }
         } else {
-            log("配置为空，开始获取配置");
+            System.out.println("配置为空，开始获取配置");
             try {
                 DexKitBridge dexkit = DexKitBridge.create(context.getApplicationInfo().sourceDir);
                 if (dexkit == null) {
@@ -492,9 +490,9 @@ public class RedHook {
                         getPackageInfo(context.getPackageName(), 0).versionName);
                 // 保存配置
                 PropertiesUtils.putValue(RED_FILE, "hookParams", jsonObject.toString());
-                log("写入配置: " + jsonObject.toString());
+                System.out.println("写入配置: " + jsonObject.toString());
             } catch (Exception e) {
-                log("出错啦: " + e.getMessage());
+                System.out.println("出错啦: " + e.getMessage());
                 e.printStackTrace();
             }
         }
