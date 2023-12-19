@@ -82,9 +82,9 @@ public class AcxiliaryServiceStaticValues {
 
         LuckyMoneyNotHookReceiveUI = "com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyNotHookReceiveUI";
         LuckyMoneyNotHookReceiveUIMethod = "onSceneEnd";
-        LuckyMoneyNotHookReceiveUIMethodParameter = "zf0.y";      //全局搜索TAG = "MicroMsg.NetSceneBase"
+        LuckyMoneyNotHookReceiveUIMethodParameter = "com.tencent.mm.modelbase.k1";      //全局搜索TAG = "MicroMsg.NetSceneBase"
         LuckyMoneyNotHookReceiveUIButton = "p";                               //LuckyMoneyNotHookReceiveUI中的button
-        handleLuckyMoney = "zv3.b";                               //全局搜索add(".ui.transmit.SelectConversationUI");
+        handleLuckyMoney = "n04.l";                               //全局搜索add(".ui.transmit.SelectConversationUI");
         handleLuckyMoneyMethod = "i";
         handleLuckyMoneyClass = ".ui.LuckyMoneyNotHookReceiveUI";
 //        }
