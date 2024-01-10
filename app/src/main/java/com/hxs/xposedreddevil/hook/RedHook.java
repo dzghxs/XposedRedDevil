@@ -291,7 +291,7 @@ public class RedHook {
                                     //进行hook操作
                                     @Override
                                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-//                                System.out.println("com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyReceiveUI: Method d called" + "\n");
+//                                        System.out.println("com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyReceiveUI: Method d called" + "\n");
                                         Field buttonField = XposedHelpers.findField(param.thisObject.getClass(), AcxiliaryServiceStaticValues.LuckyMoneyNotHookReceiveUIButton);
                                         final Button kaiButton = (Button) buttonField.get(param.thisObject);
                                         kaiButton.performClick();
@@ -339,7 +339,7 @@ public class RedHook {
                     paramau.putExtra("key_native_url", nativeUrlString);
                     paramau.putExtra("key_username", talker);
                     paramau.putExtra("key_cropname", cropname);       //7.0新增
-                    System.out.println("界面：" + AcxiliaryServiceStaticValues.handleLuckyMoney);
+                    System.out.println("界面1：" + AcxiliaryServiceStaticValues.handleLuckyMoney);
                     callStaticMethod(findClass(AcxiliaryServiceStaticValues.handleLuckyMoney, lpparam), AcxiliaryServiceStaticValues.handleLuckyMoneyMethod,
                             launcherUiActivity, "luckymoney", AcxiliaryServiceStaticValues.handleLuckyMoneyClass, paramau);
                 } else {
@@ -355,6 +355,7 @@ public class RedHook {
                 paramau.putExtra("key_native_url", nativeUrlString);
                 paramau.putExtra("key_username", talker);
                 paramau.putExtra("key_cropname", cropname);       //7.0新增
+                System.out.println("界面2：" + AcxiliaryServiceStaticValues.handleLuckyMoney);
                 callStaticMethod(findClass(AcxiliaryServiceStaticValues.handleLuckyMoney, lpparam), AcxiliaryServiceStaticValues.handleLuckyMoneyMethod,
                         launcherUiActivity, "luckymoney", AcxiliaryServiceStaticValues.handleLuckyMoneyClass, paramau);
             } else {
