@@ -1,13 +1,16 @@
 package com.hxs.xposedreddevil.hook;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.text.Html;
 import android.text.TextUtils;
 
-import com.hxs.xposedreddevil.contentprovider.PropertiesUtils;
+import com.hxs.xposedreddevil.utils.MultiprocessSharedPreferences;
 
 import java.io.File;
 import java.lang.reflect.Constructor;
@@ -22,7 +25,6 @@ import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
-import static com.hxs.xposedreddevil.utils.Constant.RED_FILE;
 
 public class RevokeMsgHook {
     private static Map<Long, Object> msgCacheMap = new HashMap<>();
@@ -32,6 +34,8 @@ public class RevokeMsgHook {
 
     private static boolean disableRevoke;
     private XC_LoadPackage.LoadPackageParam classLoader;
+
+    private static SharedPreferences share;
 
     private static final String SQLITE_DATABASE_CLAZZ = "com.tencent.wcdb.database.SQLiteDatabase";
 
@@ -64,6 +68,12 @@ public class RevokeMsgHook {
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                         super.afterHookedMethod(param);
                         Context context = (Context) param.args[0];
+                        MultiprocessSharedPreferences.setAuthority("com.hxs.xposedreddevil.provider");
+                        share = MultiprocessSharedPreferences.getSharedPreferences(
+                                context,
+                                "xr",
+                                MODE_PRIVATE
+                        );
                         Class clazzs = XposedHelpers.findClass(SQLITE_DATABASE_CLAZZ, context.getClassLoader());
                         XposedHelpers.findAndHookMethod(clazzs, "updateWithOnConflict",
                                 String.class, ContentValues.class, String.class, String[].class, int.class,
@@ -154,7 +164,7 @@ public class RevokeMsgHook {
     }
 
     private static void reload() {
-        if (PropertiesUtils.getValue(RED_FILE, "withdraw", "2").equals("2")) {
+        if (share.getString("withdraw", "2").equals("2")) {
             disableRevoke = false;
         } else {
             disableRevoke = true;

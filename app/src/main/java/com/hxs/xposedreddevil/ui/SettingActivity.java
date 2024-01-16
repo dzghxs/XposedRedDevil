@@ -6,26 +6,17 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.TextView;
+
 import com.hxs.xposedreddevil.R;
-import com.hxs.xposedreddevil.contentprovider.PropertiesUtils;
+import com.hxs.xposedreddevil.base.BaseActivity;
+import com.hxs.xposedreddevil.databinding.ActivityHomeBinding;
+import com.hxs.xposedreddevil.databinding.ActivitySettingBinding;
+import com.hxs.xposedreddevil.utils.MultiprocessSharedPreferences;
 import com.hxs.xposedreddevil.weight.LoadingDialog;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import skin.support.SkinCompatManager;
+public class SettingActivity extends BaseActivity {
 
-import static com.hxs.xposedreddevil.utils.Constant.RED_FILE;
-
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
-public class SettingActivity extends AppCompatActivity {
-
-    @BindView(R.id.tv_skin)
-    TextView tvSkin;
-    @BindView(R.id.ll_skin)
-    LinearLayout llSkin;
+    private ActivitySettingBinding binding;
 
     private LinearLayout llLight;
     private RadioButton rbLight;
@@ -40,10 +31,11 @@ public class SettingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_setting);
-        ButterKnife.bind(this);
+        binding = ActivitySettingBinding.inflate(LayoutInflater.from(this));
+        setContentView(binding.getRoot());
+        sharedPreferences = MultiprocessSharedPreferences.getSharedPreferences(this, "xr", MODE_PRIVATE);
         dialog = new LoadingDialog(this);
-        tvSkin.setText(PropertiesUtils.getValue(RED_FILE, "redskin", "亮色"));
+        binding.tvSkin.setText(sharedPreferences.getString("redskin", "亮色"));
     }
 
     /**
@@ -96,7 +88,6 @@ public class SettingActivity extends AppCompatActivity {
 //        });
 //        d.show();
 //    }
-
     private void initView(View v) {
         llLight = v.findViewById(R.id.ll_light);
         rbLight = v.findViewById(R.id.rb_light);
@@ -107,7 +98,7 @@ public class SettingActivity extends AppCompatActivity {
         tvDismiss = v.findViewById(R.id.tv_dismiss);
         rbLight.setFocusable(false);
         rbNight.setFocusable(false);
-        if (PropertiesUtils.getValue(RED_FILE, "redskin", "亮色").equals("亮色")) {
+        if (sharedPreferences.getString("redskin", "亮色").equals("亮色")) {
             rbLight.setChecked(true);
             rbNight.setChecked(false);
         } else {
@@ -116,12 +107,4 @@ public class SettingActivity extends AppCompatActivity {
         }
     }
 
-    @OnClick({R.id.ll_skin})
-    public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.ll_skin:
-//                SelectSkinInit();
-                break;
-        }
-    }
 }

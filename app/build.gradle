@@ -1,15 +1,14 @@
 apply plugin: 'com.android.application'
-apply plugin: 'org.greenrobot.greendao'
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 31
     defaultConfig {
         applicationId "com.hxs.xposedreddevil"
         minSdkVersion 23
         //noinspection ExpiredTargetSdkVersion
-        targetSdkVersion 29
-        versionCode 72
-        versionName "2.5.2"
+        targetSdkVersion 31
+        versionCode 73
+        versionName "2.5.3"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         useLibrary 'org.apache.http.legacy'
         ndk{
@@ -28,14 +27,6 @@ android {
     }
     lintOptions {
         abortOnError false
-    }
-    greendao {
-        //数据库的schema版本，也可以理解为数据库版本号 如果entity字段有增加更改字段 则会更新数据库
-        schemaVersion 2
-        //设置DaoMaster、DaoSession、Dao包名，也就是要放置这些类的包的全路径。
-        daoPackage 'com.hxs.xposedreddevil.greendao'
-        //设置DaoMaster、DaoSession、Dao目录
-        targetGenDir 'src/main/java'
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -56,6 +47,10 @@ android {
             keyPassword '123456'
         }
     }
+    buildFeatures {
+        dataBinding = true
+        viewBinding true
+    }
 }
 
 dependencies {
@@ -67,7 +62,6 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.0'
     implementation 'com.blankj:utilcodex:1.31.1'
     implementation 'com.google.code.gson:gson:2.8.6'
-    implementation 'com.jakewharton:butterknife:10.2.3'
     implementation 'com.github.getActivity:XXPermissions:13.2'
     implementation 'org.greenrobot:greendao:3.3.0'
     implementation 'org.greenrobot:greendao-generator:3.3.0'
@@ -92,11 +86,8 @@ dependencies {
     implementation 'com.lzp.floatingactionbutton:floatingactionbuttonplus:1.0.0'
     //其中latest.release指代最新版本号，也可以指定明确的版本号，例如1.2.0
     testImplementation 'junit:junit:4.12'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.3'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation project(':xmltojsonlib')
     // 引入dex解析库,需要将minSdkVersion升至23（System.loadLibrary需要）
-    implementation 'org.luckypray:DexKit:1.1.0-beta5'
-    implementation 'org.luckypray:DexKit:1.1.0-beta5-sources'
 }

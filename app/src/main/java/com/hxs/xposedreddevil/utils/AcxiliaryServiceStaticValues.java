@@ -1,9 +1,5 @@
 package com.hxs.xposedreddevil.utils;
 
-import com.hxs.xposedreddevil.contentprovider.PropertiesUtils;
-
-import static com.hxs.xposedreddevil.utils.Constant.RED_FILE;
-
 public class AcxiliaryServiceStaticValues {
 
     //免root

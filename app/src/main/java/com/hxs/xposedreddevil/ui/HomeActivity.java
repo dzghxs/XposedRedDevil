@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Message;
 import android.util.DisplayMetrics;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -20,9 +21,10 @@ import com.hjq.permissions.Permission;
 import com.hjq.permissions.XXPermissions;
 import com.hxs.xposedreddevil.R;
 import com.hxs.xposedreddevil.base.BaseActivity;
-import com.hxs.xposedreddevil.contentprovider.PropertiesUtils;
+import com.hxs.xposedreddevil.databinding.ActivityHomeBinding;
 import com.hxs.xposedreddevil.utils.AssetsCopyTOSDcard;
 import com.hxs.xposedreddevil.utils.MessageEvent;
+import com.hxs.xposedreddevil.utils.MultiprocessSharedPreferences;
 import com.hxs.xposedreddevil.utils.PackageManagerUtil;
 
 import org.greenrobot.eventbus.EventBus;
@@ -32,49 +34,31 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.io.File;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-
-import static com.hxs.xposedreddevil.utils.Constant.RED_FILE;
 import static com.hxs.xposedreddevil.utils.Constant.currApkPath;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.cardview.widget.CardView;
 
 public class HomeActivity extends BaseActivity {
 
-    @BindView(R.id.iv_home_setting)
-    ImageView ivHomeSetting;
-    @BindView(R.id.sp_center_version)
-    Spinner spCenterVersion;
-    @BindView(R.id.ll_version)
-    LinearLayout llVersion;
-    @BindView(R.id.home_card_unroot)
-    CardView homeCardUnroot;
-    @BindView(R.id.home_card_root)
-    CardView homeCardRoot;
-    @BindView(R.id.tv_home_unroot)
-    TextView tvHomeUnroot;
-    @BindView(R.id.tv_home_root)
-    TextView tvHomeRoot;
+    private ActivityHomeBinding binding;
 
     Gson gson = new Gson();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
-        ButterKnife.bind(this);
+        binding = ActivityHomeBinding.inflate(LayoutInflater.from(this));
+        setContentView(binding.getRoot());
         EventBus.getDefault().register(this);
         DisplayMetrics outMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(outMetrics);
         int widthPixels = outMetrics.widthPixels;
-        PropertiesUtils.putValue(RED_FILE, "widthPixels", widthPixels + "");
+        sharedPreferences.edit().putString("widthPixels", String.valueOf(widthPixels)).commit();
         CheckPermissionInit();
         DataInit();
     }
-//d
+
+    //d
     @Override
     protected void onDestroy() {
 //        synthesizer.release();
@@ -88,20 +72,26 @@ public class HomeActivity extends BaseActivity {
         if (!file.exists()) {
             file.mkdir();
         }
-        tvHomeUnroot.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/font.ttf"));
-        tvHomeRoot.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/font.ttf"));
+        binding.tvHomeUnroot.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/font.ttf"));
+        binding.tvHomeRoot.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/font.ttf"));
         AssetsCopyTOSDcard.Assets2Sd(this, "lucky_sound.mp3", Environment.getExternalStorageDirectory().toString() + "/xposedreddevil/lucky_sound.mp3");
-        if (PropertiesUtils.getValue(RED_FILE, "wechatversion", "").equals("8.0.45")) {
-            spCenterVersion.setSelection(0);
+        if (sharedPreferences.getString("wechatversion", "").equals("8.0.45")) {
+            binding.spCenterVersion.setSelection(0);
         }
-        if (spCenterVersion.getSelectedItem().equals("8.0.45")) {
-            PropertiesUtils.putValue(RED_FILE, "wechatversion", "8.0.45");
+        if (binding.spCenterVersion.getSelectedItem().equals("8.0.45")) {
+            sharedPreferences.edit().putString("wechatversion", "8.0.45").commit();
         }
         if (!PackageManagerUtil.getItems(this).equals("")) {
-            PropertiesUtils.putValue(RED_FILE, "wechatversion", PackageManagerUtil.getItems(this));
+            sharedPreferences.edit().putString("wechatversion", PackageManagerUtil.getItems(this)).commit();
         } else {
             WriteVersion();
         }
+        binding.ivHomeSetting.setOnClickListener(v -> startActivity(new Intent(HomeActivity.this, SettingActivity.class)));
+        binding.homeCardUnroot.setOnClickListener(v -> {
+            Toast.makeText(this, "只支持8.0.32版本，其他版本自行编译代码", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, NotRootActivity.class));
+        });
+        binding.homeCardRoot.setOnClickListener(v -> startActivity(new Intent(HomeActivity.this, MainActivity.class)));
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -140,20 +130,4 @@ public class HomeActivity extends BaseActivity {
                 .setPositiveButton("确定", (dialog, which) -> dialog.dismiss());
     }
 
-    @OnClick({R.id.home_card_unroot, R.id.home_card_root, R.id.iv_home_setting})
-    public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.iv_home_setting:
-                startActivity(new Intent(this, SettingActivity.class));
-                break;
-            case R.id.home_card_unroot:
-//                Toast.makeText(this, "暂不提供免root抢红包操作，如需实现请自行编译代码", Toast.LENGTH_SHORT).show();
-                Toast.makeText(this, "只支持8.0.32版本，其他版本自行编译代码", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(this, NotRootActivity.class));
-                break;
-            case R.id.home_card_root:
-                startActivity(new Intent(this, MainActivity.class));
-                break;
-        }
-    }
 }

@@ -9,9 +9,6 @@ import android.os.Environment;
  */
 
 public class Constant {
-    public static final String RED_FILE = Environment.getExternalStorageDirectory() + "/xposedreddevil/reddevil_config.pro";
-    public static final String RED_LIST = Environment.getExternalStorageDirectory() + "/xposedreddevil/ListTime/" +
-            DateUtils.getYear() + DateUtils.getMonth() + DateUtils.getDay() + ".txt";
     public static final String TARGET_ID = "targetId";
     public static final String CONVERSATION_TYPE = "conversationType";
     public static final String TITLE = "title";

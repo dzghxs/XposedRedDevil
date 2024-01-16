@@ -7,47 +7,40 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Handler;
 import android.os.PowerManager;
 import android.provider.Settings;
 import android.text.TextUtils;
-import android.util.DisplayMetrics;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
-import com.hxs.xposedreddevil.contentprovider.PropertiesUtils;
-import com.hxs.xposedreddevil.greendao.DbCarryList;
 import com.hxs.xposedreddevil.utils.AccessibilityUtils;
 import com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues;
-import com.hxs.xposedreddevil.utils.DateUtils;
 import com.hxs.xposedreddevil.utils.Hanzi2PinyinHelper;
 import com.hxs.xposedreddevil.utils.MessageEvent;
+import com.hxs.xposedreddevil.utils.MultiprocessSharedPreferences;
 import com.hxs.xposedreddevil.utils.PackageManagerUtil;
-import com.hxs.xposedreddevil.utils.SQLiteUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
-import java.util.regex.Pattern;
 
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.CARRYUI;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.LAUCHER;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.LUCKEY_MONEY_DETAIL;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.LUCKEY_MONEY_RECEIVER;
-import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.OPEN_ID;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.carryclose;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.carrypagebtn;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.carrypagenum;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.carrystates;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.chatid;
-import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.chatitem;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.chatnameid;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.chatonenameid;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.chatredid;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.msgisredid;
-import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.msgname;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.msgredcontent;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.msgredid;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.redcircle;
@@ -56,11 +49,13 @@ import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.redpagen
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.redunmsgcircle;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.strredstatus;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.userhead;
-import static com.hxs.xposedreddevil.utils.Constant.RED_FILE;
 
 import androidx.annotation.RequiresApi;
 
 public class AcxiliaryRedService extends AccessibilityService {
+
+    SharedPreferences sharedPreferences;
+    
     /**
      * 键盘锁的对象
      */
@@ -90,15 +85,16 @@ public class AcxiliaryRedService extends AccessibilityService {
 
 //    private String username = "";
 
-    private DbCarryList carryList;
-
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onAccessibilityEvent(final AccessibilityEvent event) {
+        MultiprocessSharedPreferences.setAuthority("com.hxs.xposedreddevil.provider");
+        sharedPreferences =
+                MultiprocessSharedPreferences.getSharedPreferences(this, "xr", MODE_PRIVATE);
         AcxiliaryServiceStaticValues.SetValues();
         //接收事件
         int eventType = event.getEventType();
-        if (PropertiesUtils.getValue(RED_FILE, "rednorootmain", "2").equals("2")) {
+        if (sharedPreferences.getString("rednorootmain", "2").equals("2")) {
             return;
         }
         switch (eventType) {
@@ -110,8 +106,8 @@ public class AcxiliaryRedService extends AccessibilityService {
                 for (CharSequence text : texts) {
                     String content = text.toString();
                     //通过微信红包这个关键词来判断是否红包。（如果有个朋友取名叫微信红包的话。。。）
-                    if (PropertiesUtils.getValue(RED_FILE, "nottootkeyword", "2").equals("1")) {
-                        if (content.contains("@" + PropertiesUtils.getValue(RED_FILE, "nottootname", ""))) {
+                    if (sharedPreferences.getString( "nottootkeyword", "2").equals("1")) {
+                        if (content.contains("@" + sharedPreferences.getString( "nottootname", ""))) {
                             EventBus.getDefault().post(new MessageEvent(content));
                         }
                     }
@@ -166,17 +162,6 @@ public class AcxiliaryRedService extends AccessibilityService {
 
                 //判断是否是红包领取后的详情界面
                 if (isOpenDetail && LUCKEY_MONEY_DETAIL.equals(className)) {
-                    try {
-                        carryList = new DbCarryList();
-                        carryList.setMoney("￥" + getRootInActiveWindow().findAccessibilityNodeInfosByViewId(redpagenum).get(0).getText().toString());
-                        carryList.setName("");
-                        carryList.setTime(DateUtils.getYear() + "-" + DateUtils.getMonth() + "-" + DateUtils.getDay() + " " + DateUtils.getHour() + ":" + DateUtils.getMinute());
-                        carryList.setStatus("红包");
-                        SQLiteUtils.getInstance().addContacts(carryList);
-                        isOpenDetail = false;
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
                     //返回桌面
 //                    back2Home();
                     findRedCloseBtn(getRootInActiveWindow());
@@ -191,7 +176,7 @@ public class AcxiliaryRedService extends AccessibilityService {
                             for (int i = 0; i < itemNodes.size(); i++) {
                                 AccessibilityNodeInfo chatContentNode = itemNodes.get(i).findAccessibilityNodeInfosByViewId(chatredid).get(0);
                                 if (chatContentNode != null && chatContentNode.getText() != null) {
-                                    if (PropertiesUtils.getValue(RED_FILE, "nottootkeyword", "2").equals("1")) {
+                                    if (sharedPreferences.getString( "nottootkeyword", "2").equals("1")) {
                                         if (chatContentNode.getText().toString().contains("有人@我")) {
                                             if (postnum == itemNodes.size()) {
                                                 EventBus.getDefault().post(new MessageEvent(itemNodes.get(i).findAccessibilityNodeInfosByViewId(chatnameid).
@@ -224,7 +209,7 @@ public class AcxiliaryRedService extends AccessibilityService {
                                                     findAccessibilityNodeInfosByViewId(redunmsgcircle).size() > 0) {
                                                 AccessibilityNodeInfo circlenode = itemNodes.get(i).
                                                         findAccessibilityNodeInfosByViewId(redunmsgcircle).get(0);
-                                                if (PropertiesUtils.getValue(RED_FILE, "nottootdisturb", "2").equals("2")) {
+                                                if (sharedPreferences.getString( "nottootdisturb", "2").equals("2")) {
                                                     return;
                                                 }
                                                 if (circlenode != null) {
@@ -314,15 +299,15 @@ public class AcxiliaryRedService extends AccessibilityService {
                                     Rect rect = new Rect();
                                     list.get(i).getParent().getParent().getChild(1).findAccessibilityNodeInfosByViewId(userhead).get(0).getBoundsInScreen(rect);
                                     System.out.println(rect.centerX());
-                                    if (rect.centerX() > (Integer.parseInt(PropertiesUtils.getValue(RED_FILE, "widthPixels", "0")) / 2)) {
+                                    if (rect.centerX() > (Integer.parseInt(sharedPreferences.getString( "widthPixels", "0")) / 2)) {
                                         //                                    String pattern = ".*[(].*\\d[)]";
                                         //                                    if (username.equals("")) {
-                                        //                                    if (PropertiesUtils.getValue(RED_FILE, "notrooown", "2").equals("1")) {
+                                        //                                    if (sharedPreferences.getString( "notrooown", "2").equals("1")) {
                                         return;
                                         //                                    }
                                         //                                    } else {
                                         //                                        if (Pattern.compile(pattern).matcher(username).matches()) {
-                                        //                                            if (PropertiesUtils.getValue(RED_FILE, "notrooown", "2").equals("1")) {
+                                        //                                            if (sharedPreferences.getString( "notrooown", "2").equals("1")) {
                                         //                                                return;
                                         //                                            }
                                         //                                        } else {
@@ -351,10 +336,10 @@ public class AcxiliaryRedService extends AccessibilityService {
                             Rect rect = new Rect();
                             list.get(i).getParent().getParent().getChild(1).findAccessibilityNodeInfosByViewId(userhead).get(0).getBoundsInScreen(rect);
                             System.out.println(rect.centerX());
-                            if (rect.centerX() > (Integer.parseInt(PropertiesUtils.getValue(RED_FILE, "widthPixels", "0")) / 2)) {
+                            if (rect.centerX() > (Integer.parseInt(sharedPreferences.getString( "widthPixels", "0")) / 2)) {
 //                                String pattern = ".*[(].*\\d[)]";
 //                                if (Pattern.compile(pattern).matcher(username).matches()) {
-//                                    if (PropertiesUtils.getValue(RED_FILE, "notrooown", "2").equals("1")) {
+//                                    if (sharedPreferences.getString( "notrooown", "2").equals("1")) {
                                 return;
 //                                    }
 //                                } else {
@@ -404,14 +389,6 @@ public class AcxiliaryRedService extends AccessibilityService {
             final AccessibilityNodeInfo n = button_open;
             new Handler().postDelayed(() -> {
                 AccessibilityUtils.performClick(n);
-                if (PropertiesUtils.getValue(RED_FILE, "notrootlist", "2").equals("1")) {
-                    carryList = new DbCarryList();
-                    carryList.setMoney(rootNode.findAccessibilityNodeInfosByViewId(carrypagenum).get(0).getText().toString());
-                    carryList.setName("");
-                    carryList.setTime(DateUtils.getYear() + "-" + DateUtils.getMonth() + "-" + DateUtils.getDay() + " " + DateUtils.getHour() + ":" + DateUtils.getMinute());
-                    carryList.setStatus("转账");
-                    SQLiteUtils.getInstance().addContacts(carryList);
-                }
             }, 500);
             new Handler().postDelayed(() -> findCarryCloseBtn(getRootInActiveWindow()), 1000);
         } else {

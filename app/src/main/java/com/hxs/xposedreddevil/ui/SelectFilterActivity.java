@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -17,7 +18,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.hxs.xposedreddevil.R;
 import com.hxs.xposedreddevil.adapter.FilterAdapter;
-import com.hxs.xposedreddevil.contentprovider.PropertiesUtils;
+import com.hxs.xposedreddevil.base.BaseActivity;
+import com.hxs.xposedreddevil.databinding.ActivityNotRootBinding;
+import com.hxs.xposedreddevil.databinding.ActivitySelectFilterBinding;
 import com.hxs.xposedreddevil.model.FilterBean;
 import com.hxs.xposedreddevil.model.FilterSaveBean;
 import com.hxs.xposedreddevil.service.GroupChatService;
@@ -33,32 +36,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-
-import static com.hxs.xposedreddevil.utils.Constant.COPY_WX_DATA_DB;
-import static com.hxs.xposedreddevil.utils.Constant.RED_FILE;
-import static com.hxs.xposedreddevil.utils.Constant.currApkPath;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class SelectFilterActivity extends AppCompatActivity
+public class SelectFilterActivity extends BaseActivity
         implements FilterAdapter.onItemClickListener {
 
-    @BindView(R.id.iv_class_back)
-    ImageView ivClassBack;
-    @BindView(R.id.tv_class_name)
-    TextView tvClassName;
-    @BindView(R.id.tv_class_add)
-    TextView tvClassAdd;
-    @BindView(R.id.rl_select)
-    RecyclerView rlSelect;
-    @BindView(R.id.fab_refresh)
-    FloatingActionButton fabRefresh;
+    private ActivitySelectFilterBinding binding;
 
     LoadingDialog loadingDialog;
 
@@ -73,8 +59,8 @@ public class SelectFilterActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_select_filter);
-        ButterKnife.bind(this);
+        binding = ActivitySelectFilterBinding.inflate(LayoutInflater.from(this));
+        setContentView(binding.getRoot());
         DataInit();
     }
 
@@ -82,38 +68,36 @@ public class SelectFilterActivity extends AppCompatActivity
     private void DataInit() {
         EventBus.getDefault().register(this);
         loadingDialog = new LoadingDialog(this);
-        tvClassName.setText("选择过滤的群聊");
+        binding.tvClassName.setText("选择过滤的群聊");
         loadingDialog.show();
-        rlSelect.setLayoutManager(new LinearLayoutManager(this));
-        rlSelect.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        binding.rlSelect.setLayoutManager(new LinearLayoutManager(this));
+        binding.rlSelect.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 if (dy < 0) {
-                    fabRefresh.setVisibility(View.VISIBLE);
+                    binding.fabRefresh.setVisibility(View.VISIBLE);
                 } else if (dy == 0) {
-                    fabRefresh.setVisibility(View.VISIBLE);
+                    binding.fabRefresh.setVisibility(View.VISIBLE);
                 } else {
-                    fabRefresh.setVisibility(View.GONE);
+                    binding.fabRefresh.setVisibility(View.GONE);
                 }
             }
         });
         adapter = new FilterAdapter(beanList, this);
-        rlSelect.setAdapter(adapter);
+        binding.rlSelect.setAdapter(adapter);
         adapter.setOnItemClickListener(this);
-        if (!PropertiesUtils.getValue(RED_FILE, "filter", "").equals("")) {
+        if (!sharedPreferences.getString("filter", "").equals("")) {
             filterBean = new FilterBean();
-            JsonArray jsonArray = parser.parse(PropertiesUtils
-                    .getValue(RED_FILE, "filter", "")).getAsJsonArray();
+            JsonArray jsonArray = parser.parse(sharedPreferences.getString("filter", "")).getAsJsonArray();
             for (JsonElement user : jsonArray) {
                 filterBean = new FilterBean();
                 filterBean = gson.fromJson(user, FilterBean.class);
                 beanList.add(filterBean);
             }
-            if (!PropertiesUtils.getValue(RED_FILE, "selectfilter", "").equals("")) {
+            if (!sharedPreferences.getString("selectfilter", "").equals("")) {
                 List<FilterSaveBean> list = new ArrayList<>();
-                jsonArray = parser.parse(PropertiesUtils
-                        .getValue(RED_FILE, "selectfilter", "")).getAsJsonArray();
+                jsonArray = parser.parse(sharedPreferences.getString("selectfilter", "")).getAsJsonArray();
                 for (JsonElement user : jsonArray) {
                     bean = new FilterSaveBean();
                     //使用GSON，直接转成Bean对象
@@ -133,6 +117,27 @@ public class SelectFilterActivity extends AppCompatActivity
         } else {
             startService(new Intent(this, GroupChatService.class));
         }
+        binding.ivClassBack.setOnClickListener(v -> finish());
+        binding.tvClassAdd.setOnClickListener(v -> {
+            List<FilterSaveBean> list = new ArrayList<>();
+            for (int i = 0; i < beanList.size(); i++) {
+                if (beanList.get(i).isCheck()) {
+                    bean = new FilterSaveBean();
+                    bean.setName(beanList.get(i).getName());
+                    bean.setDisplayname(beanList.get(i).getDisplayname());
+                    list.add(bean);
+                }
+            }
+            sharedPreferences.edit().putString("selectfilter", gson.toJson(list)).commit();
+            Toast.makeText(this, "添加完成", Toast.LENGTH_SHORT).show();
+            finish();
+        });
+        binding.ivClassBack.setOnClickListener(v -> {
+            beanList.clear();
+//                deleteSingleFile(currApkPath + COPY_WX_DATA_DB);
+            startService(new Intent(this, GroupChatService.class));
+            loadingDialog.show();
+        });
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -145,11 +150,10 @@ public class SelectFilterActivity extends AppCompatActivity
             filterBean.setCheck(false);
             beanList.add(filterBean);
         }
-        PropertiesUtils.putValue(RED_FILE, "filter", gson.toJson(beanList));
-        if (!PropertiesUtils.getValue(RED_FILE, "selectfilter", "").equals("")) {
+        sharedPreferences.edit().putString("filter", gson.toJson(beanList)).commit();
+        if (!sharedPreferences.getString("selectfilter", "").equals("")) {
             List<FilterSaveBean> list = new ArrayList<>();
-            JsonArray jsonArray = parser.parse(PropertiesUtils
-                    .getValue(RED_FILE, "selectfilter", "")).getAsJsonArray();
+            JsonArray jsonArray = parser.parse(sharedPreferences.getString("selectfilter", "")).getAsJsonArray();
             for (JsonElement user : jsonArray) {
                 bean = new FilterSaveBean();
                 //使用GSON，直接转成Bean对象
@@ -215,35 +219,6 @@ public class SelectFilterActivity extends AppCompatActivity
         } else {
             Toast.makeText(getApplicationContext(), "删除单个文件失败：" + filePath$Name + "不存在！", Toast.LENGTH_SHORT).show();
             return false;
-        }
-    }
-
-    @OnClick({R.id.iv_class_back, R.id.tv_class_add, R.id.fab_refresh})
-    public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.iv_class_back:
-                finish();
-                break;
-            case R.id.tv_class_add:
-                List<FilterSaveBean> list = new ArrayList<>();
-                for (int i = 0; i < beanList.size(); i++) {
-                    if (beanList.get(i).isCheck()) {
-                        bean = new FilterSaveBean();
-                        bean.setName(beanList.get(i).getName());
-                        bean.setDisplayname(beanList.get(i).getDisplayname());
-                        list.add(bean);
-                    }
-                }
-                PropertiesUtils.putValue(RED_FILE, "selectfilter", gson.toJson(list));
-                Toast.makeText(this, "添加完成", Toast.LENGTH_SHORT).show();
-                finish();
-                break;
-            case R.id.fab_refresh:
-                beanList.clear();
-//                deleteSingleFile(currApkPath + COPY_WX_DATA_DB);
-                startService(new Intent(this, GroupChatService.class));
-                loadingDialog.show();
-                break;
         }
     }
 
