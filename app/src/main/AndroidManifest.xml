@@ -18,10 +18,6 @@
         <meta-data
             android:name="ScopedStorage"
             android:value="true" />
-        <provider
-            android:name=".utils.MultiprocessSharedPreferences"
-            android:authorities="com.hxs.xposedreddevil.provider"
-            android:exported="true" />
 
         <activity android:name=".ui.SetNameActivity" />
 
@@ -72,6 +68,9 @@
         <meta-data
             android:name="xposedscope"
             android:value="@array/xposed_scope" />
+        <meta-data
+            android:name="xposedsharedprefs"
+            android:value="true" />
 
         <service
             android:name=".service.AcxiliaryRedService"

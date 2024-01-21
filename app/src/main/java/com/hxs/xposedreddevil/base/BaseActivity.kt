@@ -1,53 +1,37 @@
-package com.hxs.xposedreddevil.base;
+package com.hxs.xposedreddevil.base
 
-import android.Manifest;
-import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.text.Layout;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.method.ScrollingMovementMethod;
-import android.text.style.ForegroundColorSpan;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
-
-import androidx.appcompat.app.AppCompatActivity;
-
-import com.hxs.xposedreddevil.R;
-import com.hxs.xposedreddevil.utils.MultiprocessSharedPreferences;
-
-import java.util.ArrayList;
-
+import android.content.SharedPreferences
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import cn.xiaowine.dsp.DSP
+import cn.xiaowine.dsp.data.MODE
+import com.hxs.xposedreddevil.BuildConfig
+import com.hxs.xposedreddevil.config.SafeConfig
+import com.hxs.xposedreddevil.utils.xshare.SafeSharedPreferences
 
 /**
  * Created by fujiayi on 2017/9/13.
- * <p>
+ *
+ *
  * 此类 底层UI实现 无SDK相关逻辑
  */
+open class BaseActivity : AppCompatActivity() {
+    lateinit var config: SafeConfig
 
-public class BaseActivity extends AppCompatActivity{
-
-    public SharedPreferences sharedPreferences;
+    companion object {
+        var safeSP: SafeSharedPreferences = SafeSharedPreferences()
+    }
 
     /*
      * @param savedInstanceState
      */
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        initialShare(); // 初始化UI
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initialShare() // 初始化UI
     }
 
-
-    private void initialShare() {
-        MultiprocessSharedPreferences.setAuthority("com.hxs.xposedreddevil.provider");
-        sharedPreferences =
-                MultiprocessSharedPreferences.getSharedPreferences(this, "xr", MODE_PRIVATE);
+    private fun initialShare() {
+        DSP.init(this, BuildConfig.APPLICATION_ID, MODE.HOOK)
+        config = SafeConfig()
     }
-
 }
