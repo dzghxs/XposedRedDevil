@@ -1,14 +1,15 @@
 apply plugin: 'com.android.application'
+apply plugin: 'org.jetbrains.kotlin.android'
 
 android {
     compileSdkVersion 31
     defaultConfig {
         applicationId "com.hxs.xposedreddevil"
-        minSdkVersion 23
+        minSdkVersion 26
         //noinspection ExpiredTargetSdkVersion
         targetSdkVersion 31
-        versionCode 73
-        versionName "2.5.3"
+        versionCode 77
+        versionName "2.5.7"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         useLibrary 'org.apache.http.legacy'
         ndk{
@@ -89,5 +90,6 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation project(':xmltojsonlib')
+    implementation project(':dsp')
     // 引入dex解析库,需要将minSdkVersion升至23（System.loadLibrary需要）
 }

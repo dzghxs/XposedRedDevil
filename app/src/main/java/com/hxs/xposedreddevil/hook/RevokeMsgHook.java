@@ -7,10 +7,7 @@ import android.app.Application;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.text.Html;
 import android.text.TextUtils;
-
-import com.hxs.xposedreddevil.utils.MultiprocessSharedPreferences;
 
 import java.io.File;
 import java.lang.reflect.Constructor;
@@ -68,12 +65,6 @@ public class RevokeMsgHook {
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                         super.afterHookedMethod(param);
                         Context context = (Context) param.args[0];
-                        MultiprocessSharedPreferences.setAuthority("com.hxs.xposedreddevil.provider");
-                        share = MultiprocessSharedPreferences.getSharedPreferences(
-                                context,
-                                "xr",
-                                MODE_PRIVATE
-                        );
                         Class clazzs = XposedHelpers.findClass(SQLITE_DATABASE_CLAZZ, context.getClassLoader());
                         XposedHelpers.findAndHookMethod(clazzs, "updateWithOnConflict",
                                 String.class, ContentValues.class, String.class, String[].class, int.class,

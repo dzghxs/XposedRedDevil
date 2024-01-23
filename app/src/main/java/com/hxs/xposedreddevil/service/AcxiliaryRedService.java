@@ -21,7 +21,6 @@ import com.hxs.xposedreddevil.utils.AccessibilityUtils;
 import com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues;
 import com.hxs.xposedreddevil.utils.Hanzi2PinyinHelper;
 import com.hxs.xposedreddevil.utils.MessageEvent;
-import com.hxs.xposedreddevil.utils.MultiprocessSharedPreferences;
 import com.hxs.xposedreddevil.utils.PackageManagerUtil;
 
 import org.greenrobot.eventbus.EventBus;
@@ -34,7 +33,6 @@ import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.LUCKEY_M
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.LUCKEY_MONEY_RECEIVER;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.carryclose;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.carrypagebtn;
-import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.carrypagenum;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.carrystates;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.chatid;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.chatnameid;
@@ -45,7 +43,6 @@ import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.msgredco
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.msgredid;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.redcircle;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.redclose;
-import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.redpagenum;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.redunmsgcircle;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.strredstatus;
 import static com.hxs.xposedreddevil.utils.AcxiliaryServiceStaticValues.userhead;
@@ -88,9 +85,6 @@ public class AcxiliaryRedService extends AccessibilityService {
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onAccessibilityEvent(final AccessibilityEvent event) {
-        MultiprocessSharedPreferences.setAuthority("com.hxs.xposedreddevil.provider");
-        sharedPreferences =
-                MultiprocessSharedPreferences.getSharedPreferences(this, "xr", MODE_PRIVATE);
         AcxiliaryServiceStaticValues.SetValues();
         //接收事件
         int eventType = event.getEventType();
