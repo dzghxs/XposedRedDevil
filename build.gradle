@@ -5,16 +5,16 @@ buildscript {
         kotlin_version = '1.8.20'
     }
     repositories {
-        google()
-        mavenCentral()
-        maven { url 'https://jitpack.io' }
-        jcenter()
         maven {
             url 'https://maven.aliyun.com/repository/public/'
         }
         maven{
             url 'https://maven.aliyun.com/repository/google/'
         }
+        google()
+        mavenCentral()
+        maven { url 'https://jitpack.io' }
+        jcenter()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:7.0.2'
@@ -26,16 +26,16 @@ buildscript {
 
 allprojects {
     repositories {
-        google()
-        mavenCentral()
-        maven { url 'https://jitpack.io' }
-        jcenter()
         maven {
             url 'https://maven.aliyun.com/repository/public/'
         }
         maven{
             url 'https://maven.aliyun.com/repository/google/'
         }
+        google()
+        mavenCentral()
+        maven { url 'https://jitpack.io' }
+        jcenter()
     }
 }
 

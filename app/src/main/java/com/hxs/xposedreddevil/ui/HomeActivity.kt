@@ -79,11 +79,11 @@ class HomeActivity : BaseActivity() {
             "lucky_sound.mp3",
             Environment.getExternalStorageDirectory().toString() + "/xposedreddevil/lucky_sound.mp3"
         )
-        if (config.wechatversion == "8.0.53") {
+        if (config.wechatversion == "8.0.55") {
             binding!!.spCenterVersion.setSelection(0);
         }
-        if (binding!!.spCenterVersion.selectedItem.equals("8.0.53")) {
-            config.wechatversion =  "8.0.53"
+        if (binding!!.spCenterVersion.selectedItem.equals("8.0.55")) {
+            config.wechatversion =  "8.0.55"
         }
         if (!PackageManagerUtil.getItems(this).equals("")) {
             config.wechatversion = PackageManagerUtil.getItems(this)
