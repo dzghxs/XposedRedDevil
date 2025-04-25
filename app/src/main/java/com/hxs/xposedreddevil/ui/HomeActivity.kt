@@ -51,6 +51,7 @@ class HomeActivity : BaseActivity() {
             Utils.getSP(this, "cloudlocation")?.let { setSP(it) }
             true
         } catch (e: Throwable) {
+            println(e.message)
             AlertDialog.Builder(this)
                 .setTitle("本模块未激活，请先激活")
                 .setPositiveButton(
@@ -79,11 +80,11 @@ class HomeActivity : BaseActivity() {
             "lucky_sound.mp3",
             Environment.getExternalStorageDirectory().toString() + "/xposedreddevil/lucky_sound.mp3"
         )
-        if (config.wechatversion == "8.0.57") {
+        if (config.wechatversion == "8.0.58") {
             binding!!.spCenterVersion.setSelection(0);
         }
-        if (binding!!.spCenterVersion.selectedItem.equals("8.0.57")) {
-            config.wechatversion =  "8.0.57"
+        if (binding!!.spCenterVersion.selectedItem.equals("8.0.58")) {
+            config.wechatversion =  "8.0.58"
         }
         if (!PackageManagerUtil.getItems(this).equals("")) {
             config.wechatversion = PackageManagerUtil.getItems(this)

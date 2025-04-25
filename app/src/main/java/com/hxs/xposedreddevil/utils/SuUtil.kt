@@ -31,13 +31,16 @@ object SuUtil {
      * 结束进程
      */
     private fun killProcess(packageName: String) {
-        val out = process!!.outputStream
-        val cmd = "am force-stop $packageName \n"
         try {
-            out.write(cmd.toByteArray())
-            out.flush()
-        } catch (e: IOException) {
-            e.printStackTrace()
+            val out = process!!.outputStream
+            val cmd = "am force-stop $packageName \n"
+            try {
+                out.write(cmd.toByteArray())
+                out.flush()
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+        } catch (e: Exception) {
         }
     }
 

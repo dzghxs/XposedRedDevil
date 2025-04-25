@@ -29,6 +29,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.hxs.xposedreddevil.BuildConfig
 import de.robv.android.xposed.XSharedPreferences
+import java.lang.reflect.Field
 import java.util.*
 
 
@@ -44,7 +45,11 @@ object Utils {
     @Suppress("DEPRECATION")
     @JvmStatic
     fun getSP(context: Context, key: String?): SharedPreferences? {
-        return context.getSharedPreferences(key, Context.MODE_WORLD_READABLE)
+
+        // 通过反射获取 MODE_WORLD_READABLE 的值（通常为 1）
+        val field: Field = Context::class.java.getField("MODE_WORLD_READABLE")
+        val modeWorldReadable: Int = field.getInt(null)
+        return context.getSharedPreferences(key, modeWorldReadable)
     }
 
     fun <E> Array<E>.indexOfArr(value: E): Int {
